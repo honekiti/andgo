@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Button, ButtonText } from '@gluestack-ui/themed';
 
 import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
@@ -9,6 +10,9 @@ export default function TabOneScreen() {
       <Text style={styles.title}>Tab Oneあ</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <Button>
+        <ButtonText>Button</ButtonText>
+      </Button>
     </View>
   );
 }
