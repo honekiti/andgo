@@ -6,6 +6,7 @@ import { Bitbank } from '../../services/bitbank';
 
 export default function TabOneScreen() {
   const handlePressBitbank = async () => {
+    // TODO: THIS IS DANGEROUS CODE. DO NOT DO THIS IN PRODUCTION.
     const apiKey = process.env.EXPO_PUBLIC_BITBANK_API_KEY ?? '';
     const apiSecret = process.env.EXPO_PUBLIC_BITBANK_API_SECRET ?? '';
     const bitbank = new Bitbank(apiKey, apiSecret);

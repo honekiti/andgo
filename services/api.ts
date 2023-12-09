@@ -28,8 +28,14 @@ export class Api {
       Object.assign(options, { headers });
     }
 
-    console.log(`fetch: ${JSON.stringify({ path, ...options })}`);
+    const response = await fetch(`${this.endPoint}${path}`, options);
 
-    return await fetch(`${this.endPoint}${path}`, options);
+    if (!response.ok) {
+      throw new Error(`fetch error: ${response.status}`);
+    }
+
+    const json = await response.json();
+
+    return json;
   }
 }
