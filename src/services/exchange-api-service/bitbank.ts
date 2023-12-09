@@ -1,22 +1,20 @@
 import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
+import { ExchangeCredential } from '../../models';
 import { BitbankResponse, Ticker, OrderRequest, OrderResponse, AssetsResponse } from './bitbank.types';
 
 const PUBLIC_ENDPOINT = 'https://public.bitbank.cc';
 const PRIVATE_ENDPOINT = 'https://api.bitbank.cc/v1';
 
 export class Bitbank extends BaseApi {
-  private readonly apiKey: string;
-  private readonly apiSecret: string;
-
+  private readonly exchangeCredential: ExchangeCredential;
   private nonce: number;
 
-  constructor(apiKey: string, apiSecret: string) {
+  constructor(exchangeCredential: ExchangeCredential) {
     super(PRIVATE_ENDPOINT);
 
-    this.apiKey = apiKey;
-    this.apiSecret = apiSecret;
+    this.exchangeCredential = exchangeCredential;
     this.nonce = new Date().getTime();
   }
 
@@ -50,9 +48,9 @@ export class Bitbank extends BaseApi {
     const message: string = this.nonce.toString().concat(uri);
     return {
       'Content-Type': 'application/json',
-      'ACCESS-KEY': this.apiKey,
+      'ACCESS-KEY': this.exchangeCredential.apiKey,
       'ACCESS-NONCE': this.nonce.toString(),
-      'ACCESS-SIGNATURE': hmacSha256(this.apiSecret, message),
+      'ACCESS-SIGNATURE': hmacSha256(this.exchangeCredential.apiSecret, message),
     };
   }
 
