@@ -1,6 +1,6 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { Bitbank } from './bitbank';
+import { Bitbank } from './exchange-api-service/bitbank';
 
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
 

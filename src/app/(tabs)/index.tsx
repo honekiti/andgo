@@ -2,7 +2,7 @@ import { Box, Button, ButtonText, Text } from '@gluestack-ui/themed';
 
 import EditScreenInfo from '../../components/EditScreenInfo';
 import BackgroundFetchScreen from '../../components/BacckgroundFetchScreen';
-import { Bitbank } from '../../services/bitbank';
+import { Bitbank } from '../../services/exchange-api-service/bitbank';
 
 export default function TabOneScreen() {
   const handlePressBitbank = async () => {

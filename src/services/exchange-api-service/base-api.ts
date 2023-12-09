@@ -1,4 +1,4 @@
-export class Api {
+export class BaseApi {
   constructor(protected endPoint: string) {}
 
   async get(path: string, params?: unknown, headers?: unknown) {

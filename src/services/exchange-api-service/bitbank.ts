@@ -1,12 +1,12 @@
 import * as querystring from 'querystring';
-import { Api } from './api';
-import { hmacSha256 } from './crypto';
+import { BaseApi } from './base-api';
+import { hmacSha256 } from '../../utils/crypto';
 import { BitbankResponse, Ticker, OrderRequest, OrderResponse, AssetsResponse } from './bitbank.types';
 
 const PUBLIC_ENDPOINT = 'https://public.bitbank.cc';
 const PRIVATE_ENDPOINT = 'https://api.bitbank.cc/v1';
 
-export class Bitbank extends Api {
+export class Bitbank extends BaseApi {
   private readonly apiKey: string;
   private readonly apiSecret: string;
 
