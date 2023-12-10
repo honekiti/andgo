@@ -1,21 +1,16 @@
 import * as SecureStore from 'expo-secure-store';
 import { ExchangeId, ExchangeCredential } from '../models';
 
-export const saveCredential = async (key: ExchangeId, obj: ExchangeCredential): Promise<void> => {
-  await SecureStore.setItemAsync(key, JSON.stringify(obj));
+const EXCHANGES_KEY = 'EXCHANGES_KEY';
+
+export const saveCredentials = async (credentials: ExchangeCredential[]): Promise<void> => {
+  await SecureStore.setItemAsync(EXCHANGES_KEY, JSON.stringify(credentials));
 };
 
-export const loadCredential = async (key: ExchangeId): Promise<ExchangeCredential | null> => {
-  if (process.env.EXPO_PUBLIC_BITBANK_API_KEY && process.env.EXPO_PUBLIC_BITBANK_API_SECRET) {
-    return {
-      apiKey: process.env.EXPO_PUBLIC_BITBANK_API_KEY,
-      apiSecret: process.env.EXPO_PUBLIC_BITBANK_API_SECRET,
-    };
+export const loadCredentials = async (): Promise<ExchangeCredential[]> => {
+  const credentials = await SecureStore.getItemAsync(EXCHANGES_KEY);
+  if (!credentials) {
+    return [];
   }
-
-  const credential = await SecureStore.getItemAsync(key);
-  if (!credential) {
-    return null;
-  }
-  return JSON.parse(credential);
+  return JSON.parse(credentials);
 };

@@ -13,9 +13,10 @@ export {
   ErrorBoundary,
 } from 'expo-router';
 
+// https://docs.expo.dev/router/advanced/router-settings/
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'index',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -52,8 +53,8 @@ function RootLayoutNav() {
     <GluestackUIProvider config={config}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="config" options={{ presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>
     </GluestackUIProvider>

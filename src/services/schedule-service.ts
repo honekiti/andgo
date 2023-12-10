@@ -6,7 +6,7 @@ import differenceInMinutes from 'date-fns/differenceInMinutes';
 import differenceInMonths from 'date-fns/differenceInMonths';
 import { IntervalType, Schedule } from '../models';
 
-const SCHEDULES_KEY = 'SCHEDULES_KEY_KEY';
+const SCHEDULES_KEY = 'SCHEDULES_KEY';
 const ADD_FUNC = {
   MINUTES: addMinutes,
   HOURS: addHours,

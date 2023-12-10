@@ -15,18 +15,14 @@ export const getTicker = async (exchangeId: ExchangeId): Promise<Ticker> => {
   }
 };
 
-export const execBuyOrder = async (
-  exchangeId: ExchangeId,
-  exchangeCredential: ExchangeCredential,
-  btcAmount: number,
-): Promise<{ status: 'SUCCESS' | 'ORDER_FAILED' }> => {
+export const execBuyOrder = async (exchangeCredential: ExchangeCredential, btcAmount: number): Promise<{ status: 'SUCCESS' | 'ORDER_FAILED' }> => {
   if (process.env.EXPO_PUBLIC_DRY_RUN) {
     console.log('dry run');
 
     return { status: 'SUCCESS' };
   }
 
-  switch (exchangeId) {
+  switch (exchangeCredential.id) {
     case 'bitbank': {
       const r = await new Bitbank(exchangeCredential).postOrder({
         pair: 'btc_jpy',

@@ -1,47 +1,34 @@
+// 取引所ID
 export type ExchangeId = 'bitbank' | 'bitflyer' | 'coincheck' | 'gmo';
-export type Exchange = {
+
+// 取引所マスター
+export type ExchangeMaster = {
   id: ExchangeId;
-  name: string;
+  name: string; // 取引所名
+  minBtcAmt: number; // 最少購入量
+  minJpyAmt: number; // 最少購入量
+  viewPrecision: number; // 表示する小数点以下の桁数
+  orderPrecision: number; // 注文する小数点以下の桁数
 };
 
+// 取引所のクレデンシャル情報
 export type ExchangeCredential = {
+  id: ExchangeId;
   apiKey: string;
   apiSecret: string;
 };
-export const EXCHANGES = [
-  {
-    id: 'bitbank',
-    name: 'bitbank',
-    minAmt: 0.0001, // API: https://api.bitbank.cc/v1/spot/status
-    viewPrecision: 4, // 表示する小数点以下の桁数
-    orderPrecision: 4, // 注文する小数点以下の桁数
-  },
-  {
-    id: 'bitflyer',
-    name: 'bitFlyer',
-    minAmt: 0.001,
-    viewPrecision: 8, // 表示する小数点以下の桁数
-    orderPrecision: 3, // 注文する小数点以下の桁数
-  },
-  {
-    id: 'coincheck',
-    name: 'Coincheck',
-    minAmt: 0.005, // written in API response
-    viewPrecision: 8, // 表示する小数点以下の桁数
-    orderPrecision: 3, // 注文する小数点以下の桁数
-  },
-  {
-    id: 'gmo',
-    name: 'GMOコイン',
-    minAmt: 0.0001,
-    viewPrecision: 8, // 表示する小数点以下の桁数
-    orderPrecision: 4, // 注文する小数点以下の桁数
-  },
-];
 
+// 取引所のTicker情報
+export type Ticker = {
+  ask: number; // 現在の売り注文の最安値
+};
+
+// スケジュールの繰り返し間隔
 export type IntervalType = 'MINUTES' | 'HOURS' | 'DAYS' | 'MONTHS';
 
+// スケジュール
 export type Schedule = {
+  id: string; // schedule id
   exchangeId: ExchangeId; // target exchange
   quoteAmount: number; // quote amount [yen]
   intervalType: IntervalType; // interval type
@@ -52,8 +39,4 @@ export type Schedule = {
     nextIndex: number; // next index
     nextAt: number; // next time [unix time]
   };
-};
-
-export type Ticker = {
-  ask: number; // 現在の売り注文の最安値
 };
