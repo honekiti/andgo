@@ -1,12 +1,11 @@
 import '../utils/polyfills';
+import { useEffect } from 'react';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { config } from '@gluestack-ui/config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -47,16 +46,16 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
     <GluestackUIProvider config={config}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <SafeAreaProvider>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="config" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="config" options={{ presentation: 'card' }} />
+          <Stack.Screen name="(config)/add-exchange" options={{ title: '取引所連携', presentation: 'card' }} />
+          <Stack.Screen name="(config)/exchange-config" options={{ title: '取引所', presentation: 'card' }} />
         </Stack>
-      </ThemeProvider>
+      </SafeAreaProvider>
     </GluestackUIProvider>
   );
 }

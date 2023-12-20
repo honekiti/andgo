@@ -5,7 +5,7 @@ export default function ConfigScreen() {
   return (
     <Box>
       <Text>設定</Text>
-      <Link href="/config/exchange">
+      <Link href="/exchange-config" asChild>
         <Button>
           <ButtonText>取引所</ButtonText>
         </Button>

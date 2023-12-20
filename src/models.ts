@@ -7,7 +7,6 @@ export type ExchangeMaster = {
   name: string; // 取引所名
   minBtcAmt: number; // 最少購入量
   minJpyAmt: number; // 最少購入量
-  viewPrecision: number; // 表示する小数点以下の桁数
   orderPrecision: number; // 注文する小数点以下の桁数
 };
 

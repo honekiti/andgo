@@ -1,5 +1,7 @@
 import { ExchangeMaster } from './models';
 
+export const VIEW_PRECISION = 8;
+
 export const EXCHANGES: ExchangeMaster[] = [
   {
     // reference: https://bitbank.cc/docs/pairs/
@@ -7,7 +9,6 @@ export const EXCHANGES: ExchangeMaster[] = [
     name: 'bitbank',
     minBtcAmt: 0.0001,
     minJpyAmt: 1,
-    viewPrecision: 4,
     orderPrecision: 4,
   },
   {
@@ -16,7 +17,6 @@ export const EXCHANGES: ExchangeMaster[] = [
     name: 'bitFlyer',
     minBtcAmt: 0.001,
     minJpyAmt: 1,
-    viewPrecision: 8,
     orderPrecision: 3,
   },
   {
@@ -25,7 +25,6 @@ export const EXCHANGES: ExchangeMaster[] = [
     name: 'Coincheck',
     minBtcAmt: 0.005,
     minJpyAmt: 500,
-    viewPrecision: 8,
     orderPrecision: 3,
   },
   {
@@ -34,7 +33,6 @@ export const EXCHANGES: ExchangeMaster[] = [
     name: 'GMOコイン',
     minBtcAmt: 0.0001,
     minJpyAmt: 1,
-    viewPrecision: 8,
     orderPrecision: 4,
   },
 ];

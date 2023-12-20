@@ -1,7 +1,7 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { Schedule, ExchangeId, ExchangeCredential } from '../models';
-import { EXCHANGES } from '../master';
+import { VIEW_PRECISION, EXCHANGES } from '../master';
 import { loadSchedules, getNextIndexFromNow, getNextAtByIndex } from './schedule-service';
 import { loadCredentials } from './exchange-credential-service';
 import { getTicker, execBuyOrder } from './exchange-api-service/universal';
@@ -22,9 +22,9 @@ export const calcBtcAmount = (ask: number, quoteAmount: number, exchangeId: Exch
     throw new Error('EXCHANGE_NOT_FOUND');
   }
 
-  const { viewPrecision, orderPrecision, minBtcAmt, minJpyAmt } = exchange;
+  const { orderPrecision, minBtcAmt, minJpyAmt } = exchange;
 
-  const origBtcAmount = Number((quoteAmount / ask).toFixed(viewPrecision)); // 四捨五入
+  const origBtcAmount = Number((quoteAmount / ask).toFixed(VIEW_PRECISION)); // 四捨五入
   const factor = 10 ** orderPrecision;
   const btcAmount = Math.floor(origBtcAmount * factor) / factor; // 切り捨て
 
