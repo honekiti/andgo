@@ -22,7 +22,7 @@ import {
   InputField,
 } from '@gluestack-ui/themed';
 
-export default function AddExchangeScreen() {
+export default function ExchangeRegistrationScreen() {
   return (
     <Box h="$full" w="$full">
       <VStack>

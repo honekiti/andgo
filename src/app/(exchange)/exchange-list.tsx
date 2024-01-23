@@ -11,7 +11,7 @@ export type ExchangeInfo = {
   balance?: number;
 };
 
-export default function ExchangeConfigScreen() {
+export default function ExchangeListScreen() {
   const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
   const [balances, setBalances] = useState<(number | undefined)[]>([]);
   const data = credentials.map((credential, index) => ({

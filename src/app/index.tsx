@@ -1,38 +1,46 @@
-import { useState, useCallback } from 'react';
-import { useFocusEffect, Link } from 'expo-router';
-import { Box, Button, ButtonIcon, ButtonText } from '@gluestack-ui/themed';
+import { Link } from 'expo-router';
+import { Box, Button, ButtonText, VStack } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SettingsIcon } from '@gluestack-ui/themed';
-import ScheduleList from '../components/ScheduleList';
-import { loadSchedules } from '../services/schedule-service';
-import { Schedule } from '../models';
+import { Text } from '@gluestack-ui/themed';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
-
-  const handlePressAddSchedule = () => {};
-
-  useFocusEffect(
-    useCallback(() => {
-      loadSchedules().then((schedules) => {
-        setSchedules(schedules);
-      });
-    }, []),
-  );
 
   return (
     <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right}>
-      <Link href="/config" asChild>
-        <Button borderRadius="$full" p="$3.5">
-          <ButtonIcon as={SettingsIcon} />
-        </Button>
-      </Link>
-      <ScheduleList schedules={schedules} />
+      <Text>デバッグ</Text>
 
-      <Button onPress={handlePressAddSchedule}>
-        <ButtonText>スケジュールの追加</ButtonText>
-      </Button>
+      <VStack space="xs">
+        <Link href="/exchange-list" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>取引所一覧画面</ButtonText>
+          </Button>
+        </Link>
+
+        <Link href="/exchange-registration" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>取引所連携画面</ButtonText>
+          </Button>
+        </Link>
+
+        <Link href="/tutorial" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>チュートリアル画面</ButtonText>
+          </Button>
+        </Link>
+
+        <Link href="/terms-of-service" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>利用規約同意画面</ButtonText>
+          </Button>
+        </Link>
+
+        <Link href="/home" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>ホーム画面</ButtonText>
+          </Button>
+        </Link>
+      </VStack>
     </Box>
   );
 }
