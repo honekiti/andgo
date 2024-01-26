@@ -42,6 +42,7 @@ export default function ExchangeListScreen() {
 
   return (
     <Box py="$10">
+      <Text>取引所一覧画面</Text>
       {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
       {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
       <FlatList data={data} renderItem={renderItem as any} keyExtractor={(item) => (item as ExchangeInfo).name} />
