@@ -1,4 +1,4 @@
-import { Box } from '@gluestack-ui/themed';
+import { Box, Text } from '@gluestack-ui/themed';
 import { Schedule } from '../models';
 
 export type ScheduleItemProps = {
@@ -6,5 +6,9 @@ export type ScheduleItemProps = {
 };
 
 export default function ScheduleItem(props: ScheduleItemProps) {
-  return <Box justifyContent="center">{JSON.stringify(props.item)}</Box>;
+  return (
+    <Box justifyContent="center">
+      <Text>{JSON.stringify(props.item)}</Text>
+    </Box>
+  );
 }

@@ -4,14 +4,40 @@ import { Box, Button, ButtonIcon, ButtonText } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SettingsIcon } from '@gluestack-ui/themed';
 import ScheduleList from '../components/ScheduleList';
-import { loadSchedules } from '../services/schedule-service';
+import { loadSchedules, saveScheduels } from '../services/schedule-service';
 import { Schedule } from '../models';
+import { genId } from '../utils/crypto';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [schedules, setSchedules] = useState<Schedule[]>([]);
 
-  const handlePressAddSchedule = () => {};
+  const handlePressAddSchedule = async () => {
+    const dummySuchedule: Schedule = {
+      id: genId(),
+      exchangeId: 'bitbank',
+      quoteAmount: 123,
+      intervalType: 'MINUTES',
+      interval: 15,
+      status: {
+        enabled: false,
+        refAt: new Date().getTime(),
+        nextIndex: 0,
+        nextAt: 0,
+      },
+    };
+
+    const updatedSchedule = [...schedules, dummySuchedule];
+
+    await saveScheduels(updatedSchedule);
+
+    setSchedules(updatedSchedule);
+  };
+
+  const handleReset = async () => {
+    await saveScheduels([]);
+    setSchedules([]);
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -32,6 +58,9 @@ export default function HomeScreen() {
 
       <Button onPress={handlePressAddSchedule}>
         <ButtonText>スケジュールの追加</ButtonText>
+      </Button>
+      <Button onPress={handleReset}>
+        <ButtonText>リセット</ButtonText>
       </Button>
     </Box>
   );
