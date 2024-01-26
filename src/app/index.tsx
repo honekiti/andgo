@@ -35,6 +35,18 @@ export default function HomeScreen() {
           </Button>
         </Link>
 
+        <Link href="/schedule-edit" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>積立プラン編集画面</ButtonText>
+          </Button>
+        </Link>
+
+        <Link href="/schedule-registration" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>積立プラン作成画面</ButtonText>
+          </Button>
+        </Link>
+
         <Link href="/home" asChild>
           <Button borderRadius="$full">
             <ButtonText>ホーム画面</ButtonText>
