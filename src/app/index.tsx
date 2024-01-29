@@ -9,6 +9,7 @@ export default function HomeScreen() {
   return (
     <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right}>
       <Text>デバッグ</Text>
+      <Text>テストテストテストテスト</Text>
 
       <VStack space="xs">
         <Link href="/exchange-list" asChild>
