@@ -7,6 +7,8 @@ import ScheduleList from '../components/ScheduleList';
 import { loadSchedules, saveScheduels } from '../services/schedule-service';
 import { Schedule } from '../models';
 import { genId } from '../utils/crypto';
+// import { tintColorDark, tintColorLight } from '../constants/Colors';
+import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -47,11 +49,6 @@ export default function HomeScreen() {
     }, []),
   );
 
-  const white = '#fff';
-  const unclearWhite = '$borderDark700';
-  const darkGrey = '#222';
-  const lightGrey = '#333';
-
   return (
     <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
       <Box h="$64" p="$3" display="flex" flexDirection="column">
@@ -70,6 +67,7 @@ export default function HomeScreen() {
               </Link>
             </Box>
           </Box>
+
           <Box h="60%">
             <Box h="50%" alignItems="center" display="flex" flexDirection="row">
               <Text color={white} bold>

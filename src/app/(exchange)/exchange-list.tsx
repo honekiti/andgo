@@ -12,7 +12,10 @@ export type ExchangeInfo = {
 };
 
 export default function ExchangeListScreen() {
-  const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
+  const [credentials, setCredentials] = useState<ExchangeCredential[]>([
+    { id: 'bitbank', apiKey: 'aaa', apiSecret: 'bbb' },
+    { id: 'bitflyer', apiKey: 'aaa', apiSecret: 'bbb' },
+  ]);
   const [balances, setBalances] = useState<(number | undefined)[]>([]);
   const data = credentials.map((credential, index) => ({
     name: EXCHANGES.find((ex) => ex.id === credential.id)?.name ?? 'unknown',
@@ -30,15 +33,15 @@ export default function ExchangeListScreen() {
     );
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      loadCredentials().then((credentials) => {
-        setCredentials(credentials);
-        // TODO: lazy load balances
-        setBalances(Array(credentials.length).fill(undefined));
-      });
-    }, []),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     loadCredentials().then((credentials) => {
+  //       setCredentials(credentials);
+  //       // TODO: lazy load balances
+  //       setBalances(Array(credentials.length).fill(undefined));
+  //     });
+  //   }, []),
+  // );
 
   return (
     <Box py="$10">
