@@ -1,14 +1,15 @@
 import { useState, useCallback } from 'react';
 import { useFocusEffect, Link } from 'expo-router';
-import { AddIcon, Box, Button, ButtonIcon, ButtonText, Text } from '@gluestack-ui/themed';
+import { Box, Button, ButtonIcon, ButtonText, Pressable, ScrollView, Text } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SettingsIcon, ArrowRightIcon } from '@gluestack-ui/themed';
+import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon } from '@gluestack-ui/themed';
 import ScheduleList from '../components/ScheduleList';
 import { loadSchedules, saveScheduels } from '../services/schedule-service';
 import { Schedule } from '../models';
 import { genId } from '../utils/crypto';
-// import { tintColorDark, tintColorLight } from '../constants/Colors';
 import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
+import CalenderInfo from '../components/ClenderInfo';
+import AccumulateInfo from '../components/AccumulateInfo';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -48,6 +49,8 @@ export default function HomeScreen() {
       });
     }, []),
   );
+
+  const [activeTab, setActiveTab] = useState(0);
 
   return (
     <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
@@ -107,7 +110,35 @@ export default function HomeScreen() {
         </Box>
       </Box>
 
-      <ScheduleList schedules={schedules} />
+      <ScrollView>
+        <Box h="auto" w="100%" bg={darkGrey} rounded="$3xl">
+          <Box h="$7" justifyContent="center" alignItems="center">
+            <AddIcon as={RemoveIcon} size="xl" />
+          </Box>
+          <Box h="$11" w="100%" display="flex" flexDirection="row" alignItems="center">
+            <Pressable w="50%" onPress={() => setActiveTab(0)}>
+              <Box display="flex" flexDirection="row" justifyContent="center">
+                <AddIcon as={CalendarDaysIcon} size="md" color={white} mr="$1" />
+                <Text color={white} fontWeight="500">
+                  カレンダー
+                </Text>
+              </Box>
+            </Pressable>
+            <Pressable w="50%" onPress={() => setActiveTab(1)}>
+              <Box display="flex" flexDirection="row" justifyContent="center">
+                <AddIcon as={PaperclipIcon} size="md" color={white} mr="$1" />
+                <Text color={white} fontWeight="500">
+                  積立プラン
+                </Text>
+              </Box>
+            </Pressable>
+          </Box>
+          {activeTab === 0 && <CalenderInfo />}
+          {activeTab === 1 && <AccumulateInfo />}
+        </Box>
+      </ScrollView>
+
+      {/* <ScheduleList schedules={schedules} />
 
       <Button onPress={handlePressAddSchedule}>
         <ButtonText>スケジュールの追加</ButtonText>
@@ -115,7 +146,7 @@ export default function HomeScreen() {
 
       <Button onPress={handleReset}>
         <ButtonText>リセット</ButtonText>
-      </Button>
+      </Button> */}
     </Box>
   );
 }
