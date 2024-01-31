@@ -5,8 +5,8 @@ export default function AccumulateInfo() {
   return (
     <>
       <Box display="flex" flexDirection="row">
-        <Box h="$0.5" w="50%" bg={white} rounded="$full" />
         <Box h="$0.5" w="50%" bg={unclearWhite} rounded="$full" />
+        <Box h="$0.5" w="50%" bg={white} rounded="$full" />
       </Box>
 
       <Box h="auto" alignItems="center" my="$7">
