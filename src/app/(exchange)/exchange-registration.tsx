@@ -23,6 +23,8 @@ import {
   Input,
   InputField,
 } from '@gluestack-ui/themed';
+import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
+import { Link } from 'expo-router';
 
 /**
  * 取引所連携画面
@@ -35,14 +37,14 @@ export default function ExchangeRegistrationScreen() {
   const [selectedExchangeId, setSelectedExchangeId] = useState<string | undefined>(undefined);
 
   return (
-    <Box h="$full" w="$full">
-      <VStack space="lg">
+    <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
+      <VStack space="3xl" p="$4">
         <FormControl size="md" isRequired={true}>
           <FormControlLabel>
-            <FormControlLabelText>取引所</FormControlLabelText>
+            <FormControlLabelText color={white}>取引所</FormControlLabelText>
           </FormControlLabel>
           <Select onValueChange={(v) => setSelectedExchangeId(v)}>
-            <SelectTrigger variant="outline" size="md">
+            <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
               <SelectInput placeholder="選択してください" />
               <SelectIcon mr="$3" as={ChevronDownIcon} />
             </SelectTrigger>
@@ -63,22 +65,30 @@ export default function ExchangeRegistrationScreen() {
 
         <FormControl size="md" isRequired={true}>
           <FormControlLabel>
-            <FormControlLabelText>APIキー</FormControlLabelText>
+            <FormControlLabelText color={white}>APIキー</FormControlLabelText>
           </FormControlLabel>
-          <Input>
+          <Input borderWidth={0} bg={lightGrey}>
             <InputField placeholder="発行したAPIキーを入力" />
           </Input>
         </FormControl>
 
         <FormControl size="md" isRequired={true}>
           <FormControlLabel>
-            <FormControlLabelText>APIシークレット</FormControlLabelText>
+            <FormControlLabelText color={white}>APIシークレット</FormControlLabelText>
           </FormControlLabel>
-          <Input>
+          <Input borderWidth={0} bg={lightGrey}>
             <InputField placeholder="発行したAPIシークレットを入力" />
           </Input>
         </FormControl>
       </VStack>
+
+      <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7">
+        <Link href="/home" asChild>
+          <Button size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
+            <ButtonText>連携する</ButtonText>
+          </Button>
+        </Link>
+      </Box>
     </Box>
   );
 }
