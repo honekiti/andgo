@@ -24,6 +24,9 @@ import {
   InputField,
 } from '@gluestack-ui/themed';
 
+/**
+ * 取引所連携画面
+ */
 export default function ExchangeRegistrationScreen() {
   const [exchanges, setExchanges] = useState([
     { id: 'bitflyer', name: 'bitFlyer' },

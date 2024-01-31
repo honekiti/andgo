@@ -3,7 +3,7 @@ import * as TaskManager from 'expo-task-manager';
 import { useState, useEffect } from 'react';
 import { Box, Text, Button, ButtonText } from '@gluestack-ui/themed';
 
-import { BACKGROUND_FETCH_TASK, registerBackgroundFetchAsync, unregisterBackgroundFetchAsync } from '../services/scheduler';
+import { FIND_ORDERS_TASK, registerBackgroundFetchAsync, unregisterBackgroundFetchAsync } from '../services/scheduler-service';
 
 export default function BackgroundFetchScreen() {
   const [isRegistered, setIsRegistered] = useState(false);
@@ -15,7 +15,7 @@ export default function BackgroundFetchScreen() {
 
   const checkStatusAsync = async () => {
     const status = await BackgroundFetch.getStatusAsync();
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(FIND_ORDERS_TASK);
     setStatus(status);
     setIsRegistered(isRegistered);
   };
@@ -37,7 +37,7 @@ export default function BackgroundFetchScreen() {
           Background fetch status: <Text bold>{status && BackgroundFetch.BackgroundFetchStatus[status]}</Text>
         </Text>
         <Text>
-          Background fetch task name: <Text bold>{isRegistered ? BACKGROUND_FETCH_TASK : 'Not registered yet!'}</Text>
+          Background fetch task name: <Text bold>{isRegistered ? FIND_ORDERS_TASK : 'Not registered yet!'}</Text>
         </Text>
       </Box>
       <Button>

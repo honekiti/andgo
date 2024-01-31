@@ -11,6 +11,7 @@ export default function TermsOfServiceScreen() {
   return (
     <Box>
       <Text>利用規約</Text>
+      <Text>aaa</Text>
       <Link disabled={!active} href="/config" asChild>
         <Button disabled={!active}>
           <ButtonText>同意する</ButtonText>

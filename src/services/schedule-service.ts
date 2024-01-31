@@ -1,9 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { addDays, addHours, addMinutes, addMonths } from 'date-fns';
-import differenceInDays from 'date-fns/differenceInDays';
-import differenceInHours from 'date-fns/differenceInHours';
-import differenceInMinutes from 'date-fns/differenceInMinutes';
-import differenceInMonths from 'date-fns/differenceInMonths';
+import { addDays, addHours, addMinutes, addMonths, differenceInDays, differenceInHours, differenceInMinutes, differenceInMonths } from 'date-fns';
 import { IntervalType, Schedule } from '../models';
 
 const SCHEDULES_KEY = 'SCHEDULES_KEY';

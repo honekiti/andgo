@@ -9,6 +9,7 @@ export default function HomeScreen() {
   return (
     <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right}>
       <Text>デバッグ</Text>
+      <Text>テストテストテストテスト</Text>
 
       <VStack space="xs">
         <Link href="/exchange-list" asChild>
@@ -32,6 +33,18 @@ export default function HomeScreen() {
         <Link href="/terms-of-service" asChild>
           <Button borderRadius="$full">
             <ButtonText>利用規約同意画面</ButtonText>
+          </Button>
+        </Link>
+
+        <Link href="/schedule-edit" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>積立プラン編集画面</ButtonText>
+          </Button>
+        </Link>
+
+        <Link href="/schedule-registration" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>積立プラン作成画面</ButtonText>
           </Button>
         </Link>
 
