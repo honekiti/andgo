@@ -68,7 +68,7 @@ export default function ExchangeRegistrationScreen() {
             </SelectPortal>
           </FormControl>
 
-          <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
+          {/* <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
             <Box h="$10" w="$10" bg="#00f" rounded="$full" />
             <Text color={white} fontSize={14} py="$2">
               APIキーを発行してください
@@ -122,7 +122,7 @@ export default function ExchangeRegistrationScreen() {
                 </Box>
               </Link>
             </VStack>
-          </Box>
+          </Box> */}
 
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
@@ -144,9 +144,9 @@ export default function ExchangeRegistrationScreen() {
         </VStack>
       </ScrollView>
 
-      <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7">
-        <Link href="/home">
-          <Button size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
+      <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
+        <Link href="/home" asChild>
+          <Button w="100%" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
             <ButtonText>連携する</ButtonText>
           </Button>
         </Link>
