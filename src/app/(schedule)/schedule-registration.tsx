@@ -82,7 +82,7 @@ export default function ScheduleRegistrationScreen() {
               <FormControlLabelText color={white}>取引所</FormControlLabelText>
             </FormControlLabel>
             <Select onValueChange={(v) => setSelectedExchangeId(v)}>
-              <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
+              <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                 <SelectInput placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
               </SelectTrigger>
@@ -93,13 +93,27 @@ export default function ScheduleRegistrationScreen() {
                 <SelectDragIndicatorWrapper>
                   <SelectDragIndicator />
                 </SelectDragIndicatorWrapper>
-
                 {exchanges.map((exchange) => (
                   <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
                 ))}
               </SelectContent>
             </SelectPortal>
           </FormControl>
+
+          <Box h="auto" w="$full" bg="#000" rounded="$lg">
+            <VStack space="md" alignItems="center" py="$4">
+              <Box h="$8" w="$8" rounded="$full" bg="#00f" />
+              <Text fontSize={12} color={white} bold>
+                最低購入量
+              </Text>
+              <Text fontSize={17} color={white} bold>
+                0.00000001
+              </Text>
+              <Text fontSize={11} color={white}>
+                1000円相当
+              </Text>
+            </VStack>
+          </Box>
 
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
@@ -108,7 +122,7 @@ export default function ScheduleRegistrationScreen() {
             <HStack justifyContent="space-between">
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedFrequencyId(v)}>
-                  <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
+                  <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                     <SelectInput placeholder="毎週" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
@@ -127,7 +141,7 @@ export default function ScheduleRegistrationScreen() {
               </Box>
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedWeekId(v)}>
-                  <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
+                  <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                     <SelectInput placeholder="金曜日" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
@@ -154,7 +168,7 @@ export default function ScheduleRegistrationScreen() {
             <HStack justifyContent="space-between">
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedHoursId(v)}>
-                  <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
+                  <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                     <SelectInput placeholder="12時" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
@@ -173,7 +187,7 @@ export default function ScheduleRegistrationScreen() {
               </Box>
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedMinutesId(v)}>
-                  <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
+                  <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                     <SelectInput placeholder="0分" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
@@ -198,7 +212,7 @@ export default function ScheduleRegistrationScreen() {
               <FormControlLabelText color={white}>1回あたりの購入額</FormControlLabelText>
             </FormControlLabel>
             <HStack justifyContent="space-between">
-              <Input w="93%" borderWidth={0} bg={lightGrey}>
+              <Input w="93%" rounded="$lg" borderWidth={0} bg={lightGrey}>
                 <InputField placeholder="10,000" />
               </Input>
               <VStack reversed={true}>
@@ -219,7 +233,7 @@ export default function ScheduleRegistrationScreen() {
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
         <Link href="/home" asChild>
           <Button w="100%" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
-            <ButtonText>連携する</ButtonText>
+            <ButtonText>作成する</ButtonText>
           </Button>
         </Link>
       </Box>
