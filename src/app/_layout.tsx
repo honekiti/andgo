@@ -67,7 +67,15 @@ function RootLayoutNav() {
           />
           <Stack.Screen name="(exchange)/exchange-list" options={{ title: '取引所', presentation: 'card' }} />
           <Stack.Screen name="(schedule)/schedule-edit" options={{ title: '積立プラン編集', presentation: 'modal' }} />
-          <Stack.Screen name="(schedule)/schedule-registration" options={{ title: '積立プラン作成', presentation: 'modal' }} />
+          <Stack.Screen
+            name="(schedule)/schedule-registration"
+            options={{
+              title: '積立プラン作成',
+              presentation: 'modal',
+              headerStyle: { backgroundColor: darkGrey },
+              headerTintColor: white,
+            }}
+          />
         </Stack>
       </SafeAreaProvider>
     </GluestackUIProvider>

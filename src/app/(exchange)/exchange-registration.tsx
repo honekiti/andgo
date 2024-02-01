@@ -68,7 +68,7 @@ export default function ExchangeRegistrationScreen() {
             </SelectPortal>
           </FormControl>
 
-          {/* <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
+          <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
             <Box h="$10" w="$10" bg="#00f" rounded="$full" />
             <Text color={white} fontSize={14} py="$2">
               APIキーを発行してください
@@ -122,7 +122,7 @@ export default function ExchangeRegistrationScreen() {
                 </Box>
               </Link>
             </VStack>
-          </Box> */}
+          </Box>
 
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
