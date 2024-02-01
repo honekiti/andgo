@@ -62,9 +62,9 @@ export default function TermsOfServiceScreen() {
           </VStack>
         ))}
       </ScrollView>
-      <Box flexDirection="column" alignItems="center" justifyContent="center" borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7">
-        <Link href="/home">
-          <Button bgColor="#f97316" justifyContent="center" alignItems="center">
+      <Box flexDirection="column" alignItems="center" borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7">
+        <Link href="/home" asChild>
+          <Button width={'$full'} bgColor="#f97316">
             <ButtonText>同意する</ButtonText>
           </Button>
         </Link>
