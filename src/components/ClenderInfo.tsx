@@ -1,5 +1,6 @@
-import { Box, Button, ButtonText, Link, LinkText, Text } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, LinkText, Text } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
+import { Link } from 'expo-router';
 
 export default function CalenderInfo() {
   return (
@@ -16,20 +17,22 @@ export default function CalenderInfo() {
       </Box>
 
       <Box h="auto" alignItems="center" mb="$7">
-        <Button
-          h="$12"
-          w="90%"
-          mb="$5"
-          size="md"
-          variant="outline"
-          action="secondary"
-          isDisabled={false}
-          isFocusVisible={false}
-          borderWidth={2}
-          rounded="$lg"
-        >
-          <ButtonText color={white}>取引所と連携する</ButtonText>
-        </Button>
+        <Link href="/exchange-registration" asChild>
+          <Button
+            h="$12"
+            w="90%"
+            mb="$5"
+            size="md"
+            variant="outline"
+            action="secondary"
+            isDisabled={false}
+            isFocusVisible={false}
+            borderWidth={2}
+            rounded="$lg"
+          >
+            <ButtonText color={white}>取引所と連携する</ButtonText>
+          </Button>
+        </Link>
         <Link href="https://andgo.notion.site/">
           <LinkText color={white} underline>
             連携する方法を見る
