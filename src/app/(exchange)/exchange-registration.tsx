@@ -25,6 +25,7 @@ import {
   ScrollView,
   Divider,
   ChevronRightIcon,
+  LinkText,
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { Link } from 'expo-router';
@@ -81,44 +82,44 @@ export default function ExchangeRegistrationScreen() {
             </Text>
             <VStack space="md" pt="$2">
               <Link href="https://bitbank.cc">
-                <Button
+                <Box
                   h="$12"
-                  w="$full"
-                  size="lg"
-                  variant="outline"
-                  action="secondary"
-                  isDisabled={false}
-                  isFocusVisible={false}
-                  borderWidth={1}
+                  w="100%"
+                  borderWidth={0.5}
+                  borderColor={white}
                   rounded="$full"
+                  display="flex"
+                  flexDirection="row"
                   justifyContent="space-between"
+                  alignItems="center"
+                  px="$4"
                 >
                   <Icon as={ChevronRightIcon} size="md" color="#0000" />
-                  <ButtonText color={white} bold>
+                  <Text color={white} bold>
                     bitbankサイト
-                  </ButtonText>
+                  </Text>
                   <Icon as={ChevronRightIcon} size="md" color={white} />
-                </Button>
+                </Box>
               </Link>
               <Link href="https://tsumitatetoko.com/api-register-bitbank">
-                <Button
+                <Box
                   h="$12"
-                  w="$full"
-                  size="lg"
-                  variant="outline"
-                  action="secondary"
-                  isDisabled={false}
-                  isFocusVisible={false}
-                  borderWidth={1}
+                  w="100%"
+                  borderWidth={0.5}
+                  borderColor={white}
                   rounded="$full"
+                  display="flex"
+                  flexDirection="row"
                   justifyContent="space-between"
+                  alignItems="center"
+                  px="$4"
                 >
                   <Icon as={ChevronRightIcon} size="md" color="#0000" />
-                  <ButtonText color={white} bold>
+                  <Text color={white} bold>
                     チュートリアル
-                  </ButtonText>
+                  </Text>
                   <Icon as={ChevronRightIcon} size="md" color={white} />
-                </Button>
+                </Box>
               </Link>
             </VStack>
           </Box>
