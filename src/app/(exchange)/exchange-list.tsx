@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
-import { ListRenderItem } from 'react-native';
-import { Box, FlatList, HStack, VStack, Text } from '@gluestack-ui/themed';
-import { useFocusEffect } from 'expo-router';
+import { ListRenderItem, TouchableOpacity } from 'react-native';
+import { Box, Button, FlatList, HStack, VStack, Text, ChevronLeftIcon, Icon, ButtonText } from '@gluestack-ui/themed';
+import { Link } from 'expo-router';
 import { loadCredentials } from '../../services/exchange-credential-service';
 import { EXCHANGES } from '../../master';
 import { ExchangeCredential } from '../../models';
+import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 
 export type ExchangeInfo = {
   name: string;
@@ -44,11 +45,77 @@ export default function ExchangeListScreen() {
   // );
 
   return (
-    <Box py="$10">
-      <Text>取引所一覧画面</Text>
-      {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
-      {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-      <FlatList data={data} renderItem={renderItem as any} keyExtractor={(item) => (item as ExchangeInfo).name} />
+    <Box flex={1} bg={darkGrey}>
+      <Box
+        flexDirection="column"
+        width="100%"
+        height={'10%'}
+        borderBottomWidth={2}
+        borderBottomColor="#FFFFFF50"
+        alignItems="flex-start"
+        justifyContent="center"
+        p={'$4'}
+      >
+        <Text color="white" fontSize={22}>
+          Krarken
+        </Text>
+        <Text color="white">残高 123456円</Text>
+      </Box>
+      <Box
+        flexDirection="column"
+        width="100%"
+        height={'10%'}
+        borderBottomWidth={2}
+        borderBottomColor="#FFFFFF50"
+        alignItems="flex-start"
+        justifyContent="center"
+        p={'$4'}
+      >
+        <Text color="white" fontSize={22}>
+          Bitbank
+        </Text>
+        <Text color="white">残高 123456円</Text>
+      </Box>
+      <Box
+        flexDirection="column"
+        width="100%"
+        height={'10%'}
+        borderBottomWidth={2}
+        borderBottomColor="#FFFFFF50"
+        alignItems="flex-start"
+        justifyContent="center"
+        p={'$4'}
+      >
+        <Text color="white" fontSize={22}>
+          coincheck
+        </Text>
+        <Text color="white">残高 123456円</Text>
+      </Box>
+      <Box
+        flexDirection="column"
+        width="100%"
+        height={'10%'}
+        borderBottomWidth={2}
+        borderBottomColor="#FFFFFF50"
+        alignItems="flex-start"
+        justifyContent="center"
+        p={'$4'}
+      >
+        <Text color="white" fontSize={22}>
+          bitFlyer
+        </Text>
+        <Text color="white">残高 123456円</Text>
+      </Box>
+      <Box flexDirection="row" width="100%" height={'8%'} borderTopWidth={2} borderTopColor="#404040" alignItems="center" p={'$4'} marginTop={'90%'}>
+        <Text color="white" fontSize={18}>
+          取引所と連携しよう
+        </Text>
+        <Link href="/schedule-registration" asChild>
+          <Button borderRadius="$full" bgColor="white" justifyContent="center" alignItems="center" marginLeft={'35%'}>
+            <ButtonText color="black">連携</ButtonText>
+          </Button>
+        </Link>
+      </Box>
     </Box>
   );
 }

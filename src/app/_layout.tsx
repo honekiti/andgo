@@ -53,8 +53,11 @@ function RootLayoutNav() {
         <Stack>
           <Stack.Screen name="index" options={{ title: 'デバッグ', headerShown: false }} />
           <Stack.Screen name="home" options={{ title: 'ホーム', headerShown: false }} />
-          <Stack.Screen name="config" options={{ presentation: 'card' }} />
-          <Stack.Screen name="(onbording)/terms-of-service" options={{ title: '利用規約のご確認', presentation: 'card' }} />
+          <Stack.Screen name="config" options={{ presentation: 'card', headerStyle: { backgroundColor: darkGrey }, headerTintColor: white }} />
+          <Stack.Screen
+            name="(onbording)/terms-of-service"
+            options={{ title: '利用規約のご確認', presentation: 'card', headerStyle: { backgroundColor: darkGrey }, headerTintColor: white }}
+          />
           <Stack.Screen name="(onbording)/tutorial" options={{ title: 'チュートリアル', headerShown: false }} />
           <Stack.Screen
             name="(exchange)/exchange-registration"
@@ -65,12 +68,20 @@ function RootLayoutNav() {
               headerTintColor: white,
             }}
           />
-          <Stack.Screen name="(exchange)/exchange-list" options={{ title: '取引所', presentation: 'card' }} />
+          <Stack.Screen 
+            name="(exchange)/exchange-list" 
+            options={{ 
+              title: '取引所', 
+              presentation: 'card',
+            }} 
+          />
           <Stack.Screen
             name="(schedule)/schedule-edit"
             options={{
               title: '積立プラン編集',
               presentation: 'modal',
+              headerStyle: { backgroundColor: darkGrey },
+              headerTintColor: white,
               headerStyle: { backgroundColor: darkGrey },
               headerTintColor: white,
             }}
