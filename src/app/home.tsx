@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useFocusEffect, Link } from 'expo-router';
-import { Box, Button, ButtonIcon, ButtonText, Pressable, ScrollView, Text } from '@gluestack-ui/themed';
+import { Box, Button, ButtonIcon, ButtonText, HStack, Pressable, ScrollView, Text } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon } from '@gluestack-ui/themed';
 import ScheduleList from '../components/ScheduleList';
@@ -56,20 +56,18 @@ export default function HomeScreen() {
     <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
       <Box h="$64" p="$3" display="flex" flexDirection="column">
         <Box h="50%" display="flex" flexDirection="column">
-          <Box h="40%" display="flex" flexDirection="row">
-            <Box w="80%" justifyContent="flex-end">
+          <HStack h="40%" justifyContent="space-between">
+            <Box w="auto" justifyContent="flex-end">
               <Text color={white} bold>
                 積立BTC
               </Text>
             </Box>
-            <Box w="20%" justifyContent="flex-end" alignItems="flex-end">
-              <Link href="/config" asChild>
-                <Button borderRadius="$full" p="$3.5">
-                  <ButtonIcon as={SettingsIcon} />
-                </Button>
-              </Link>
-            </Box>
-          </Box>
+            <Link href="/config" asChild>
+              <Button w="auto" borderRadius="$full" pr="$2" bg="#0000">
+                <ButtonIcon h="$8" w="$8" as={SettingsIcon} />
+              </Button>
+            </Link>
+          </HStack>
 
           <Box h="60%">
             <Box h="50%" alignItems="center" display="flex" flexDirection="row">
