@@ -1,7 +1,7 @@
 import { Box, Text } from '@gluestack-ui/themed';
 
 /**
- * 積立プラン作成画面
+ * 積立プラン編集画面
  */
 export default function ScheduleEditScreen() {
   return (
