@@ -68,20 +68,18 @@ function RootLayoutNav() {
               headerTintColor: white,
             }}
           />
-          <Stack.Screen 
-            name="(exchange)/exchange-list" 
-            options={{ 
-              title: '取引所', 
+          <Stack.Screen
+            name="(exchange)/exchange-list"
+            options={{
+              title: '取引所',
               presentation: 'card',
-            }} 
+            }}
           />
           <Stack.Screen
             name="(schedule)/schedule-edit"
             options={{
               title: '積立プラン編集',
               presentation: 'modal',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
               headerStyle: { backgroundColor: darkGrey },
               headerTintColor: white,
             }}
