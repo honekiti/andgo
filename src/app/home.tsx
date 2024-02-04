@@ -1,13 +1,13 @@
 import { useState, useCallback } from 'react';
 import { useFocusEffect, Link } from 'expo-router';
-import { Box, Button, ButtonIcon, ButtonText, HStack, Pressable, ScrollView, Text } from '@gluestack-ui/themed';
+import { Box, Button, ButtonIcon, ButtonText, HStack, Pressable, ScrollView, Text, VStack } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon } from '@gluestack-ui/themed';
 import ScheduleList from '../components/ScheduleList';
 import { loadSchedules, saveScheduels } from '../services/schedule-service';
 import { Schedule } from '../models';
 import { genId } from '../utils/crypto';
-import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
+import { white, unclearWhite, darkGrey, lightGrey, orange, emeraldGreen } from '../constants/Colors';
 import CalenderInfo from '../components/ClenderInfo';
 import AccumulateInfo from '../components/AccumulateInfo';
 
@@ -53,11 +53,11 @@ export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
+    <Box h="$full" pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
       <Box h="$64" p="$3" display="flex" flexDirection="column">
         <Box h="50%" display="flex" flexDirection="column">
           <HStack h="40%" justifyContent="space-between">
-            <Box w="auto" justifyContent="flex-end">
+            <Box w="auto" justifyContent="center">
               <Text color={white} bold>
                 積立BTC
               </Text>
@@ -71,41 +71,170 @@ export default function HomeScreen() {
 
           <Box h="60%">
             <Box h="50%" alignItems="center" display="flex" flexDirection="row">
-              <Text color={white} bold>
+              <Text color={white} fontSize={23}>
                 31,000,000
               </Text>
-              <Text color={unclearWhite}>円</Text>
+              <Text color={white} fontSize={14} pl="$1">
+                円
+              </Text>
             </Box>
             <Box h="50%" display="flex" flexDirection="row">
-              <Text bold>@</Text>
-              <Text color={white}>0.12300000</Text>
+              <Text bold pr="$1">
+                @
+              </Text>
+              <Text color={white} fontSize={13}>
+                0.12300000
+              </Text>
             </Box>
           </Box>
         </Box>
 
-        <Box h="50%" w="100%" display="flex" flexDirection="row" justifyContent="space-between">
-          <Box h="90%" w="49%" p="$2" borderWidth={1} borderColor={unclearWhite} rounded="$md">
-            <Box h="50%" justifyContent="space-between" alignItems="center" display="flex" flexDirection="row">
-              <Text w="75%" fontSize={18} color={white} fontWeight="500">
+        <HStack h="50%" justifyContent="space-between" alignItems="flex-start" pb="$2">
+          {/* positive */}
+          <VStack h="auto" w="49%" p="$3" bg={orange} rounded="$lg">
+            <HStack h="50%" justifyContent="space-between">
+              <Text w="75%" fontSize={17} color={white} fontWeight="500">
+                運用損益
+              </Text>
+              <Text color={white} fontSize={18} fontWeight="800">
+                ↗
+              </Text>
+            </HStack>
+            <HStack reversed={true}>
+              <HStack space="xs">
+                <Text color={white} fontSize={13}>
+                  +
+                </Text>
+                <Text color={white} fontSize={23}>
+                  3.3
+                </Text>
+                <Text color={white} fontSize={13}>
+                  %
+                </Text>
+              </HStack>
+            </HStack>
+            <HStack reversed={true}>
+              <Text color={white} fontSize={11}>
+                円相当
+              </Text>
+              <Text color={white} fontSize={13}>
+                100,000
+              </Text>
+            </HStack>
+          </VStack>
+
+          {/* negative */}
+          {/* <VStack h="auto" w="49%" p="$3" bg={emeraldGreen} rounded="$lg">
+            <HStack h="50%" justifyContent="space-between">
+              <Text w="75%" fontSize={17} color={white} fontWeight="500">
+                運用損益
+              </Text>
+              <Text color={white} fontSize={18} fontWeight="800">
+                ↘
+              </Text>
+            </HStack>
+            <HStack reversed={true}>
+              <HStack space="xs">
+                <Text color={white} fontSize={13}>
+                  -
+                </Text>
+                <Text color={white} fontSize={23}>
+                  0.2
+                </Text>
+                <Text color={white} fontSize={13}>
+                  %
+                </Text>
+              </HStack>
+            </HStack>
+            <HStack reversed={true}>
+              <Text color={white} fontSize={11}>
+                円相当
+              </Text>
+              <Text color={white} fontSize={13}>
+                50,000
+              </Text>
+            </HStack>
+          </VStack> */}
+
+          {/* <VStack h="auto" w="49%" p="$3" bg={darkGrey} rounded="$lg">
+            <HStack h="50%" justifyContent="space-between">
+              <Text w="75%" fontSize={17} color={white} fontWeight="500">
                 運用損益
               </Text>
               <AddIcon as={ArrowRightIcon} size="lg" color={white} />
-            </Box>
+            </HStack>
             <Text fontSize={13} color={white}>
               現在、表示する情報はありません
             </Text>
-          </Box>
-          <Box h="90%" w="49%" p="$2" borderWidth={1} borderColor={unclearWhite} rounded="$md">
-            <Box h="50%" justifyContent="center">
-              <Text w="75%" fontSize={18} color={white} fontWeight="500">
+          </VStack> */}
+
+          <VStack h="auto" w="49%" p="$3" bg={darkGrey} rounded="$lg">
+            <Box h="50%">
+              <Text w="75%" fontSize={17} color={white} fontWeight="500">
                 取引所残高
               </Text>
             </Box>
-            <Text fontSize={13} color={white}>
+            {/* 取引所連携前 */}
+            {/* <Text fontSize={13} color={white}>
               現在、表示する情報はありません
-            </Text>
-          </Box>
-        </Box>
+            </Text> */}
+            {/* 取引所連携後 */}
+            <ScrollView>
+              <HStack justifyContent="space-between">
+                <Text color={white} fontSize={13} bold>
+                  Kraken
+                </Text>
+                <HStack>
+                  <Text color={white} fontSize={13}>
+                    123,456
+                  </Text>
+                  <Text color={white} fontSize={13}>
+                    円
+                  </Text>
+                </HStack>
+              </HStack>
+              <HStack justifyContent="space-between">
+                <Text color={white} fontSize={13} bold>
+                  bitFlyer
+                </Text>
+                <HStack>
+                  <Text color={white} fontSize={13}>
+                    123,456
+                  </Text>
+                  <Text color={white} fontSize={13}>
+                    円
+                  </Text>
+                </HStack>
+              </HStack>
+              <HStack justifyContent="space-between">
+                <Text color={white} fontSize={13} bold>
+                  GMOコイン
+                </Text>
+                <HStack>
+                  <Text color={white} fontSize={13}>
+                    123,456
+                  </Text>
+                  <Text color={white} fontSize={13}>
+                    円
+                  </Text>
+                </HStack>
+              </HStack>
+              <HStack justifyContent="space-between">
+                <Text color={white} fontSize={13} bold>
+                  Kraken
+                </Text>
+                <HStack>
+                  <Text color={white} fontSize={13}>
+                    123,456
+                  </Text>
+                  <Text color={white} fontSize={13}>
+                    円
+                  </Text>
+                </HStack>
+              </HStack>
+            </ScrollView>
+          </VStack>
+        </HStack>
       </Box>
 
       <ScrollView>
