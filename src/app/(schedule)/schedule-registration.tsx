@@ -30,6 +30,9 @@ import {
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { Link } from 'expo-router';
+import { loadSchedules, saveScheduels } from '../../services/schedule-service';
+import { Schedule } from '../../models';
+import { genId } from '../../utils/crypto';
 
 /**
  * 積立プラン作成画面
@@ -72,6 +75,29 @@ export default function ScheduleRegistrationScreen() {
     { id: '2', name: '2分' }, //　\( ^ q ^ )/\( ^ q ^ )/\( ^ q ^ )/
   ]);
   const [selectedMinutesId, setSelectedMinutesId] = useState<string | undefined>(undefined);
+
+  // TODO: 作成ボタン押下時にこの関数を呼び出す
+  const handlePressAddSchedule = async () => {
+    // TODO: 下記をフォームの入力値に切り替える
+    const newSuchedule: Schedule = {
+      id: genId(),
+      exchangeId: 'bitbank',
+      quoteAmount: 123,
+      intervalType: 'MINUTES',
+      interval: 15,
+      status: {
+        enabled: false,
+        refAt: new Date().getTime(),
+        nextIndex: 0,
+        nextAt: 0,
+      },
+    };
+
+    const schedules = await loadSchedules();
+    const updatedSchedule = [...schedules, newSuchedule];
+
+    await saveScheduels(updatedSchedule);
+  };
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
