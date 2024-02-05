@@ -73,6 +73,8 @@ function RootLayoutNav() {
             options={{
               title: '取引所',
               presentation: 'card',
+              headerStyle: { backgroundColor: darkGrey },
+              headerTintColor: white,
             }}
           />
           <Stack.Screen
