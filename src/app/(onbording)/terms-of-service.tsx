@@ -63,8 +63,8 @@ export default function TermsOfServiceScreen() {
         ))}
       </ScrollView>
       <Box flexDirection="column" alignItems="center" justifyContent="center" borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7">
-        <Link href="/home">
-          <Button bgColor="#f97316" justifyContent="center" alignItems="center">
+        <Link href="/home" asChild>
+          <Button bgColor="#f97316" w={'$full'} justifyContent="center" alignItems="center">
             <ButtonText>同意する</ButtonText>
           </Button>
         </Link>
