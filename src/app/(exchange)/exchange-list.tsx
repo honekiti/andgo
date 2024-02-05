@@ -13,6 +13,7 @@ export type ExchangeInfo = {
 };
 
 export default function ExchangeListScreen() {
+  // TODO: 取引所連携情報読み込みを有効にしたら、初期値を空配列にする
   const [credentials, setCredentials] = useState<ExchangeCredential[]>([
     { id: 'bitbank', apiKey: 'aaa', apiSecret: 'bbb' },
     { id: 'bitflyer', apiKey: 'aaa', apiSecret: 'bbb' },
@@ -34,6 +35,7 @@ export default function ExchangeListScreen() {
     );
   };
 
+  // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)
   // useFocusEffect(
   //   useCallback(() => {
   //     loadCredentials().then((credentials) => {

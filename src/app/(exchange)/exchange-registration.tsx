@@ -29,16 +29,30 @@ import {
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { Link } from 'expo-router';
+import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
+import { ExchangeCredential } from '../../models';
+import { EXCHANGES } from '../../master';
 
 /**
  * 取引所連携画面
  */
 export default function ExchangeRegistrationScreen() {
-  const [exchanges, setExchanges] = useState([
-    { id: 'bitflyer', name: 'bitFlyer' },
-    { id: 'coincheck', name: 'Coincheck' },
-  ]);
   const [selectedExchangeId, setSelectedExchangeId] = useState<string | undefined>(undefined);
+
+  // TODO: 作成ボタン押下時にこの関数を呼び出す
+  const handlePressAddCredential = async () => {
+    // TODO: 下記をフォームの入力値に切り替える
+    const newCredential: ExchangeCredential = {
+      id: 'bitbank',
+      apiKey: 'dummy',
+      apiSecret: 'dummy',
+    };
+
+    const credentials = await loadCredentials();
+    const updatedCredentials = [...credentials, newCredential];
+
+    await saveCredentials(updatedCredentials);
+  };
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
@@ -61,7 +75,7 @@ export default function ExchangeRegistrationScreen() {
                   <SelectDragIndicator />
                 </SelectDragIndicatorWrapper>
 
-                {exchanges.map((exchange) => (
+                {EXCHANGES.map((exchange) => (
                   <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
                 ))}
               </SelectContent>
