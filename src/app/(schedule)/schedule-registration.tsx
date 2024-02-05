@@ -31,17 +31,24 @@ import {
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { Link } from 'expo-router';
 import { loadSchedules, saveScheduels } from '../../services/schedule-service';
-import { Schedule } from '../../models';
+import { Schedule, ExchangeCredential } from '../../models';
 import { genId } from '../../utils/crypto';
+import { EXCHANGES } from '../../master';
 
 /**
  * 積立プラン作成画面
  */
 export default function ScheduleRegistrationScreen() {
-  const [exchanges, setExchanges] = useState([
-    { id: 'bitflyer', name: 'bitFlyer' },
-    { id: 'coincheck', name: 'Coincheck' },
+  // TODO: 取引所連携情報読み込みを有効にしたら、初期値を空配列にする
+  const [credentials, setCredentials] = useState<ExchangeCredential[]>([
+    { id: 'bitbank', apiKey: 'aaa', apiSecret: 'bbb' },
+    { id: 'bitflyer', apiKey: 'aaa', apiSecret: 'bbb' },
   ]);
+  const exchanges = credentials.map((credential) => ({
+    id: credential.id,
+    name: EXCHANGES.find((ex) => ex.id === credential.id)?.name ?? 'unknown',
+  }));
+
   const [selectedExchangeId, setSelectedExchangeId] = useState<string | undefined>(undefined);
 
   const [frequency, setFrequency] = useState([
@@ -98,6 +105,15 @@ export default function ScheduleRegistrationScreen() {
 
     await saveScheduels(updatedSchedule);
   };
+
+  // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     loadCredentials().then((credentials) => {
+  //       setCredentials(credentials);
+  //     });
+  //   }, []),
+  // );
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
