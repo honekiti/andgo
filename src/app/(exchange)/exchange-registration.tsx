@@ -144,9 +144,9 @@ export default function ExchangeRegistrationScreen() {
         </VStack>
       </ScrollView>
 
-      <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7">
-        <Link href="/home">
-          <Button size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
+      <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
+        <Link href="/home" asChild>
+          <Button w="100%" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
             <ButtonText>連携する</ButtonText>
           </Button>
         </Link>
