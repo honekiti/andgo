@@ -205,7 +205,7 @@ export default function HomeScreen() {
       <ScrollView>
         <Box h="auto" w="100%" bg={darkGrey} rounded="$3xl">
           <Box h="$7" justifyContent="center" alignItems="center">
-            <AddIcon as={RemoveIcon} size="xl" />
+            <Box h="$1" w="$16" bg={lightGrey} rounded="$full" />
           </Box>
           <Box h="$11" w="100%" display="flex" flexDirection="row" alignItems="center">
             <Pressable w="50%" onPress={() => setActiveTab(0)}>
