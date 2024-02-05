@@ -21,7 +21,6 @@ import { config } from '@gluestack-ui/config';
 import { StyleSheet, Linking, Animated, TouchableOpacity, Dimensions, Settings } from 'react-native';
 import { useState } from 'react';
 import { Link } from 'expo-router';
-import { DiscriptionCard2 } from '../components/DiscriptionCard2';
 import TermsOfServiceScreen from './(onbording)/terms-of-service';
 import ExchangeListScreen from './(exchange)/exchange-list';
 import { darkGrey } from '../constants/Colors';
@@ -65,15 +64,15 @@ const Container = () => {
           </Button>
         </Link>
 
-        {/* <Box flex={1} alignItems="center">
-                  <Image
-                    size="2xs"
-                    bgColor="$#333333"
-                    style={{ width: '30%', height: '10%' }}
-                    resizeMode="contain"
-                    source={require('./assets/Union.png')}
-                  />
-                </Box> */}
+        <Box flex={1} alignItems="center">
+          <Image
+            size="xs"
+            bgColor="#0000"
+            style={{ width: '40%', height: '20%' }}
+            resizeMode="contain"
+            source={require('../assets/images/Union.png')}
+          />
+        </Box>
       </Box>
     </Box>
   );
