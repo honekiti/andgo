@@ -4,7 +4,7 @@ import { Box, Button, ButtonIcon, ButtonText, HStack, Pressable, ScrollView, Tex
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey, orange, emeraldGreen } from '../constants/Colors';
-import CalenderInfo from '../components/ClenderInfo';
+import CalenderInfo from '../components/CalenderInfo';
 import AccumulateInfo from '../components/AccumulateInfo';
 
 export default function HomeScreen() {
@@ -49,7 +49,7 @@ export default function HomeScreen() {
         </Box>
 
         <HStack h="50%" justifyContent="space-between" alignItems="flex-start" pb="$2">
-          {/* positive */}
+          {/* ↓ positive ↓ */}
           <VStack h="auto" w="49%" p="$3" bg={orange} rounded="$lg">
             <HStack h="50%" justifyContent="space-between">
               <Text w="75%" fontSize={17} color={white} fontWeight="500">
@@ -81,8 +81,9 @@ export default function HomeScreen() {
               </Text>
             </HStack>
           </VStack>
+          {/* ↑ positive ↑ */}
 
-          {/* negative */}
+          {/* ↓ negative ↓ */}
           {/* <VStack h="auto" w="49%" p="$3" bg={emeraldGreen} rounded="$lg">
             <HStack h="50%" justifyContent="space-between">
               <Text w="75%" fontSize={17} color={white} fontWeight="500">
@@ -114,6 +115,7 @@ export default function HomeScreen() {
               </Text>
             </HStack>
           </VStack> */}
+          {/* ↑ negative ↑ */}
 
           {/* <VStack h="auto" w="49%" p="$3" bg={darkGrey} rounded="$lg">
             <HStack h="50%" justifyContent="space-between">
@@ -133,11 +135,14 @@ export default function HomeScreen() {
                 取引所残高
               </Text>
             </Box>
-            {/* 取引所連携前 */}
+
+            {/* ↓ 取引所連携前 ↓ */}
             {/* <Text fontSize={13} color={white}>
               現在、表示する情報はありません
             </Text> */}
-            {/* 取引所連携後 */}
+            {/* ↑ 取引所連携前 ↑ */}
+
+            {/* ↓ 取引所連携後 ↓ */}
             <ScrollView>
               <HStack justifyContent="space-between">
                 <Text color={white} fontSize={13} bold>
@@ -192,6 +197,7 @@ export default function HomeScreen() {
                 </HStack>
               </HStack>
             </ScrollView>
+            {/* ↑ 取引所連携後 ↑ */}
           </VStack>
         </HStack>
       </Box>
