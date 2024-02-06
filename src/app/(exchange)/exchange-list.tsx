@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { ListRenderItem, TouchableOpacity } from 'react-native';
 import { Box, Button, FlatList, HStack, VStack, Text, ChevronLeftIcon, Icon, ButtonText, GripVerticalIcon } from '@gluestack-ui/themed';
-import { Link } from 'expo-router';
+import { Link, useFocusEffect } from 'expo-router';
 import { loadCredentials } from '../../services/exchange-credential-service';
 import { EXCHANGES } from '../../master';
 import { ExchangeCredential } from '../../models';
@@ -14,10 +14,7 @@ export type ExchangeInfo = {
 
 export default function ExchangeListScreen() {
   // TODO: 取引所連携情報読み込みを有効にしたら、初期値を空配列にする
-  const [credentials, setCredentials] = useState<ExchangeCredential[]>([
-    { id: 'bitbank', apiKey: 'aaa', apiSecret: 'bbb' },
-    { id: 'bitflyer', apiKey: 'aaa', apiSecret: 'bbb' },
-  ]);
+  const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
   const [balances, setBalances] = useState<(number | undefined)[]>([]);
   const data = credentials.map((credential, index) => ({
     name: EXCHANGES.find((ex) => ex.id === credential.id)?.name ?? 'unknown',
@@ -36,24 +33,26 @@ export default function ExchangeListScreen() {
   };
 
   // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     loadCredentials().then((credentials) => {
-  //       setCredentials(credentials);
-  //       // TODO: lazy load balances
-  //       setBalances(Array(credentials.length).fill(undefined));
-  //     });
-  //   }, []),
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      loadCredentials().then((credentials) => {
+        setCredentials(credentials);
+        // TODO: lazy load balances
+        setBalances(Array(credentials.length).fill(undefined));
+      });
+    }, []),
+  );
 
   return (
     <Box flex={1} bg={darkGrey} justifyContent="space-between">
       <VStack>
         <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
           <VStack space="md" py="$1">
-            <Text color={white} fontSize={23} bold>
-              Kraken
-            </Text>
+            {credentials.map((cred) => (
+              <Text color={white} fontSize={23} bold>
+                {cred.id}
+              </Text>
+            ))}
             <HStack space="xs">
               <Text color={white} fontSize={12}>
                 残高
