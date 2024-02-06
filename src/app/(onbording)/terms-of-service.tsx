@@ -16,6 +16,7 @@ export default function TermsOfServiceScreen() {
         <Box height={10} />
         <Box justifyContent="center" alignItems="center" height={150} width={'90%'} marginTop={'15%'} bgColor="#333333" borderRadius={'$lg'}>
           <Checkbox
+            value="somevalue"
             size="lg"
             onChange={handleCheckboxChange}
             accessibilityLabel="利用規約に同意する"
