@@ -1,11 +1,12 @@
 import { useState, useCallback } from 'react';
 import { ListRenderItem, TouchableOpacity } from 'react-native';
-import { Box, Button, FlatList, HStack, VStack, Text, ChevronLeftIcon, Icon, ButtonText } from '@gluestack-ui/themed';
+import { Box, Button, FlatList, HStack, VStack, Text, ChevronLeftIcon, Icon, ButtonText, GripVerticalIcon } from '@gluestack-ui/themed';
 import { Link } from 'expo-router';
 import { loadCredentials } from '../../services/exchange-credential-service';
 import { EXCHANGES } from '../../master';
 import { ExchangeCredential } from '../../models';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
+import { useFocusEffect } from 'expo-router';
 
 export type ExchangeInfo = {
   name: string;
@@ -34,6 +35,7 @@ export default function ExchangeListScreen() {
     );
   };
 
+  // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)
   // useFocusEffect(
   //   useCallback(() => {
   //     loadCredentials().then((credentials) => {
@@ -45,77 +47,94 @@ export default function ExchangeListScreen() {
   // );
 
   return (
-    <Box flex={1} bg={darkGrey}>
-      <Box
-        flexDirection="column"
-        width="100%"
-        height={'10%'}
-        borderBottomWidth={2}
-        borderBottomColor="#FFFFFF50"
-        alignItems="flex-start"
-        justifyContent="center"
-        p={'$4'}
-      >
-        <Text color="white" fontSize={22}>
-          Krarken
-        </Text>
-        <Text color="white">残高 123456円</Text>
-      </Box>
-      <Box
-        flexDirection="column"
-        width="100%"
-        height={'10%'}
-        borderBottomWidth={2}
-        borderBottomColor="#FFFFFF50"
-        alignItems="flex-start"
-        justifyContent="center"
-        p={'$4'}
-      >
-        <Text color="white" fontSize={22}>
-          Bitbank
-        </Text>
-        <Text color="white">残高 123456円</Text>
-      </Box>
-      <Box
-        flexDirection="column"
-        width="100%"
-        height={'10%'}
-        borderBottomWidth={2}
-        borderBottomColor="#FFFFFF50"
-        alignItems="flex-start"
-        justifyContent="center"
-        p={'$4'}
-      >
-        <Text color="white" fontSize={22}>
-          coincheck
-        </Text>
-        <Text color="white">残高 123456円</Text>
-      </Box>
-      <Box
-        flexDirection="column"
-        width="100%"
-        height={'10%'}
-        borderBottomWidth={2}
-        borderBottomColor="#FFFFFF50"
-        alignItems="flex-start"
-        justifyContent="center"
-        p={'$4'}
-      >
-        <Text color="white" fontSize={22}>
-          bitFlyer
-        </Text>
-        <Text color="white">残高 123456円</Text>
-      </Box>
-      <Box flexDirection="row" width="100%" height={'8%'} borderTopWidth={2} borderTopColor="#404040" alignItems="center" p={'$4'} marginTop={'90%'}>
-        <Text color="white" fontSize={18}>
-          取引所と連携しよう
-        </Text>
-        <Link href="/schedule-registration" asChild>
-          <Button borderRadius="$full" bgColor="white" justifyContent="center" alignItems="center" marginLeft={'35%'}>
-            <ButtonText color="black">連携</ButtonText>
+    <Box flex={1} bg={darkGrey} justifyContent="space-between">
+      <VStack>
+        <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
+          <VStack space="md" py="$1">
+            <Text color={white} fontSize={23} bold>
+              Kraken
+            </Text>
+            <HStack space="xs">
+              <Text color={white} fontSize={12}>
+                残高
+              </Text>
+              <Text color={white} fontSize={18}>
+                123,456
+              </Text>
+              <Text color={white} fontSize={12}>
+                円
+              </Text>
+            </HStack>
+          </VStack>
+          <Icon as={GripVerticalIcon} color={white} size="lg" />
+        </HStack>
+        <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
+          <VStack space="md" py="$1">
+            <Text color={white} fontSize={23} bold>
+              bitbank
+            </Text>
+            <HStack space="xs">
+              <Text color={white} fontSize={12}>
+                残高
+              </Text>
+              <Text color={white} fontSize={18}>
+                123,456
+              </Text>
+              <Text color={white} fontSize={12}>
+                円
+              </Text>
+            </HStack>
+          </VStack>
+          <Icon as={GripVerticalIcon} color={white} size="lg" />
+        </HStack>
+        <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
+          <VStack space="md" py="$1">
+            <Text color={white} fontSize={23} bold>
+              coincheck
+            </Text>
+            <HStack space="xs">
+              <Text color={white} fontSize={12}>
+                残高
+              </Text>
+              <Text color={white} fontSize={18}>
+                123,456
+              </Text>
+              <Text color={white} fontSize={12}>
+                円
+              </Text>
+            </HStack>
+          </VStack>
+          <Icon as={GripVerticalIcon} color={white} size="lg" />
+        </HStack>
+        <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
+          <VStack space="md" py="$1">
+            <Text color={white} fontSize={23} bold>
+              bitFlyer
+            </Text>
+            <HStack space="xs">
+              <Text color={white} fontSize={12}>
+                残高
+              </Text>
+              <Text color={white} fontSize={18}>
+                123,456
+              </Text>
+              <Text color={white} fontSize={12}>
+                円
+              </Text>
+            </HStack>
+          </VStack>
+          <Icon as={GripVerticalIcon} color={white} size="lg" />
+        </HStack>
+      </VStack>
+
+      <HStack justifyContent="space-between" alignItems="center" p="$4" mb="$3" borderTopWidth={0.3} borderColor={unclearWhite}>
+        <Text color={white}>取引所と連携しよう</Text>
+        <Link href="/exchange-registration" asChild>
+          <Button w="$24" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$full">
+            <ButtonText>連携</ButtonText>
           </Button>
         </Link>
-      </Box>
+      </HStack>
     </Box>
   );
 }
