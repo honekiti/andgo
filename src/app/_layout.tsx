@@ -52,13 +52,37 @@ function RootLayoutNav() {
       <SafeAreaProvider>
         <Stack>
           <Stack.Screen name="index" options={{ title: 'デバッグ', headerShown: false }} />
-          <Stack.Screen name="home" options={{ title: 'ホーム', headerShown: false }} />
-          <Stack.Screen name="config" options={{ presentation: 'card', headerStyle: { backgroundColor: darkGrey }, headerTintColor: white }} />
+          <Stack.Screen
+            name="home"
+            options={{
+              title: 'ホーム',
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="config"
+            options={{
+              presentation: 'card',
+              headerStyle: { backgroundColor: darkGrey },
+              headerTintColor: white,
+            }}
+          />
           <Stack.Screen
             name="(onbording)/terms-of-service"
-            options={{ title: '利用規約のご確認', presentation: 'card', headerStyle: { backgroundColor: darkGrey }, headerTintColor: white }}
+            options={{
+              title: '利用規約のご確認',
+              presentation: 'card',
+              headerStyle: { backgroundColor: darkGrey },
+              headerTintColor: white,
+            }}
           />
-          <Stack.Screen name="(onbording)/tutorial" options={{ title: 'チュートリアル', headerShown: false }} />
+          <Stack.Screen
+            name="(onbording)/tutorial"
+            options={{
+              title: 'チュートリアル',
+              headerShown: false,
+            }}
+          />
           <Stack.Screen
             name="(exchange)/exchange-registration"
             options={{
