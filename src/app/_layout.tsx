@@ -114,7 +114,7 @@ function RootLayoutNav() {
             name="(schedule)/schedule-registration"
             options={{
               title: '積立プラン作成',
-              presentation: 'modal',
+              presentation: 'card',
               headerStyle: { backgroundColor: darkGrey },
               headerTintColor: white,
             }}

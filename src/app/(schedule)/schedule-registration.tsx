@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Box,
   VStack,
@@ -29,21 +29,19 @@ import {
   LinkText,
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
-import { Link } from 'expo-router';
+import { Link, useFocusEffect } from 'expo-router';
 import { loadSchedules, saveScheduels } from '../../services/schedule-service';
 import { Schedule, ExchangeCredential } from '../../models';
 import { genId } from '../../utils/crypto';
 import { EXCHANGES } from '../../master';
+import { loadCredentials } from '../../services/exchange-credential-service';
 
 /**
  * 積立プラン作成画面
  */
 export default function ScheduleRegistrationScreen() {
   // TODO: 取引所連携情報読み込みを有効にしたら、初期値を空配列にする
-  const [credentials, setCredentials] = useState<ExchangeCredential[]>([
-    { id: 'bitbank', apiKey: 'aaa', apiSecret: 'bbb' },
-    { id: 'bitflyer', apiKey: 'aaa', apiSecret: 'bbb' },
-  ]);
+  const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
   const exchanges = credentials.map((credential) => ({
     id: credential.id,
     name: EXCHANGES.find((ex) => ex.id === credential.id)?.name ?? 'unknown',
@@ -72,14 +70,14 @@ export default function ScheduleRegistrationScreen() {
   const [hours, setHours] = useState([
     { id: '0', name: '0時' },
     { id: '1', name: '1時' },
-    { id: '2', name: '2時' }, //　\( ^ q ^ )/
+    { id: '2', name: '2時' },
   ]);
   const [selectedHoursId, setSelectedHoursId] = useState<string | undefined>(undefined);
 
   const [minutes, setMinutes] = useState([
     { id: '0', name: '0分' },
     { id: '1', name: '1分' },
-    { id: '2', name: '2分' }, //　\( ^ q ^ )/\( ^ q ^ )/\( ^ q ^ )/
+    { id: '2', name: '2分' },
   ]);
   const [selectedMinutesId, setSelectedMinutesId] = useState<string | undefined>(undefined);
 
@@ -107,13 +105,13 @@ export default function ScheduleRegistrationScreen() {
   };
 
   // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     loadCredentials().then((credentials) => {
-  //       setCredentials(credentials);
-  //     });
-  //   }, []),
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      loadCredentials().then((credentials) => {
+        setCredentials(credentials);
+      });
+    }, []),
+  );
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
@@ -128,21 +126,21 @@ export default function ScheduleRegistrationScreen() {
                 <SelectInput placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
               </SelectTrigger>
+              <SelectPortal>
+                <SelectBackdrop />
+                <SelectContent>
+                  <SelectDragIndicatorWrapper>
+                    <SelectDragIndicator />
+                  </SelectDragIndicatorWrapper>
+                  {exchanges.map((exchange) => (
+                    <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
+                  ))}
+                </SelectContent>
+              </SelectPortal>
             </Select>
-            <SelectPortal>
-              <SelectBackdrop />
-              <SelectContent>
-                <SelectDragIndicatorWrapper>
-                  <SelectDragIndicator />
-                </SelectDragIndicatorWrapper>
-                {exchanges.map((exchange) => (
-                  <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
-                ))}
-              </SelectContent>
-            </SelectPortal>
           </FormControl>
 
-          <Box h="auto" w="$full" bg="#000" rounded="$lg">
+          {/* <Box h="auto" w="$full" bg="#000" rounded="$lg">
             <VStack space="md" alignItems="center" py="$4">
               <Box h="$8" w="$8" rounded="$full" bg="#00f" />
               <Text fontSize={12} color={white} bold>
@@ -155,7 +153,7 @@ export default function ScheduleRegistrationScreen() {
                 1000円相当
               </Text>
             </VStack>
-          </Box>
+          </Box> */}
 
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
@@ -168,18 +166,18 @@ export default function ScheduleRegistrationScreen() {
                     <SelectInput placeholder="毎週" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
+                  <SelectPortal h="$20" w="$40">
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {frequency.map((freq) => (
+                        <SelectItem key={freq.id} label={freq.name} value={freq.id} />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
                 </Select>
-                <SelectPortal h="$20" w="$40">
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {frequency.map((freq) => (
-                      <SelectItem key={freq.id} label={freq.name} value={freq.id} />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
               </Box>
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedWeekId(v)}>
@@ -187,18 +185,18 @@ export default function ScheduleRegistrationScreen() {
                     <SelectInput placeholder="金曜日" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
+                  <SelectPortal>
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {weeks.map((week) => (
+                        <SelectItem key={week.id} label={week.name} value={week.id} />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
                 </Select>
-                <SelectPortal>
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {weeks.map((week) => (
-                      <SelectItem key={week.id} label={week.name} value={week.id} />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
               </Box>
             </HStack>
           </FormControl>
@@ -214,18 +212,18 @@ export default function ScheduleRegistrationScreen() {
                     <SelectInput placeholder="12時" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
+                  <SelectPortal h="$20" w="$40">
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {hours.map((hour) => (
+                        <SelectItem key={hour.id} label={hour.name} value={hour.id} />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
                 </Select>
-                <SelectPortal h="$20" w="$40">
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {hours.map((hour) => (
-                      <SelectItem key={hour.id} label={hour.name} value={hour.id} />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
               </Box>
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedMinutesId(v)}>
@@ -233,18 +231,18 @@ export default function ScheduleRegistrationScreen() {
                     <SelectInput placeholder="0分" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
+                  <SelectPortal>
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {minutes.map((min) => (
+                        <SelectItem key={min.id} label={min.name} value={min.id} />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
                 </Select>
-                <SelectPortal>
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {minutes.map((min) => (
-                      <SelectItem key={min.id} label={min.name} value={min.id} />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
               </Box>
             </HStack>
           </FormControl>
@@ -274,7 +272,16 @@ export default function ScheduleRegistrationScreen() {
       </ScrollView>
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
         <Link href="/home" asChild>
-          <Button w="100%" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
+          <Button
+            onPress={() => handlePressAddSchedule()}
+            w="100%"
+            size="lg"
+            variant="solid"
+            action="primary"
+            isDisabled={false}
+            isFocusVisible={false}
+            rounded="$lg"
+          >
             <ButtonText>作成する</ButtonText>
           </Button>
         </Link>
