@@ -31,7 +31,7 @@ import {
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { Link } from 'expo-router';
 import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
-import { ExchangeCredential } from '../../models';
+import { ExchangeCredential, ExchangeId } from '../../models';
 import { EXCHANGES } from '../../master';
 
 /**
@@ -89,7 +89,7 @@ export default function ExchangeRegistrationScreen() {
             </Select>
           </FormControl>
 
-          {selectedExchangeId && (
+          {/* {selectedExchangeId && (
             <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
               =======
               <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../assets/images/key-fill.png')} alt="key-fill-logo" />
@@ -146,7 +146,7 @@ export default function ExchangeRegistrationScreen() {
                 </Link>
               </VStack>
             </Box>
-          )}
+          )} */}
 
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>

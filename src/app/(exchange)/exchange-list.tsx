@@ -46,11 +46,9 @@ export default function ExchangeListScreen() {
       <VStack>
         <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
           <VStack space="md" py="$1">
-            {credentials.map((cred) => (
-              <Text color={white} fontSize={23} bold>
-                {cred.id}
-              </Text>
-            ))}
+            <Text color={white} fontSize={23} bold>
+              Kraken
+            </Text>
             <HStack space="xs">
               <Text color={white} fontSize={12}>
                 残高
