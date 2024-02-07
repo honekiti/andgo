@@ -58,7 +58,7 @@ export default function ExchangeRegistrationScreen() {
             </FormControlLabel>
             <Select onValueChange={(v) => setSelectedExchangeId(v)}>
               <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
-                <SelectInput placeholder="選択してください" color="white" />
+                <SelectInput color={white} placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
               </SelectTrigger>
 
@@ -79,13 +79,7 @@ export default function ExchangeRegistrationScreen() {
 
           {selectedExchangeId && (
             <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
-              <Image
-                size="2xs"
-                bgColor="#0000"
-                style={{ width: '15%', height: '20%' }}
-                resizeMode="contain"
-                source={require('../../assets/images/key-fill.png')}
-              />
+              <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../assets/images/key-fill.png')} alt="key-fill-logo" />
               <Text color={white} fontSize={14} py="$2">
                 APIキーを発行してください
               </Text>
