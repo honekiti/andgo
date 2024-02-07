@@ -13,10 +13,8 @@ export type ExchangeInfo = {
 };
 
 export default function ExchangeListScreen() {
-  const [credentials, setCredentials] = useState<ExchangeCredential[]>([
-    { id: 'bitbank', apiKey: 'aaa', apiSecret: 'bbb' },
-    { id: 'bitflyer', apiKey: 'aaa', apiSecret: 'bbb' },
-  ]);
+  // TODO: 取引所連携情報読み込みを有効にしたら、初期値を空配列にする
+  const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
   const [balances, setBalances] = useState<(number | undefined)[]>([]);
   const data = credentials.map((credential, index) => ({
     name: EXCHANGES.find((ex) => ex.id === credential.id)?.name ?? 'unknown',
@@ -33,6 +31,7 @@ export default function ExchangeListScreen() {
       </HStack>
     );
   };
+
 
   // // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)useFocusEffect(
   //   useCallback(() => {

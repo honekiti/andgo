@@ -2,9 +2,19 @@ import { Link } from 'expo-router';
 import { Box, Button, ButtonText, VStack } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@gluestack-ui/themed';
+import { saveScheduels } from '../services/schedule-service';
+import { saveCredentials } from '../services/exchange-credential-service';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+
+  const handleResetSchedules = async () => {
+    await saveScheduels([]);
+  };
+
+  const handleResetCredentials = async () => {
+    await saveCredentials([]);
+  };
 
   return (
     <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right}>
@@ -53,6 +63,14 @@ export default function HomeScreen() {
             <ButtonText>ホーム画面</ButtonText>
           </Button>
         </Link>
+
+        <Button borderRadius="$full" onPress={handleResetSchedules}>
+          <ButtonText>スケジュール初期化</ButtonText>
+        </Button>
+
+        <Button borderRadius="$full" onPress={handleResetCredentials}>
+          <ButtonText>取引所初期化</ButtonText>
+        </Button>
       </VStack>
     </Box>
   );

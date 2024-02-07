@@ -15,6 +15,7 @@ import {
   CheckboxLabel,
   CheckboxIndicator,
   ButtonText,
+  ChevronRightIcon,
 } from '@gluestack-ui/themed';
 import React from 'react';
 import { config } from '@gluestack-ui/config';
@@ -23,7 +24,7 @@ import { useState } from 'react';
 import { Link } from 'expo-router';
 import TermsOfServiceScreen from './(onbording)/terms-of-service';
 import ExchangeListScreen from './(exchange)/exchange-list';
-import { darkGrey } from '../constants/Colors';
+import { white, unclearWhite, darkGrey } from '../constants/Colors';
 
 export default function ConfigScreen() {
   return (
@@ -49,18 +50,21 @@ const Container = () => {
     <Box flexDirection="column" flex={1} bg={darkGrey}>
       <Box width="100%" height="90%">
         <Link href="/(exchange)/exchange-list" asChild>
-          <Button height={'10%'} bg={darkGrey} justifyContent="flex-start" borderBottomWidth={2} borderColor="#FFFFFF50">
+          <Button height={'10%'} bg={darkGrey} justifyContent="space-between" borderBottomWidth={0.3} borderColor={unclearWhite}>
             <ButtonText textAlign="left">取引所</ButtonText>
+            <Icon as={ChevronRightIcon} size="lg" color={white} />
           </Button>
         </Link>
         <Link href="/(onbording)/terms-of-service" asChild>
-          <Button height={'10%'} bg={darkGrey} justifyContent="flex-start" borderBottomWidth={2} borderColor="#FFFFFF50">
+          <Button height={'10%'} bg={darkGrey} justifyContent="space-between" borderBottomWidth={0.3} borderColor={unclearWhite}>
             <ButtonText textAlign="left">利用規約</ButtonText>
+            <Icon as={ChevronRightIcon} size="lg" color={white} />
           </Button>
         </Link>
         <Link href="https://tsumitatetoko.com/news" asChild>
-          <Button height={'10%'} bg={darkGrey} justifyContent="flex-start" borderBottomWidth={2} borderColor="#FFFFFF50">
+          <Button height={'10%'} bg={darkGrey} justifyContent="space-between" borderBottomWidth={0.3} borderColor={unclearWhite}>
             <ButtonText textAlign="left">最新リリース情報</ButtonText>
+            <Icon as={ChevronRightIcon} size="lg" color={white} />
           </Button>
         </Link>
 
