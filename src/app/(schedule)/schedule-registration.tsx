@@ -13,7 +13,6 @@ import {
   SelectDragIndicator,
   SelectContent,
   SelectItem,
-  Icon,
   ChevronDownIcon,
   Text,
   Button,
@@ -24,93 +23,97 @@ import {
   Input,
   InputField,
   ScrollView,
-  Divider,
-  ChevronRightIcon,
-  LinkText,
+  useToast,
+  Toast,
+  ToastTitle,
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
-import { Link, useFocusEffect } from 'expo-router';
-import { loadSchedules, saveScheduels } from '../../services/schedule-service';
+import { useFocusEffect, router } from 'expo-router';
+import {
+  loadSchedules,
+  saveScheduels,
+  getExchangeName,
+  getPlan,
+  getModifiedRefAt,
+  getNextIndexFromNow,
+  getNextAtByIndex,
+} from '../../services/schedule-service';
 import { Schedule, ExchangeCredential } from '../../models';
 import { genId } from '../../utils/crypto';
-import { EXCHANGES } from '../../master';
+import type { ExchangeId, PlanId } from '../../models';
+import { PLANS, DAY_OF_WEEK_OPTIONS, DATE_OPTIONS, HOUR_OPTIONS, MINUTE_OPTIONS } from '../../master';
 import { loadCredentials } from '../../services/exchange-credential-service';
 
 /**
  * 積立プラン作成画面
  */
 export default function ScheduleRegistrationScreen() {
-  // TODO: 取引所連携情報読み込みを有効にしたら、初期値を空配列にする
+  const toast = useToast();
   const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
   const exchanges = credentials.map((credential) => ({
     id: credential.id,
-    name: EXCHANGES.find((ex) => ex.id === credential.id)?.name ?? 'unknown',
+    name: getExchangeName(credential),
   }));
 
-  const [selectedExchangeId, setSelectedExchangeId] = useState<string | undefined>(undefined);
+  // form data
+  const [exchangeId, setExchangeId] = useState<ExchangeId>('unknown');
+  const [planId, setPlanId] = useState<PlanId>('MONTHLY');
+  // planId === 'WEEKLY' の場合のみ有効
+  const [dayOfWeek, setDayOfWeek] = useState<number>(0);
+  // planId === 'MONTHLY' の場合のみ有効
+  const [date, setDate] = useState<number>(1);
+  const [hour, setHour] = useState<number>(0);
+  const [minute, setMinute] = useState<number>(0);
 
-  const [frequency, setFrequency] = useState([
-    { id: 'daily', name: '毎日' },
-    { id: 'weekly', name: '毎週' },
-    { id: 'monthly', name: '毎月' },
-  ]);
-  const [selectedFrequencyId, setSelectedFrequencyId] = useState<string | undefined>(undefined);
-
-  const [weeks, setWeeks] = useState([
-    { id: 'monday', name: '月曜日' },
-    { id: 'tuesday', name: '火曜日' },
-    { id: 'wednesday', name: '水曜日' },
-    { id: 'thursday', name: '木曜日' },
-    { id: 'friday', name: '金曜日' },
-    { id: 'saturday', name: '土曜日' },
-    { id: 'sunday', name: '日曜日' },
-  ]);
-  const [selectedWeekId, setSelectedWeekId] = useState<string | undefined>(undefined);
-
-  const [hours, setHours] = useState([
-    { id: '0', name: '0時' },
-    { id: '1', name: '1時' },
-    { id: '2', name: '2時' },
-  ]);
-  const [selectedHoursId, setSelectedHoursId] = useState<string | undefined>(undefined);
-
-  const [minutes, setMinutes] = useState([
-    { id: '0', name: '0分' },
-    { id: '1', name: '1分' },
-    { id: '2', name: '2分' },
-  ]);
-  const [selectedMinutesId, setSelectedMinutesId] = useState<string | undefined>(undefined);
-
-  // TODO: 作成ボタン押下時にこの関数を呼び出す
   const handlePressAddSchedule = async () => {
-    // TODO: 下記をフォームの入力値に切り替える
+    const plan = getPlan(planId);
+    const refAt = getModifiedRefAt({ refAt: new Date().getTime(), date, dayOfWeek, hours: hour, minutes: minute });
     const newSuchedule: Schedule = {
       id: genId(),
-      exchangeId: 'bitbank',
+      exchangeId,
       quoteAmount: 123,
-      intervalType: 'MINUTES',
-      interval: 15,
+      intervalUnit: plan.intervalUnit,
+      interval: plan.interval,
       status: {
-        enabled: false,
-        refAt: new Date().getTime(),
+        enabled: true,
+        refAt,
         nextIndex: 0,
         nextAt: 0,
       },
     };
+    // 次回発動時刻に調整
+    const nextIndex = getNextIndexFromNow(newSuchedule, new Date().getTime());
+    const nextAt = getNextAtByIndex(newSuchedule, nextIndex);
 
     const schedules = await loadSchedules();
-    const updatedSchedule = [...schedules, newSuchedule];
+
+    // 一番後ろに追加
+    const updatedSchedule = [...schedules, { ...newSuchedule, nextIndex, nextAt }];
 
     await saveScheduels(updatedSchedule);
+
+    // 閉じる
+    router.back();
   };
 
-  // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)
   useFocusEffect(
     useCallback(() => {
       loadCredentials().then((credentials) => {
-        setCredentials(credentials);
+        if (credentials.length === 0) {
+          // 取引所連携がない場合は、モーダルを閉じる
+          toast.show({
+            render: () => (
+              <Toast action="error">
+                <ToastTitle>取引所連携エラー</ToastTitle>
+              </Toast>
+            ),
+          });
+          router.back();
+        } else {
+          setCredentials(credentials);
+        }
       });
-    }, []),
+    }, [toast.show]),
   );
 
   return (
@@ -121,7 +124,7 @@ export default function ScheduleRegistrationScreen() {
             <FormControlLabel>
               <FormControlLabelText color={white}>取引所</FormControlLabelText>
             </FormControlLabel>
-            <Select onValueChange={(v) => setSelectedExchangeId(v)}>
+            <Select onValueChange={(v) => setExchangeId(v as ExchangeId)}>
               <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                 <SelectInput color={white} placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
@@ -161,7 +164,7 @@ export default function ScheduleRegistrationScreen() {
             </FormControlLabel>
             <HStack justifyContent="space-between">
               <Box w="49%">
-                <Select onValueChange={(v) => setSelectedFrequencyId(v)}>
+                <Select onValueChange={(v) => setPlanId(v as PlanId)}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                     <SelectInput color={white} placeholder="毎週" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
@@ -172,31 +175,52 @@ export default function ScheduleRegistrationScreen() {
                       <SelectDragIndicatorWrapper>
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
-                      {frequency.map((freq) => (
-                        <SelectItem key={freq.id} label={freq.name} value={freq.id} />
+                      {PLANS.map((plan) => (
+                        <SelectItem key={plan.id} label={plan.name} value={plan.id} />
                       ))}
                     </SelectContent>
                   </SelectPortal>
                 </Select>
               </Box>
               <Box w="49%">
-                <Select onValueChange={(v) => setSelectedWeekId(v)}>
-                  <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput color={white} placeholder="金曜日" />
-                    <SelectIcon mr="$3" as={ChevronDownIcon} />
-                  </SelectTrigger>
-                  <SelectPortal>
-                    <SelectBackdrop />
-                    <SelectContent>
-                      <SelectDragIndicatorWrapper>
-                        <SelectDragIndicator />
-                      </SelectDragIndicatorWrapper>
-                      {weeks.map((week) => (
-                        <SelectItem key={week.id} label={week.name} value={week.id} />
-                      ))}
-                    </SelectContent>
-                  </SelectPortal>
-                </Select>
+                {planId === 'WEEKLY' && (
+                  <Select onValueChange={(v) => setDayOfWeek(Number(v))}>
+                    <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
+                      <SelectInput color={white} />
+                      <SelectIcon mr="$3" as={ChevronDownIcon} />
+                    </SelectTrigger>
+                    <SelectPortal>
+                      <SelectBackdrop />
+                      <SelectContent>
+                        <SelectDragIndicatorWrapper>
+                          <SelectDragIndicator />
+                        </SelectDragIndicatorWrapper>
+                        {DAY_OF_WEEK_OPTIONS.map((o) => (
+                          <SelectItem key={o.value} label={o.label} value={`${o.value}`} />
+                        ))}
+                      </SelectContent>
+                    </SelectPortal>
+                  </Select>
+                )}
+                {planId === 'MONTHLY' && (
+                  <Select onValueChange={(v) => setDate(Number(v))}>
+                    <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
+                      <SelectInput color={white} />
+                      <SelectIcon mr="$3" as={ChevronDownIcon} />
+                    </SelectTrigger>
+                    <SelectPortal>
+                      <SelectBackdrop />
+                      <SelectContent>
+                        <SelectDragIndicatorWrapper>
+                          <SelectDragIndicator />
+                        </SelectDragIndicatorWrapper>
+                        {DATE_OPTIONS.map((o) => (
+                          <SelectItem key={o.value} label={o.label} value={`${o.value}`} />
+                        ))}
+                      </SelectContent>
+                    </SelectPortal>
+                  </Select>
+                )}
               </Box>
             </HStack>
           </FormControl>
@@ -207,7 +231,7 @@ export default function ScheduleRegistrationScreen() {
             </FormControlLabel>
             <HStack justifyContent="space-between">
               <Box w="49%">
-                <Select onValueChange={(v) => setSelectedHoursId(v)}>
+                <Select onValueChange={(v) => setHour(Number(v))}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                     <SelectInput color={white} placeholder="12時" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
@@ -218,15 +242,15 @@ export default function ScheduleRegistrationScreen() {
                       <SelectDragIndicatorWrapper>
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
-                      {hours.map((hour) => (
-                        <SelectItem key={hour.id} label={hour.name} value={hour.id} />
+                      {HOUR_OPTIONS.map((o) => (
+                        <SelectItem key={o.value} label={o.label} value={`${o.value}`} />
                       ))}
                     </SelectContent>
                   </SelectPortal>
                 </Select>
               </Box>
               <Box w="49%">
-                <Select onValueChange={(v) => setSelectedMinutesId(v)}>
+                <Select onValueChange={(v) => setMinute(Number(v))}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                     <SelectInput color={white} placeholder="0分" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
@@ -237,8 +261,8 @@ export default function ScheduleRegistrationScreen() {
                       <SelectDragIndicatorWrapper>
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
-                      {minutes.map((min) => (
-                        <SelectItem key={min.id} label={min.name} value={min.id} />
+                      {MINUTE_OPTIONS.map((o) => (
+                        <SelectItem key={o.value} label={o.label} value={`${o.value}`} />
                       ))}
                     </SelectContent>
                   </SelectPortal>
@@ -271,20 +295,18 @@ export default function ScheduleRegistrationScreen() {
         </VStack>
       </ScrollView>
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
-        <Link href="/home" asChild>
-          <Button
-            onPress={() => handlePressAddSchedule()}
-            w="100%"
-            size="lg"
-            variant="solid"
-            action="primary"
-            isDisabled={false}
-            isFocusVisible={false}
-            rounded="$lg"
-          >
-            <ButtonText>作成する</ButtonText>
-          </Button>
-        </Link>
+        <Button
+          onPress={handlePressAddSchedule}
+          w="100%"
+          size="lg"
+          variant="solid"
+          action="primary"
+          isDisabled={false}
+          isFocusVisible={false}
+          rounded="$lg"
+        >
+          <ButtonText>作成する</ButtonText>
+        </Button>
       </Box>
     </Box>
   );

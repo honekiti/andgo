@@ -19,14 +19,10 @@
     "ignore": ["./node_modules/**"],
     "rules": {
       "recommended": true,
-      "complexity": {
-      },
-      "correctness": {
-      },
-      "style": {
-      },
-      "suspicious": {
-      }
+      "complexity": {},
+      "correctness": {},
+      "style": {},
+      "suspicious": {}
     }
   },
   "organizeImports": {
