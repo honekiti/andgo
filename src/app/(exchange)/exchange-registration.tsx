@@ -13,6 +13,7 @@ import {
   SelectContent,
   SelectItem,
   Icon,
+  Image,
   ChevronDownIcon,
   Text,
   Button,
@@ -36,6 +37,12 @@ import { EXCHANGES } from '../../master';
 /**
  * 取引所連携画面
  */
+
+const getExchangeName = (exchangeId: string) => {
+  const exchange = EXCHANGES.find((ex) => ex.id === exchangeId);
+  return exchange ? exchange.name : '取引所';
+};
+
 export default function ExchangeRegistrationScreen() {
   const [selectedExchangeId, setSelectedExchangeId] = useState<string | undefined>(undefined);
 
@@ -64,6 +71,7 @@ export default function ExchangeRegistrationScreen() {
             </FormControlLabel>
             <Select onValueChange={(v) => setSelectedExchangeId(v)}>
               <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
+
                 <SelectInput color={white} placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
               </SelectTrigger>
@@ -82,61 +90,69 @@ export default function ExchangeRegistrationScreen() {
             </Select>
           </FormControl>
 
-          <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
-            <Box h="$10" w="$10" bg="#00f" rounded="$full" />
-            <Text color={white} fontSize={14} py="$2">
-              APIキーを発行してください
-            </Text>
-            <Divider bg={unclearWhite} />
-            <Text color={white} bold p="$2">
-              bitbank
-            </Text>
-            <Text color={white} fontSize={13}>
-              bitbankへログインし、「APIキーの発行」メニューで「参照」「取引」の権限を選択して、APIを発行してください
-            </Text>
-            <VStack space="md" pt="$2">
-              <Link href="https://bitbank.cc">
-                <Box
-                  h="$12"
-                  w="100%"
-                  borderWidth={0.5}
-                  borderColor={white}
-                  rounded="$full"
-                  display="flex"
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  px="$4"
-                >
-                  <Icon as={ChevronRightIcon} size="md" color="#0000" />
-                  <Text color={white} bold>
-                    bitbankサイト
-                  </Text>
-                  <Icon as={ChevronRightIcon} size="md" color={white} />
-                </Box>
-              </Link>
-              <Link href="https://tsumitatetoko.com/api-register-bitbank">
-                <Box
-                  h="$12"
-                  w="100%"
-                  borderWidth={0.5}
-                  borderColor={white}
-                  rounded="$full"
-                  display="flex"
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  px="$4"
-                >
-                  <Icon as={ChevronRightIcon} size="md" color="#0000" />
-                  <Text color={white} bold>
-                    チュートリアル
-                  </Text>
-                  <Icon as={ChevronRightIcon} size="md" color={white} />
-                </Box>
-              </Link>
-            </VStack>
-          </Box>
+          {selectedExchangeId && (
+            <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
+              <Image
+                size="2xs"
+                bgColor="#0000"
+                style={{ width: '15%', height: '20%' }}
+                resizeMode="contain"
+                source={require('../../assets/images/key-fill.png')}
+              />
+              <Text color={white} fontSize={14} py="$2">
+                APIキーを発行してください
+              </Text>
+              <Divider bg={unclearWhite} />
+              <Text color={white} bold p="$2">
+                {selectedExchangeId}
+              </Text>
+              <Text color={white} fontSize={13}>
+                {selectedExchangeId}へログインし、「APIキーの発行」メニューで「参照」「取引」の権限を選択して、APIを発行してください
+              </Text>
+              <VStack space="md" pt="$2">
+                <Link href="https://bitbank.cc/">
+                  <Box
+                    h="$12"
+                    w="100%"
+                    borderWidth={0.5}
+                    borderColor={white}
+                    rounded="$full"
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    px="$4"
+                  >
+                    <Icon as={ChevronRightIcon} size="md" color="#0000" />
+                    <Text color={white} bold>
+                      {selectedExchangeId ? getExchangeName(selectedExchangeId) : '取引所'}サイト
+                    </Text>
+                    <Icon as={ChevronRightIcon} size="md" color={white} />
+                  </Box>
+                </Link>
+                <Link href="https://tsumitatetoko.com/api-register-bitbank">
+                  <Box
+                    h="$12"
+                    w="100%"
+                    borderWidth={0.5}
+                    borderColor={white}
+                    rounded="$full"
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    px="$4"
+                  >
+                    <Icon as={ChevronRightIcon} size="md" color="#0000" />
+                    <Text color={white} bold>
+                      チュートリアル
+                    </Text>
+                    <Icon as={ChevronRightIcon} size="md" color={white} />
+                  </Box>
+                </Link>
+              </VStack>
+            </Box>
+          )}
 
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
@@ -169,6 +185,7 @@ export default function ExchangeRegistrationScreen() {
             isDisabled={false}
             isFocusVisible={false}
             rounded="$lg"
+            bgColor="#f97316"
           >
             <ButtonText>連携する</ButtonText>
           </Button>
