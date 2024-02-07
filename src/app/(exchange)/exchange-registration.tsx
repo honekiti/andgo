@@ -30,6 +30,8 @@ import {
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { Link } from 'expo-router';
+import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
+import { ExchangeCredential } from '../../models';
 import { EXCHANGES } from '../../master';
 
 /**
@@ -42,11 +44,22 @@ const getExchangeName = (exchangeId: string) => {
 };
 
 export default function ExchangeRegistrationScreen() {
-  const [exchanges, setExchanges] = useState([
-    { id: 'bitflyer', name: 'bitFlyer' },
-    { id: 'coincheck', name: 'Coincheck' },
-  ]);
   const [selectedExchangeId, setSelectedExchangeId] = useState<string | undefined>(undefined);
+
+  // TODO: 作成ボタン押下時にこの関数を呼び出す
+  const handlePressAddCredential = async () => {
+    // TODO: 下記をフォームの入力値に切り替える
+    const newCredential: ExchangeCredential = {
+      id: 'bitbank',
+      apiKey: 'dummy',
+      apiSecret: 'dummy',
+    };
+
+    const credentials = await loadCredentials();
+    const updatedCredentials = [...credentials, newCredential];
+
+    await saveCredentials(updatedCredentials);
+  };
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
@@ -58,10 +71,10 @@ export default function ExchangeRegistrationScreen() {
             </FormControlLabel>
             <Select onValueChange={(v) => setSelectedExchangeId(v)}>
               <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
-                <SelectInput placeholder="選択してください" color="white" />
+
+                <SelectInput color={white} placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
               </SelectTrigger>
-
               <SelectPortal>
                 <SelectBackdrop />
                 <SelectContent>
@@ -146,7 +159,7 @@ export default function ExchangeRegistrationScreen() {
               <FormControlLabelText color={white}>APIキー</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField placeholder="発行したAPIキーを入力" />
+              <InputField color={white} placeholder="発行したAPIキーを入力" />
             </Input>
           </FormControl>
 
@@ -155,7 +168,7 @@ export default function ExchangeRegistrationScreen() {
               <FormControlLabelText color={white}>APIシークレット</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField placeholder="発行したAPIシークレットを入力" />
+              <InputField color={white} placeholder="発行したAPIシークレットを入力" />
             </Input>
           </FormControl>
         </VStack>
@@ -163,7 +176,17 @@ export default function ExchangeRegistrationScreen() {
 
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
         <Link href="/home" asChild>
-          <Button w="100%" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg" bgColor="#f97316">
+          <Button
+            onPress={() => handlePressAddCredential()}
+            w="100%"
+            size="lg"
+            variant="solid"
+            action="primary"
+            isDisabled={false}
+            isFocusVisible={false}
+            rounded="$lg"
+            bgColor="#f97316"
+          >
             <ButtonText>連携する</ButtonText>
           </Button>
         </Link>
