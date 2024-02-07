@@ -123,7 +123,7 @@ export default function ScheduleRegistrationScreen() {
             </FormControlLabel>
             <Select onValueChange={(v) => setSelectedExchangeId(v)}>
               <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                <SelectInput placeholder="選択してください" />
+                <SelectInput color={white} placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
               </SelectTrigger>
               <SelectPortal>
@@ -163,7 +163,7 @@ export default function ScheduleRegistrationScreen() {
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedFrequencyId(v)}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput placeholder="毎週" />
+                    <SelectInput color={white} placeholder="毎週" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal h="$20" w="$40">
@@ -182,7 +182,7 @@ export default function ScheduleRegistrationScreen() {
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedWeekId(v)}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput placeholder="金曜日" />
+                    <SelectInput color={white} placeholder="金曜日" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal>
@@ -209,7 +209,7 @@ export default function ScheduleRegistrationScreen() {
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedHoursId(v)}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput placeholder="12時" />
+                    <SelectInput color={white} placeholder="12時" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal h="$20" w="$40">
@@ -228,7 +228,7 @@ export default function ScheduleRegistrationScreen() {
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedMinutesId(v)}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput placeholder="0分" />
+                    <SelectInput color={white} placeholder="0分" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal>
@@ -253,7 +253,7 @@ export default function ScheduleRegistrationScreen() {
             </FormControlLabel>
             <HStack justifyContent="space-between">
               <Input w="93%" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                <InputField placeholder="10,000" />
+                <InputField color={white} placeholder="10,000" />
               </Input>
               <VStack reversed={true}>
                 <Text w="auto" fontSize={18} color={white}>

@@ -50,7 +50,7 @@ export default function ExchangeRegistrationScreen() {
   const handlePressAddCredential = async () => {
     // TODO: 下記をフォームの入力値に切り替える
     const newCredential: ExchangeCredential = {
-      id: 'bitbank',
+      id: selectedExchangeId,
       apiKey: 'dummy',
       apiSecret: 'dummy',
     };
@@ -63,7 +63,7 @@ export default function ExchangeRegistrationScreen() {
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
-      <ScrollView>
+      <ScrollView h="auto">
         <VStack space="3xl" p="$4">
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
@@ -71,7 +71,6 @@ export default function ExchangeRegistrationScreen() {
             </FormControlLabel>
             <Select onValueChange={(v) => setSelectedExchangeId(v)}>
               <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
-
                 <SelectInput color={white} placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
               </SelectTrigger>
@@ -92,13 +91,7 @@ export default function ExchangeRegistrationScreen() {
 
           {selectedExchangeId && (
             <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
-              <Image
-                size="2xs"
-                bgColor="#0000"
-                style={{ width: '15%', height: '20%' }}
-                resizeMode="contain"
-                source={require('../../assets/images/key-fill.png')}
-              />
+              <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../assets/images/key-fill.png')} />
               <Text color={white} fontSize={14} py="$2">
                 APIキーを発行してください
               </Text>
