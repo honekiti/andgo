@@ -12,14 +12,20 @@ export default function TermsOfServiceScreen() {
   const handleCheckboxChange = () => setIsAgreed(!isAgreed);
   return (
     <Box flex={1} bg={darkGrey}>
-      <ScrollView flex={1} flexDirection="column" width={'100%'} contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
+      <ScrollView
+        flex={1}
+        flexDirection="column"
+        width={'100%'}
+        contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}
+        aria-label="利用規約"
+      >
         <Box height={10} />
         <Box justifyContent="center" alignItems="center" height={150} width={'90%'} marginTop={'15%'} bgColor="#333333" borderRadius={'$lg'}>
           <Checkbox
             value="somevalue"
             size="lg"
             onChange={handleCheckboxChange}
-            accessibilityLabel="利用規約に同意する"
+            aria-label="利用規約に同意する"
             isChecked={isAgreed}
             isInvalid={false}
             isDisabled={false}

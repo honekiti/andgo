@@ -91,7 +91,11 @@ export default function ExchangeRegistrationScreen() {
 
           {selectedExchangeId && (
             <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
+<<<<<<< HEAD
               <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../assets/images/key-fill.png')} />
+=======
+              <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../assets/images/key-fill.png')} alt="key-fill-logo" />
+>>>>>>> 2aad37d78f5ee09dd0bec6d658ee78795dc9c2b8
               <Text color={white} fontSize={14} py="$2">
                 APIキーを発行してください
               </Text>
