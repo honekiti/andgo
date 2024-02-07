@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import { Link } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Link, useFocusEffect } from 'expo-router';
 import { Box, Button, ButtonIcon, ButtonText, HStack, Pressable, ScrollView, Text, VStack } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon } from '@gluestack-ui/themed';
-import { white, unclearWhite, darkGrey, lightGrey, orange, emeraldGreen } from '../constants/Colors';
-import CalenderInfo from '../components/CalenderInfo';
+import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
+import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
+import CalenderInfo from '../components/ClenderInfo';
 import AccumulateInfo from '../components/AccumulateInfo';
+import { Schedule } from '../models';
+import { saveScheduels, loadSchedules } from '../services/schedule-service';
+import { genId } from '../utils/crypto';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -38,9 +41,13 @@ export default function HomeScreen() {
               </Text>
             </Box>
             <Box h="50%" display="flex" flexDirection="row">
-              <Text bold pr="$1">
-                @
-              </Text>
+              <Image
+                size="2xs"
+                bgColor="#0000"
+                resizeMode="contain"
+                source={require('../assets/images/bit-coin-line.png')}
+                alt="bit-coin-line-logo"
+              />
               <Text color={white} fontSize={13}>
                 0.12300000
               </Text>

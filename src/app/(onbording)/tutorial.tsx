@@ -36,13 +36,13 @@ export default function TutorialScreen() {
         onScroll={handleScroll}
       >
         <HStack alignItems="center" flexDirection="row">
-          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial1.png')} />
-          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial2.png')} />
-          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial3.png')} />
-          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial4.png')} />
-          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial5.png')} />
-          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial6.png')} />
-          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial7.png')} />
+          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial1.png')} alt="tutorial1-picture" />
+          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial2.png')} alt="tutorial2-picture" />
+          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial3.png')} alt="tutorial3-picture" />
+          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial4.png')} alt="tutorial4-picture" />
+          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial5.png')} alt="tutorial5-picture" />
+          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial6.png')} alt="tutorial6-picture" />
+          <Image h={'100%'} w={width} source={require('../../assets/images/tutorial7.png')} alt="tutorial7-picture" />
         </HStack>
       </ScrollView>
       <Box flexDirection="column" alignItems="center" justifyContent="center" borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7">

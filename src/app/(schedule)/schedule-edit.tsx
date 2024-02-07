@@ -14,6 +14,7 @@ import {
   SelectContent,
   SelectItem,
   Icon,
+  Image,
   ChevronDownIcon,
   Text,
   Button,
@@ -87,23 +88,29 @@ export default function ScheduleEditScreen() {
                 <SelectInput placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
               </SelectTrigger>
+              <SelectPortal>
+                <SelectBackdrop />
+                <SelectContent>
+                  <SelectDragIndicatorWrapper>
+                    <SelectDragIndicator />
+                  </SelectDragIndicatorWrapper>
+                  {exchanges.map((exchange) => (
+                    <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
+                  ))}
+                </SelectContent>
+              </SelectPortal>
             </Select>
-            <SelectPortal>
-              <SelectBackdrop />
-              <SelectContent>
-                <SelectDragIndicatorWrapper>
-                  <SelectDragIndicator />
-                </SelectDragIndicatorWrapper>
-                {exchanges.map((exchange) => (
-                  <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
-                ))}
-              </SelectContent>
-            </SelectPortal>
           </FormControl>
 
           <Box h="auto" w="$full" bg="#000" rounded="$lg">
             <VStack space="md" alignItems="center" py="$4">
-              <Box h="$8" w="$8" rounded="$full" bg="#00f" />
+              <Image
+                size="xs"
+                bgColor="#0000"
+                resizeMode="contain"
+                source={require('../../assets/images/bit-coin-line.png')}
+                alt="bit-coin-line-logo"
+              />
               <Text fontSize={12} color={white} bold>
                 最低購入量
               </Text>
@@ -127,18 +134,18 @@ export default function ScheduleEditScreen() {
                     <SelectInput placeholder="毎週" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
+                  <SelectPortal h="$20" w="$40">
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {frequency.map((freq) => (
+                        <SelectItem key={freq.id} label={freq.name} value={freq.id} />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
                 </Select>
-                <SelectPortal h="$20" w="$40">
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {frequency.map((freq) => (
-                      <SelectItem key={freq.id} label={freq.name} value={freq.id} />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
               </Box>
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedWeekId(v)}>
@@ -146,18 +153,18 @@ export default function ScheduleEditScreen() {
                     <SelectInput placeholder="金曜日" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
+                  <SelectPortal>
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {weeks.map((week) => (
+                        <SelectItem key={week.id} label={week.name} value={week.id} />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
                 </Select>
-                <SelectPortal>
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {weeks.map((week) => (
-                      <SelectItem key={week.id} label={week.name} value={week.id} />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
               </Box>
             </HStack>
           </FormControl>
@@ -173,18 +180,18 @@ export default function ScheduleEditScreen() {
                     <SelectInput placeholder="12時" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
+                  <SelectPortal h="$20" w="$40">
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {hours.map((hour) => (
+                        <SelectItem key={hour.id} label={hour.name} value={hour.id} />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
                 </Select>
-                <SelectPortal h="$20" w="$40">
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {hours.map((hour) => (
-                      <SelectItem key={hour.id} label={hour.name} value={hour.id} />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
               </Box>
               <Box w="49%">
                 <Select onValueChange={(v) => setSelectedMinutesId(v)}>
@@ -192,18 +199,18 @@ export default function ScheduleEditScreen() {
                     <SelectInput placeholder="0分" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
+                  <SelectPortal>
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {minutes.map((min) => (
+                        <SelectItem key={min.id} label={min.name} value={min.id} />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
                 </Select>
-                <SelectPortal>
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {minutes.map((min) => (
-                      <SelectItem key={min.id} label={min.name} value={min.id} />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
               </Box>
             </HStack>
           </FormControl>
@@ -245,7 +252,7 @@ export default function ScheduleEditScreen() {
 
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
         <Link href="/home" asChild>
-          <Button w="100%" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
+          <Button w="100%" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg" bgColor="#f97316">
             <ButtonText>作成する</ButtonText>
           </Button>
         </Link>

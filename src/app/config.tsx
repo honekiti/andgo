@@ -75,6 +75,7 @@ const Container = () => {
             style={{ width: '40%', height: '20%' }}
             resizeMode="contain"
             source={require('../assets/images/Union.png')}
+            alt="union-logo"
           />
         </Box>
       </Box>

@@ -5,8 +5,7 @@ import { Link, useFocusEffect } from 'expo-router';
 import { loadCredentials } from '../../services/exchange-credential-service';
 import { EXCHANGES } from '../../master';
 import { ExchangeCredential } from '../../models';
-import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
-import { useFocusEffect } from 'expo-router';
+import { white, unclearWhite, darkGrey } from '../../constants/Colors';
 
 export type ExchangeInfo = {
   name: string;
@@ -33,15 +32,16 @@ export default function ExchangeListScreen() {
     );
   };
 
-  // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)useFocusEffect(
-    useCallback(() => {
-      loadCredentials().then((credentials) => {
-        setCredentials(credentials);
-        // TODO: lazy load balances
-        setBalances(Array(credentials.length).fill(undefined));
-      });
-    }, []),
-  );
+
+  // // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)useFocusEffect(
+  //   useCallback(() => {
+  //     loadCredentials().then((credentials) => {
+  //       setCredentials(credentials);
+  //       // TODO: lazy load balances
+  //       setBalances(Array(credentials.length).fill(undefined));
+  //     });
+  //   }, []),
+  // );
 
   return (
     <Box flex={1} bg={darkGrey} justifyContent="space-between">
@@ -129,7 +129,7 @@ export default function ExchangeListScreen() {
       <HStack justifyContent="space-between" alignItems="center" p="$4" mb="$3" borderTopWidth={0.3} borderColor={unclearWhite}>
         <Text color={white}>取引所と連携しよう</Text>
         <Link href="/exchange-registration" asChild>
-          <Button w="$24" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$full">
+          <Button w="$24" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$full" bgColor="#f97316">
             <ButtonText>連携</ButtonText>
           </Button>
         </Link>
