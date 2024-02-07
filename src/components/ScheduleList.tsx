@@ -25,12 +25,11 @@ export default function ScheduleList(props: ScheduleListProps) {
 
   return (
     <Box>
+      {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
+      {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+      <FlatList data={props.schedules} renderItem={renderItem as any} keyExtractor={(item) => (item as Schedule).id} />
       <Box h="auto" w="$full" justifyContent="space-between">
         <ScrollView h="auto">
-          {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
-          {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-          {/* <FlatList data={props.schedules} renderItem={renderItem as any} keyExtractor={(item) => (item as Schedule).id} /> */}
-
           <VStack space="sm" p="$4">
             <Link href="/schedule-edit" asChild>
               <Button h="auto" w="100%" bg={lightGrey} rounded="$lg">
