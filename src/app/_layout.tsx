@@ -105,7 +105,7 @@ function RootLayoutNav() {
             name="(schedule)/schedule-edit"
             options={{
               title: '積立プラン編集',
-              presentation: 'modal',
+              presentation: 'card',
               headerStyle: { backgroundColor: darkGrey },
               headerTintColor: white,
             }}
