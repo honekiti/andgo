@@ -4,7 +4,7 @@ import { Box, Button, ButtonIcon, ButtonText, HStack, Pressable, ScrollView, Tex
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
-import CalenderInfo from '../components/ClenderInfo';
+import CalenderInfo from '../components/CalenderInfo';
 import AccumulateInfo from '../components/AccumulateInfo';
 import { Schedule } from '../models';
 import { saveScheduels, loadSchedules } from '../services/schedule-service';
