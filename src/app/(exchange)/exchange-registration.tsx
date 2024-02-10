@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import {
   Box,
   VStack,
@@ -26,25 +26,46 @@ import {
   ToastTitle,
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
 import { ExchangeCredential, ExchangeId } from '../../models';
 import { EXCHANGES } from '../../master';
 
+type Item = {
+  id: ExchangeId;
+  name: string;
+  isAlreadyRegistered: boolean;
+};
+
 /**
  * 取引所連携画面
  */
-
 export default function ExchangeRegistrationScreen() {
   const toast = useToast();
+  const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
+
+  // form state
   const [exchangeId, setExchangeId] = useState<ExchangeId>('unknown');
   const [apiKey, setApiKey] = useState<string>('');
   const [apiSecret, setApiSecret] = useState<string>('');
 
+  // reactive status
   const canSubmit = exchangeId !== 'unknown' && apiKey && apiSecret;
+  const items: Item[] = useMemo(
+    () =>
+      EXCHANGES.filter((exchange) => exchange.id !== 'unknown').map((exchange) => {
+        const isAlreadyRegistered = credentials.some((c) => c.id === exchange.id);
+
+        return {
+          id: exchange.id,
+          name: isAlreadyRegistered ? `${exchange.name} (連携済み)` : exchange.name,
+          isAlreadyRegistered,
+        };
+      }),
+    [credentials],
+  );
 
   const handlePressAddCredential = async () => {
-    const credentials = await loadCredentials();
     const isAlreadyRegistered = credentials.some((c) => c.id === exchangeId);
 
     if (isAlreadyRegistered) {
@@ -77,8 +98,19 @@ export default function ExchangeRegistrationScreen() {
       ),
     });
 
-    router.back();
+    // ホーム画面まで戻る(開発中はデバッグ画面まで戻る)
+    while (router.canGoBack()) {
+      router.back();
+    }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadCredentials().then((credentials) => {
+        setCredentials(credentials);
+      });
+    }, []),
+  );
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
@@ -100,8 +132,8 @@ export default function ExchangeRegistrationScreen() {
                     <SelectDragIndicator />
                   </SelectDragIndicatorWrapper>
 
-                  {EXCHANGES.filter((exchange) => exchange.id !== 'unknown').map((exchange) => (
-                    <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
+                  {items.map((item) => (
+                    <SelectItem key={item.id} label={item.name} value={item.id} isDisabled={item.isAlreadyRegistered} />
                   ))}
                 </SelectContent>
               </SelectPortal>

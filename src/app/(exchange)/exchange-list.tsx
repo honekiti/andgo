@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
-import { ListRenderItem, TouchableOpacity } from 'react-native';
-import { Box, Button, FlatList, HStack, VStack, Text, ChevronLeftIcon, Icon, ButtonText, GripVerticalIcon } from '@gluestack-ui/themed';
+import { ListRenderItem } from 'react-native';
+import { Box, Button, FlatList, HStack, VStack, Text, Icon, ButtonText, GripVerticalIcon } from '@gluestack-ui/themed';
 import { Link, useFocusEffect } from 'expo-router';
 import { loadCredentials } from '../../services/exchange-credential-service';
 import { EXCHANGES } from '../../master';
 import { ExchangeCredential } from '../../models';
-import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
+import { white, unclearWhite, darkGrey } from '../../constants/Colors';
 
 export type ExchangeInfo = {
   name: string;
@@ -13,113 +13,53 @@ export type ExchangeInfo = {
 };
 
 export default function ExchangeListScreen() {
-  // TODO: 取引所連携情報読み込みを有効にしたら、初期値を空配列にする
   const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
   const [balances, setBalances] = useState<(number | undefined)[]>([]);
-  const data = credentials.map((credential, index) => ({
+  const items: ExchangeInfo[] = credentials.map((credential, index) => ({
     name: EXCHANGES.find((ex) => ex.id === credential.id)?.name ?? 'unknown',
     balance: balances[index],
   }));
 
   const renderItem: ListRenderItem<ExchangeInfo> = ({ item }) => {
     return (
-      <HStack>
-        <VStack>
-          <Text>{item.name}</Text>
-          <Text>{item.balance ?? '-'}</Text>
+      <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
+        <VStack space="md" py="$1">
+          <Text color={white} fontSize={23} bold>
+            {item.name}
+          </Text>
+          <HStack space="xs">
+            <Text color={white} fontSize={12}>
+              残高
+            </Text>
+            <Text color={white} fontSize={18}>
+              {item.balance !== undefined ? item.balance.toLocaleString() : '---'}
+            </Text>
+            <Text color={white} fontSize={12}>
+              円
+            </Text>
+          </HStack>
         </VStack>
+        <Icon as={GripVerticalIcon} color={white} size="lg" />
       </HStack>
     );
   };
 
-  // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)useFocusEffect(
-  useCallback(() => {
-    loadCredentials().then((credentials) => {
-      setCredentials(credentials);
-      // TODO: lazy load balances
-      setBalances(Array(credentials.length).fill(undefined));
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadCredentials().then((credentials) => {
+        setCredentials(credentials);
+        // TODO: lazy load balances
+        setBalances(Array(credentials.length).fill(undefined));
+      });
+    }, []),
+  );
 
   return (
     <Box flex={1} bg={darkGrey} justifyContent="space-between">
       <VStack>
-        <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
-          <VStack space="md" py="$1">
-            <Text color={white} fontSize={23} bold>
-              Kraken
-            </Text>
-            <HStack space="xs">
-              <Text color={white} fontSize={12}>
-                残高
-              </Text>
-              <Text color={white} fontSize={18}>
-                123,456
-              </Text>
-              <Text color={white} fontSize={12}>
-                円
-              </Text>
-            </HStack>
-          </VStack>
-          <Icon as={GripVerticalIcon} color={white} size="lg" />
-        </HStack>
-        <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
-          <VStack space="md" py="$1">
-            <Text color={white} fontSize={23} bold>
-              bitbank
-            </Text>
-            <HStack space="xs">
-              <Text color={white} fontSize={12}>
-                残高
-              </Text>
-              <Text color={white} fontSize={18}>
-                123,456
-              </Text>
-              <Text color={white} fontSize={12}>
-                円
-              </Text>
-            </HStack>
-          </VStack>
-          <Icon as={GripVerticalIcon} color={white} size="lg" />
-        </HStack>
-        <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
-          <VStack space="md" py="$1">
-            <Text color={white} fontSize={23} bold>
-              coincheck
-            </Text>
-            <HStack space="xs">
-              <Text color={white} fontSize={12}>
-                残高
-              </Text>
-              <Text color={white} fontSize={18}>
-                123,456
-              </Text>
-              <Text color={white} fontSize={12}>
-                円
-              </Text>
-            </HStack>
-          </VStack>
-          <Icon as={GripVerticalIcon} color={white} size="lg" />
-        </HStack>
-        <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
-          <VStack space="md" py="$1">
-            <Text color={white} fontSize={23} bold>
-              bitFlyer
-            </Text>
-            <HStack space="xs">
-              <Text color={white} fontSize={12}>
-                残高
-              </Text>
-              <Text color={white} fontSize={18}>
-                123,456
-              </Text>
-              <Text color={white} fontSize={12}>
-                円
-              </Text>
-            </HStack>
-          </VStack>
-          <Icon as={GripVerticalIcon} color={white} size="lg" />
-        </HStack>
+        {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
+        {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
+        <FlatList data={items} renderItem={renderItem as any} keyExtractor={(item) => (item as ExchangeInfo).name} />
       </VStack>
 
       <HStack justifyContent="space-between" alignItems="center" p="$4" mb="$3" borderTopWidth={0.3} borderColor={unclearWhite}>
