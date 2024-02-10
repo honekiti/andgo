@@ -12,10 +12,7 @@ import {
   SelectDragIndicator,
   SelectContent,
   SelectItem,
-  Icon,
-  Image,
   ChevronDownIcon,
-  Text,
   Button,
   ButtonText,
   FormControl,
@@ -24,12 +21,12 @@ import {
   Input,
   InputField,
   ScrollView,
-  Divider,
-  ChevronRightIcon,
-  LinkText,
+  useToast,
+  Toast,
+  ToastTitle,
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
-import { Link } from 'expo-router';
+import { router } from 'expo-router';
 import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
 import { ExchangeCredential, ExchangeId } from '../../models';
 import { EXCHANGES } from '../../master';
@@ -38,27 +35,49 @@ import { EXCHANGES } from '../../master';
  * 取引所連携画面
  */
 
-const getExchangeName = (exchangeId: string) => {
-  const exchange = EXCHANGES.find((ex) => ex.id === exchangeId);
-  return exchange ? exchange.name : '取引所';
-};
-
 export default function ExchangeRegistrationScreen() {
-  const [selectedExchangeId, setSelectedExchangeId] = useState<string | undefined>(undefined);
+  const toast = useToast();
+  const [exchangeId, setExchangeId] = useState<ExchangeId>('unknown');
+  const [apiKey, setApiKey] = useState<string>('');
+  const [apiSecret, setApiSecret] = useState<string>('');
 
-  // TODO: 作成ボタン押下時にこの関数を呼び出す
+  const canSubmit = exchangeId !== 'unknown' && apiKey && apiSecret;
+
   const handlePressAddCredential = async () => {
-    // TODO: 下記をフォームの入力値に切り替える
+    const credentials = await loadCredentials();
+    const isAlreadyRegistered = credentials.some((c) => c.id === exchangeId);
+
+    if (isAlreadyRegistered) {
+      toast.show({
+        render: () => (
+          <Toast action="error">
+            <ToastTitle>指定した取引所は既に連携済みです</ToastTitle>
+          </Toast>
+        ),
+      });
+
+      return;
+    }
+
     const newCredential: ExchangeCredential = {
-      id: selectedExchangeId,
-      apiKey: 'dummy',
-      apiSecret: 'dummy',
+      id: exchangeId,
+      apiKey,
+      apiSecret,
     };
 
-    const credentials = await loadCredentials();
     const updatedCredentials = [...credentials, newCredential];
 
     await saveCredentials(updatedCredentials);
+
+    toast.show({
+      render: () => (
+        <Toast action="success">
+          <ToastTitle>取引所を連携しました</ToastTitle>
+        </Toast>
+      ),
+    });
+
+    router.back();
   };
 
   return (
@@ -69,7 +88,7 @@ export default function ExchangeRegistrationScreen() {
             <FormControlLabel>
               <FormControlLabelText color={white}>取引所</FormControlLabelText>
             </FormControlLabel>
-            <Select onValueChange={(v) => setSelectedExchangeId(v)}>
+            <Select onValueChange={(v) => setExchangeId(v as ExchangeId)}>
               <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
                 <SelectInput color={white} placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
@@ -81,7 +100,7 @@ export default function ExchangeRegistrationScreen() {
                     <SelectDragIndicator />
                   </SelectDragIndicatorWrapper>
 
-                  {EXCHANGES.map((exchange) => (
+                  {EXCHANGES.filter((exchange) => exchange.id !== 'unknown').map((exchange) => (
                     <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
                   ))}
                 </SelectContent>
@@ -153,7 +172,7 @@ export default function ExchangeRegistrationScreen() {
               <FormControlLabelText color={white}>APIキー</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField color={white} placeholder="発行したAPIキーを入力" />
+              <InputField color={white} placeholder="発行したAPIキーを入力" value={apiKey} onChangeText={setApiKey} />
             </Input>
           </FormControl>
 
@@ -162,28 +181,33 @@ export default function ExchangeRegistrationScreen() {
               <FormControlLabelText color={white}>APIシークレット</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField color={white} placeholder="発行したAPIシークレットを入力" />
+              <InputField
+                textContentType="none" // for iOS (disable password manager)
+                importantForAutofill="no" // for Android
+                color={white}
+                placeholder="発行したAPIシークレットを入力"
+                value={apiSecret}
+                onChangeText={setApiSecret}
+              />
             </Input>
           </FormControl>
         </VStack>
       </ScrollView>
 
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
-        <Link href="/home" asChild>
-          <Button
-            onPress={() => handlePressAddCredential()}
-            w="100%"
-            size="lg"
-            variant="solid"
-            action="primary"
-            isDisabled={false}
-            isFocusVisible={false}
-            rounded="$lg"
-            bgColor="#f97316"
-          >
-            <ButtonText>連携する</ButtonText>
-          </Button>
-        </Link>
+        <Button
+          onPress={handlePressAddCredential}
+          w="100%"
+          size="lg"
+          variant="solid"
+          action="primary"
+          isDisabled={!canSubmit}
+          isFocusVisible={false}
+          rounded="$lg"
+          bgColor="#f97316"
+        >
+          <ButtonText>連携する</ButtonText>
+        </Button>
       </Box>
     </Box>
   );
