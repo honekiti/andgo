@@ -33,6 +33,7 @@ import { useFocusEffect, router } from 'expo-router';
 import {
   loadPlans,
   savePlans,
+  getExchange,
   getExchangeFromCredential,
   getModifiedRefAt,
   getNextIndexFromNow,
@@ -115,6 +116,9 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
           setCredentials(credentials);
         }
 
+        // 取引所の初期選択値を連携済取引所の値とする
+        setExchangeId(credentials[0].exchangeId);
+
         // プラン編集の場合は、プラン情報を読み込む
         if (props.targetPlanId) {
           const plans = await loadPlans();
@@ -158,23 +162,26 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
             <FormControlLabel>
               <FormControlLabelText color={white}>取引所</FormControlLabelText>
             </FormControlLabel>
-            <Select onValueChange={(v) => setExchangeId(v as ExchangeId)}>
-              <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                <SelectInput color={white} placeholder="選択してください" />
-                <SelectIcon mr="$3" as={ChevronDownIcon} />
-              </SelectTrigger>
-              <SelectPortal>
-                <SelectBackdrop />
-                <SelectContent>
-                  <SelectDragIndicatorWrapper>
-                    <SelectDragIndicator />
-                  </SelectDragIndicatorWrapper>
-                  {exchangeItems.map(({ exchange }) => (
-                    <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
-                  ))}
-                </SelectContent>
-              </SelectPortal>
-            </Select>
+            {/* SelectがsetExchangeIdを反映してくれないバグをLazyにレンダリングすることで回避する */}
+            {(!props.targetPlanId || exchangeId !== 'UNKNOWN') && (
+              <Select selectedValue={exchangeId} initialLabel={getExchange(exchangeId).name} onValueChange={(v) => setExchangeId(v as ExchangeId)}>
+                <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
+                  <SelectInput color={white} placeholder="選択してください" />
+                  <SelectIcon mr="$3" as={ChevronDownIcon} />
+                </SelectTrigger>
+                <SelectPortal>
+                  <SelectBackdrop />
+                  <SelectContent>
+                    <SelectDragIndicatorWrapper>
+                      <SelectDragIndicator />
+                    </SelectDragIndicatorWrapper>
+                    {exchangeItems.map(({ exchange }) => (
+                      <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
+                    ))}
+                  </SelectContent>
+                </SelectPortal>
+              </Select>
+            )}
           </FormControl>
 
           {exchangeId !== 'UNKNOWN' && <ExchangeInfo exchangeId={exchangeId} />}

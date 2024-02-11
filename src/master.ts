@@ -6,7 +6,7 @@ export const EXCHANGES: ExchangeMaster[] = [
   {
     // reference: https://bitbank.cc/docs/pairs/
     id: 'UNKNOWN',
-    name: '不明',
+    name: '未選択',
     minBtcAmt: 0.0001,
     minJpyAmt: 1,
     orderPrecision: 4,

@@ -52,87 +52,12 @@ function RootLayoutNav() {
       <SafeAreaProvider>
         <Stack
           initialRouteName="index"
+          // 全スクリーン共通の設定
           screenOptions={{
             headerStyle: { backgroundColor: darkGrey },
             headerTintColor: white,
           }}
         />
-
-        {/* <Stack
-          screenOptions={{
-            headerStyle: { backgroundColor: darkGrey },
-            headerTintColor: white,
-          }}
-        >
-          <Stack.Screen name="index" options={{ title: 'デバッグ', headerShown: false }} />
-          <Stack.Screen
-            name="home"
-            options={{
-              title: 'ホーム',
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="config"
-            options={{
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="(onbording)/terms-of-service"
-            options={{
-              title: '利用規約のご確認',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="(onbording)/tutorial"
-            options={{
-              title: 'チュートリアル',
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="exchanges/add"
-            options={{
-              title: '取引所連携',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="exchanges"
-            options={{
-              title: '取引所',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="plans/1"
-            options={{
-              title: '積立プラン編集',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="plans/add"
-            options={{
-              title: '積立プラン作成',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-        </Stack> */}
       </SafeAreaProvider>
     </GluestackUIProvider>
   );

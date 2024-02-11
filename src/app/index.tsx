@@ -10,6 +10,14 @@ export default function HomeScreen() {
   const toast = useToast();
 
   const handleReset = async (withFixtures: boolean) => {
+    toast.show({
+      render: () => (
+        <Toast>
+          <ToastTitle>データを初期化しました</ToastTitle>
+        </Toast>
+      ),
+    });
+
     if (!withFixtures) {
       await saveCredentials([]);
       await savePlans([]);
@@ -72,14 +80,6 @@ export default function HomeScreen() {
         },
       },
     ]);
-
-    toast.show({
-      render: () => (
-        <Toast>
-          <ToastTitle>データを初期化しました</ToastTitle>
-        </Toast>
-      ),
-    });
   };
 
   return (
