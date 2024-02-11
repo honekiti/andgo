@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 // gloustack uiのScrollViewにはrefが定義されていないため、react-nativeのScrollViewを使用する
 import { Dimensions, ScrollView } from 'react-native';
 import { Box, Button, ButtonText, HStack, VStack, Image, Text } from '@gluestack-ui/themed';
-import { Link } from 'expo-router';
+import { Stack, Link } from 'expo-router';
 import { darkGrey, unclearWhite } from '../../constants/Colors';
 import CarouselIndicator from '../../components/CarouselIndicator';
 
@@ -25,7 +25,7 @@ const SLIDES: SlideType[] = [
       { id: '2', text: 'で', textStyle: 'body15.black' },
       { id: '3', text: '資産形成', textStyle: 'big20.black' },
     ],
-    imageSrc: require('../../assets/images/tutorial1.png'),
+    imageSrc: require('../../../assets/images/tutorial1.png'),
     messages: [
       {
         id: '1',
@@ -41,7 +41,7 @@ const SLIDES: SlideType[] = [
       { id: '2', text: 'を', textStyle: 'body15.black' },
       { id: '3', text: '開設', textStyle: 'big20.black' },
     ],
-    imageSrc: require('../../assets/images/tutorial2.png'),
+    imageSrc: require('../../../assets/images/tutorial2.png'),
     messages: [
       { id: '1', text: ' 暗号資産(仮想通貨)取引所にアカウントを開設、取引所アカウントにビットコイン購入の原資を入金します。' },
       { id: '2', text: '＊このアプリでは、暗号資産(仮想通貨)取引所の開設は行なえません。' },
@@ -55,7 +55,7 @@ const SLIDES: SlideType[] = [
       { id: '2', text: 'と', textStyle: 'body15.black' },
       { id: '3', text: '連携', textStyle: 'big20.black' },
     ],
-    imageSrc: require('../../assets/images/tutorial3.png'),
+    imageSrc: require('../../../assets/images/tutorial3.png'),
     messages: [{ id: '1', text: '「つみたてとこ」ではAPIキー・APIシークレットを登録し、暗号資産(仮想通貨)取引所と連携します。' }],
   },
   {
@@ -66,7 +66,7 @@ const SLIDES: SlideType[] = [
       { id: '2', text: 'を', textStyle: 'body15.black' },
       { id: '3', text: '設定', textStyle: 'big20.black' },
     ],
-    imageSrc: require('../../assets/images/tutorial4.png'),
+    imageSrc: require('../../../assets/images/tutorial4.png'),
     messages: [{ id: '1', text: 'どの取引所で何時、いくら相当のビットコインを購入するか決め、積立スケジュールを設定します。' }],
   },
   {
@@ -77,7 +77,7 @@ const SLIDES: SlideType[] = [
       { id: '2', text: 'の', textStyle: 'body15.black' },
       { id: '3', text: '自動積立', textStyle: 'big20.black' },
     ],
-    imageSrc: require('../../assets/images/tutorial5.png'),
+    imageSrc: require('../../../assets/images/tutorial5.png'),
     messages: [
       {
         id: '1',
@@ -93,7 +93,7 @@ const SLIDES: SlideType[] = [
       { id: '2', text: 'を', textStyle: 'body15.black' },
       { id: '3', text: '確認', textStyle: 'big20.black' },
     ],
-    imageSrc: require('../../assets/images/tutorial6.png'),
+    imageSrc: require('../../../assets/images/tutorial6.png'),
     messages: [{ id: '1', text: 'いつでも「つみたてとこ」から積立状況や残高の確認・管理が行えます。' }],
   },
   {
@@ -105,7 +105,7 @@ const SLIDES: SlideType[] = [
       { id: '3', text: '自動積立貯金を', textStyle: 'caption12.black' },
     ],
     lastslide: 'はじめよう！',
-    imageSrc: require('../../assets/images/tutorial7.png'),
+    imageSrc: require('../../../assets/images/tutorial7.png'),
     messages: [],
   },
 ];
@@ -136,6 +136,13 @@ export default function TutorialScreen() {
 
   return (
     <Box flex={1} bg={darkGrey}>
+      <Stack.Screen
+        options={{
+          title: 'チュートリアル',
+          headerShown: false,
+        }}
+      />
+
       <ScrollView
         ref={scrollViewRef}
         style={{ width: '100%', height: '100%', backgroundColor: darkGrey }}

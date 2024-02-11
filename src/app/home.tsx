@@ -1,14 +1,11 @@
-import { useCallback, useState } from 'react';
-import { Link, useFocusEffect } from 'expo-router';
-import { Box, Button, ButtonIcon, ButtonText, HStack, Pressable, ScrollView, Text, VStack } from '@gluestack-ui/themed';
+import { useState } from 'react';
+import { Stack, Link } from 'expo-router';
+import { Box, Button, ButtonIcon, HStack, Pressable, Text, VStack } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
-import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
+import { SettingsIcon, ArrowRightIcon, AddIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
+import { white, darkGrey, lightGrey } from '../constants/Colors';
 import CalenderInfo from '../components/CalenderInfo';
 import AccumulateInfo from '../components/AccumulateInfo';
-import { Schedule } from '../models';
-import { saveScheduels, loadSchedules } from '../services/schedule-service';
-import { genId } from '../utils/crypto';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -16,6 +13,13 @@ export default function HomeScreen() {
 
   return (
     <Box h="$full" pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
+      <Stack.Screen
+        options={{
+          title: 'ホーム',
+          headerShown: false,
+        }}
+      />
+
       <Box h="$64" p="$3" display="flex" flexDirection="column">
         <Box h="50%" display="flex" flexDirection="column">
           <HStack h="40%" justifyContent="space-between">
@@ -45,7 +49,7 @@ export default function HomeScreen() {
                 size="2xs"
                 bgColor="#0000"
                 resizeMode="contain"
-                source={require('../assets/images/bit-coin-line.png')}
+                source={require('../../assets/images/bit-coin-line.png')}
                 alt="bit-coin-line-logo"
               />
               <Text color={white} fontSize={13}>

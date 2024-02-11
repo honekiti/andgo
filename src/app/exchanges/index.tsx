@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { ListRenderItem } from 'react-native';
 import { Box, Button, FlatList, HStack, VStack, Text, Icon, ButtonText, GripVerticalIcon, useToast, Toast, ToastTitle } from '@gluestack-ui/themed';
-import { Link, useFocusEffect } from 'expo-router';
+import { Stack, Link, useFocusEffect } from 'expo-router';
 import { loadCredentials } from '../../services/exchange-credential-service';
 import { EXCHANGES } from '../../master';
 import { ExchangeCredential, ExchangeId } from '../../models';
@@ -18,12 +18,12 @@ export default function ExchangeListScreen() {
   const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
   const [balances, setBalances] = useState<(number | undefined)[]>([]);
   const items: ExchangeInfo[] = credentials.map((credential, index) => ({
-    name: EXCHANGES.find((ex) => ex.id === credential.id)?.name ?? 'unknown',
+    name: EXCHANGES.find((ex) => ex.id === credential.exchangeId)?.name ?? 'unknown',
     balance: balances[index],
   }));
 
   const handlePressUnregister = (id: ExchangeId) => {
-    const newCredentials = credentials.filter((c) => c.id !== id);
+    const newCredentials = credentials.filter((c) => c.exchangeId !== id);
     saveCredentials(newCredentials);
     setCredentials(newCredentials);
 
@@ -72,6 +72,13 @@ export default function ExchangeListScreen() {
 
   return (
     <Box flex={1} bg={darkGrey} justifyContent="space-between">
+      <Stack.Screen
+        options={{
+          title: '取引所',
+          presentation: 'card',
+        }}
+      />
+
       <VStack>
         {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
         {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}

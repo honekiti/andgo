@@ -1,11 +1,11 @@
-import { ExchangeMaster, PlanMaster } from './models';
+import { ExchangeMaster, PlanTypeMaster } from './models';
 
 export const VIEW_PRECISION = 8;
 
 export const EXCHANGES: ExchangeMaster[] = [
   {
     // reference: https://bitbank.cc/docs/pairs/
-    id: 'unknown',
+    id: 'UNKNOWN',
     name: '不明',
     minBtcAmt: 0.0001,
     minJpyAmt: 1,
@@ -13,7 +13,7 @@ export const EXCHANGES: ExchangeMaster[] = [
   },
   {
     // reference: https://bitbank.cc/docs/pairs/
-    id: 'bitbank',
+    id: 'BITBANK',
     name: 'bitbank',
     minBtcAmt: 0.0001,
     minJpyAmt: 1,
@@ -21,7 +21,7 @@ export const EXCHANGES: ExchangeMaster[] = [
   },
   {
     // reference: https://bitflyer.com/ja-jp/faq/4-27
-    id: 'bitflyer',
+    id: 'BITFLYER',
     name: 'bitFlyer',
     minBtcAmt: 0.001,
     minJpyAmt: 1,
@@ -29,7 +29,7 @@ export const EXCHANGES: ExchangeMaster[] = [
   },
   {
     // reference: https://faq.coincheck.com/s/article/40218?language=ja
-    id: 'coincheck',
+    id: 'COINCHECK',
     name: 'Coincheck',
     minBtcAmt: 0.005,
     minJpyAmt: 500,
@@ -37,7 +37,7 @@ export const EXCHANGES: ExchangeMaster[] = [
   },
   {
     // https://coin.z.com/jp/corp/product/info/exchange/
-    id: 'gmo',
+    id: 'GMO',
     name: 'GMOコイン',
     minBtcAmt: 0.0001,
     minJpyAmt: 1,
@@ -45,7 +45,7 @@ export const EXCHANGES: ExchangeMaster[] = [
   },
 ];
 
-export const PLANS: PlanMaster[] = [
+export const PLAN_TYPES: PlanTypeMaster[] = [
   {
     id: 'DAILY',
     name: '毎日',

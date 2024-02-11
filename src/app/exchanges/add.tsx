@@ -26,7 +26,7 @@ import {
   ToastTitle,
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
-import { router, useFocusEffect } from 'expo-router';
+import { Stack, router, useFocusEffect } from 'expo-router';
 import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
 import { ExchangeCredential, ExchangeId } from '../../models';
 import { EXCHANGES } from '../../master';
@@ -40,21 +40,21 @@ type Item = {
 /**
  * 取引所連携画面
  */
-export default function ExchangeRegistrationScreen() {
+export default function ExchangeAddScreen() {
   const toast = useToast();
   const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
 
   // form state
-  const [exchangeId, setExchangeId] = useState<ExchangeId>('unknown');
+  const [exchangeId, setExchangeId] = useState<ExchangeId>('UNKNOWN');
   const [apiKey, setApiKey] = useState<string>('');
   const [apiSecret, setApiSecret] = useState<string>('');
 
   // reactive status
-  const canSubmit = exchangeId !== 'unknown' && apiKey && apiSecret;
+  const canSubmit = exchangeId !== 'UNKNOWN' && apiKey && apiSecret;
   const items: Item[] = useMemo(
     () =>
-      EXCHANGES.filter((exchange) => exchange.id !== 'unknown').map((exchange) => {
-        const isAlreadyRegistered = credentials.some((c) => c.id === exchange.id);
+      EXCHANGES.filter((exchange) => exchange.id !== 'UNKNOWN').map((exchange) => {
+        const isAlreadyRegistered = credentials.some((c) => c.exchangeId === exchange.id);
 
         return {
           id: exchange.id,
@@ -66,7 +66,7 @@ export default function ExchangeRegistrationScreen() {
   );
 
   const handlePressAddCredential = async () => {
-    const isAlreadyRegistered = credentials.some((c) => c.id === exchangeId);
+    const isAlreadyRegistered = credentials.some((c) => c.exchangeId === exchangeId);
 
     if (isAlreadyRegistered) {
       toast.show({
@@ -81,7 +81,7 @@ export default function ExchangeRegistrationScreen() {
     }
 
     const newCredential: ExchangeCredential = {
-      id: exchangeId,
+      exchangeId: exchangeId,
       apiKey,
       apiSecret,
     };
@@ -114,6 +114,13 @@ export default function ExchangeRegistrationScreen() {
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
+      <Stack.Screen
+        options={{
+          title: '取引所連携',
+          presentation: 'card',
+        }}
+      />
+
       <ScrollView h="auto">
         <VStack space="3xl" p="$4">
           <FormControl size="md" isRequired={true}>

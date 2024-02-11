@@ -26,38 +26,40 @@ import {
   useToast,
   Toast,
   ToastTitle,
+  Switch,
 } from '@gluestack-ui/themed';
-import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
+import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
 import { useFocusEffect, router } from 'expo-router';
 import {
-  loadSchedules,
-  saveScheduels,
-  getExchangeName,
-  getPlan,
+  loadPlans,
+  savePlans,
+  getExchangeFromCredential,
   getModifiedRefAt,
   getNextIndexFromNow,
   getNextAtByIndex,
-} from '../../services/schedule-service';
-import { Schedule, ExchangeCredential } from '../../models';
-import { genId } from '../../utils/crypto';
-import type { ExchangeId, PlanId } from '../../models';
-import { PLANS, DAY_OF_WEEK_OPTIONS, DATE_OPTIONS, HOUR_OPTIONS, MINUTE_OPTIONS } from '../../master';
-import { loadCredentials } from '../../services/exchange-credential-service';
+  getRefAtDetails,
+} from '../services/plan-service';
+import { genId } from '../utils/crypto';
+import type { Plan, ExchangeCredential, ExchangeId, PlanTypeId, PlanId } from '../models';
+import { PLAN_TYPES, DAY_OF_WEEK_OPTIONS, DATE_OPTIONS, HOUR_OPTIONS, MINUTE_OPTIONS } from '../master';
+import { loadCredentials } from '../services/exchange-credential-service';
+import ExchangeInfo from '../components/ExchangeInfo';
 
-/**
- * 積立プラン作成画面
- */
-export default function ScheduleRegistrationScreen() {
+type PlanScreenBaseProps = {
+  targetPlanId?: PlanId;
+};
+
+export default function PlanScreenBase(props: PlanScreenBaseProps) {
   const toast = useToast();
   const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
-  const exchanges = credentials.map((credential) => ({
-    id: credential.id,
-    name: getExchangeName(credential),
+  const exchangeItems = credentials.map((credential) => ({
+    credential,
+    exchange: getExchangeFromCredential(credential),
   }));
 
   // form data
-  const [exchangeId, setExchangeId] = useState<ExchangeId>('unknown');
-  const [planId, setPlanId] = useState<PlanId>('MONTHLY');
+  const [exchangeId, setExchangeId] = useState<ExchangeId>('UNKNOWN');
+  const [planTypeId, setPlanTypeId] = useState<PlanTypeId>('MONTHLY');
   // planId === 'WEEKLY' の場合のみ有効
   const [dayOfWeek, setDayOfWeek] = useState<number>(0);
   // planId === 'MONTHLY' の場合のみ有効
@@ -65,15 +67,13 @@ export default function ScheduleRegistrationScreen() {
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
 
-  const handlePressAddSchedule = async () => {
-    const plan = getPlan(planId);
+  const handleSubmit = async () => {
     const refAt = getModifiedRefAt({ refAt: new Date().getTime(), date, dayOfWeek, hours: hour, minutes: minute });
-    const newSuchedule: Schedule = {
+    const newPlan: Plan = {
       id: genId(),
       exchangeId,
       quoteAmount: 123,
-      intervalUnit: plan.intervalUnit,
-      interval: plan.interval,
+      planTypeId,
       status: {
         enabled: true,
         refAt,
@@ -82,15 +82,15 @@ export default function ScheduleRegistrationScreen() {
       },
     };
     // 次回発動時刻に調整
-    const nextIndex = getNextIndexFromNow(newSuchedule, new Date().getTime());
-    const nextAt = getNextAtByIndex(newSuchedule, nextIndex);
+    const nextIndex = getNextIndexFromNow(newPlan, new Date().getTime());
+    const nextAt = getNextAtByIndex(newPlan, nextIndex);
 
-    const schedules = await loadSchedules();
+    const plans = await loadPlans();
 
     // 一番後ろに追加
-    const updatedSchedule = [...schedules, { ...newSuchedule, nextIndex, nextAt }];
+    const updatedPlans = [...plans, { ...newPlan, nextIndex, nextAt }];
 
-    await saveScheduels(updatedSchedule);
+    await savePlans(updatedPlans);
 
     // 閉じる
     router.back();
@@ -98,7 +98,9 @@ export default function ScheduleRegistrationScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      loadCredentials().then((credentials) => {
+      const loadData = async () => {
+        // 取引所連係情報を読み込む
+        const credentials = await loadCredentials();
         if (credentials.length === 0) {
           // 取引所連携がない場合は、モーダルを閉じる
           toast.show({
@@ -112,8 +114,40 @@ export default function ScheduleRegistrationScreen() {
         } else {
           setCredentials(credentials);
         }
-      });
-    }, [toast.show]),
+
+        // プラン編集の場合は、プラン情報を読み込む
+        if (props.targetPlanId) {
+          const plans = await loadPlans();
+          const targetPlan = plans.find((p) => p.id === props.targetPlanId);
+          if (!targetPlan) {
+            toast.show({
+              render: () => (
+                <Toast action="error">
+                  <ToastTitle>プランが見つかりません</ToastTitle>
+                </Toast>
+              ),
+            });
+            router.back();
+          } else {
+            const refAtDetails = getRefAtDetails(targetPlan);
+
+            setExchangeId(targetPlan.exchangeId);
+            setPlanTypeId(targetPlan.planTypeId);
+
+            if (targetPlan.planTypeId === 'WEEKLY') {
+              setDayOfWeek(refAtDetails.dayOfWeek);
+            }
+            if (targetPlan.planTypeId === 'MONTHLY') {
+              setDate(refAtDetails.date);
+              setHour(refAtDetails.hour);
+              setMinute(refAtDetails.minute);
+            }
+          }
+        }
+      };
+
+      loadData();
+    }, [props.targetPlanId, toast.show]),
   );
 
   return (
@@ -135,7 +169,7 @@ export default function ScheduleRegistrationScreen() {
                   <SelectDragIndicatorWrapper>
                     <SelectDragIndicator />
                   </SelectDragIndicatorWrapper>
-                  {exchanges.map((exchange) => (
+                  {exchangeItems.map(({ exchange }) => (
                     <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
                   ))}
                 </SelectContent>
@@ -143,20 +177,7 @@ export default function ScheduleRegistrationScreen() {
             </Select>
           </FormControl>
 
-          {/* <Box h="auto" w="$full" bg="#000" rounded="$lg">
-            <VStack space="md" alignItems="center" py="$4">
-              <Box h="$8" w="$8" rounded="$full" bg="#00f" />
-              <Text fontSize={12} color={white} bold>
-                最低購入量
-              </Text>
-              <Text fontSize={17} color={white} bold>
-                0.00000001
-              </Text>
-              <Text fontSize={11} color={white}>
-                1000円相当
-              </Text>
-            </VStack>
-          </Box> */}
+          {exchangeId !== 'UNKNOWN' && <ExchangeInfo exchangeId={exchangeId} />}
 
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
@@ -164,7 +185,7 @@ export default function ScheduleRegistrationScreen() {
             </FormControlLabel>
             <HStack justifyContent="space-between">
               <Box w="49%">
-                <Select onValueChange={(v) => setPlanId(v as PlanId)}>
+                <Select onValueChange={(v) => setPlanTypeId(v as PlanTypeId)}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                     <SelectInput color={white} placeholder="毎週" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
@@ -175,15 +196,15 @@ export default function ScheduleRegistrationScreen() {
                       <SelectDragIndicatorWrapper>
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
-                      {PLANS.map((plan) => (
-                        <SelectItem key={plan.id} label={plan.name} value={plan.id} />
+                      {PLAN_TYPES.map((planType) => (
+                        <SelectItem key={planType.id} label={planType.name} value={planType.id} />
                       ))}
                     </SelectContent>
                   </SelectPortal>
                 </Select>
               </Box>
               <Box w="49%">
-                {planId === 'WEEKLY' && (
+                {planTypeId === 'WEEKLY' && (
                   <Select onValueChange={(v) => setDayOfWeek(Number(v))}>
                     <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                       <SelectInput color={white} />
@@ -202,7 +223,7 @@ export default function ScheduleRegistrationScreen() {
                     </SelectPortal>
                   </Select>
                 )}
-                {planId === 'MONTHLY' && (
+                {planTypeId === 'MONTHLY' && (
                   <Select onValueChange={(v) => setDate(Number(v))}>
                     <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
                       <SelectInput color={white} />
@@ -292,19 +313,25 @@ export default function ScheduleRegistrationScreen() {
               ※成行注文となります。（タイミング）、数量が若干ずれますのでご了承ください
             </Text>
           </FormControl>
+
+          {props.targetPlanId && (
+            <HStack justifyContent="space-between">
+              <Text color={white}>積立プランのステータス</Text>
+              <Switch size="sm" isDisabled={false} />
+            </HStack>
+          )}
+
+          {props.targetPlanId && (
+            <Button size="md" variant="link" action="negative" isDisabled={false} isFocusVisible={false} justifyContent="flex-start">
+              <ButtonText fontSize={13} underline mb="$4">
+                積立プランを削除する
+              </ButtonText>
+            </Button>
+          )}
         </VStack>
       </ScrollView>
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
-        <Button
-          onPress={handlePressAddSchedule}
-          w="100%"
-          size="lg"
-          variant="solid"
-          action="primary"
-          isDisabled={false}
-          isFocusVisible={false}
-          rounded="$lg"
-        >
+        <Button onPress={handleSubmit} w="100%" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
           <ButtonText>作成する</ButtonText>
         </Button>
       </Box>

@@ -1,5 +1,5 @@
 // 取引所ID
-export type ExchangeId = 'unknown' | 'bitbank' | 'bitflyer' | 'coincheck' | 'gmo';
+export type ExchangeId = 'UNKNOWN' | 'BITBANK' | 'BITFLYER' | 'COINCHECK' | 'GMO';
 
 // 取引所マスター
 export type ExchangeMaster = {
@@ -12,7 +12,7 @@ export type ExchangeMaster = {
 
 // 取引所のクレデンシャル情報
 export type ExchangeCredential = {
-  id: ExchangeId;
+  exchangeId: ExchangeId;
   apiKey: string;
   apiSecret: string;
 };
@@ -22,16 +22,19 @@ export type Ticker = {
   ask: number; // 現在の売り注文の最安値
 };
 
+export type PlanId = string;
+
+export type PlanTypeId = 'DAILY' | 'WEEKLY' | 'MONTHLY';
+
 // スケジュールの繰り返し単位
 export type IntervalUnit = 'MINUTES' | 'HOURS' | 'DAYS' | 'MONTHS';
 
 // スケジュール
-export type Schedule = {
-  id: string; // schedule id
+export type Plan = {
+  id: PlanId;
   exchangeId: ExchangeId; // target exchange
   quoteAmount: number; // quote amount [yen]
-  intervalUnit: IntervalUnit; // interval unit
-  interval: number; // interval [minutes, hours, days, months]
+  planTypeId: PlanTypeId; // plan id
   status: {
     enabled: boolean; // enabled or not
     refAt: number; // reference time [unix time]
@@ -40,11 +43,9 @@ export type Schedule = {
   };
 };
 
-export type PlanId = 'DAILY' | 'WEEKLY' | 'MONTHLY';
-
-// プランマスター
-export type PlanMaster = {
-  id: PlanId; // プランID
+// プランタイプマスター
+export type PlanTypeMaster = {
+  id: PlanTypeId; // プランID
   name: string; // プラン名
   intervalUnit: IntervalUnit; // スケジュールの繰り返し単位
   interval: number; // 繰り返し間隔

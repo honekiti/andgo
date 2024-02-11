@@ -6,7 +6,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
+import { white, darkGrey } from '../constants/Colors';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,7 +50,20 @@ function RootLayoutNav() {
   return (
     <GluestackUIProvider config={config}>
       <SafeAreaProvider>
-        <Stack>
+        <Stack
+          initialRouteName="index"
+          screenOptions={{
+            headerStyle: { backgroundColor: darkGrey },
+            headerTintColor: white,
+          }}
+        />
+
+        {/* <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: darkGrey },
+            headerTintColor: white,
+          }}
+        >
           <Stack.Screen name="index" options={{ title: 'デバッグ', headerShown: false }} />
           <Stack.Screen
             name="home"
@@ -84,7 +97,7 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
-            name="(exchange)/exchange-registration"
+            name="exchanges/add"
             options={{
               title: '取引所連携',
               presentation: 'card',
@@ -93,7 +106,7 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
-            name="(exchange)/exchange-list"
+            name="exchanges"
             options={{
               title: '取引所',
               presentation: 'card',
@@ -102,7 +115,7 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
-            name="(schedule)/schedule-edit"
+            name="plans/1"
             options={{
               title: '積立プラン編集',
               presentation: 'card',
@@ -111,7 +124,7 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
-            name="(schedule)/schedule-registration"
+            name="plans/add"
             options={{
               title: '積立プラン作成',
               presentation: 'card',
@@ -119,7 +132,7 @@ function RootLayoutNav() {
               headerTintColor: white,
             }}
           />
-        </Stack>
+        </Stack> */}
       </SafeAreaProvider>
     </GluestackUIProvider>
   );
