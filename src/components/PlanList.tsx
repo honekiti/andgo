@@ -1,33 +1,20 @@
 import { ListRenderItem } from 'react-native';
-import {
-  Box,
-  Text,
-  Heading,
-  FlatList,
-  ScrollView,
-  VStack,
-  Button,
-  HStack,
-  Icon,
-  CheckCircleIcon,
-  CloseCircleIcon,
-  ButtonText,
-} from '@gluestack-ui/themed';
-import { Schedule } from '../models';
-import ScheduleItem from './ScheduleItem';
+import { Box, Text, FlatList, ScrollView, VStack, Button, HStack, Icon, CheckCircleIcon, CloseCircleIcon, ButtonText } from '@gluestack-ui/themed';
+import { Plan } from '../models';
+import PlanItem from './PlanItem';
 import { darkGrey, green, lightGrey, red, unclearWhite, white } from '../constants/Colors';
 import { Link } from 'expo-router';
-export type ScheduleListProps = {
-  schedules: Schedule[];
+export type PlanListProps = {
+  plans: Plan[];
 };
-export default function ScheduleList(props: ScheduleListProps) {
-  const renderItem: ListRenderItem<Schedule> = ({ item }) => <ScheduleItem item={item} />;
+export default function PlanList(props: PlanListProps) {
+  const renderItem: ListRenderItem<Plan> = ({ item }) => <PlanItem item={item} />;
 
   return (
     <Box>
       {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
       {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-      <FlatList data={props.schedules} renderItem={renderItem as any} keyExtractor={(item) => (item as Schedule).id} />
+      <FlatList data={props.plans} renderItem={renderItem as any} keyExtractor={(item) => (item as Plan).id} />
       <Box h="auto" w="$full" justifyContent="space-between">
         <ScrollView h="auto">
           <VStack space="sm" p="$4">

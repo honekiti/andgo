@@ -4,26 +4,19 @@ import { Box, Button, ButtonText, ScrollView, Text } from '@gluestack-ui/themed'
 import { white, unclearWhite, darkGrey, lightGrey, red, green } from '../constants/Colors';
 import { Link } from 'expo-router';
 import { genId } from '../utils/crypto';
-import { loadSchedules, saveScheduels } from '../services/schedule-service';
-import { ExchangeCredential, Schedule } from '../models';
-import ScheduleList from './ScheduleList';
+import { loadPlans, savePlans } from '../services/plan-service';
+import { ExchangeCredential, Plan } from '../models';
+import PlanList from './PlanList';
 import { loadCredentials } from '../services/exchange-credential-service';
 
+/**
+ * プラン一覧コンポーネント
+ * @returns
+ */
 export default function AccumulateInfo() {
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
-
-  // このコンポーネントを含む画面にフォーカスが当たった際にスケジュール情報を読み込む
-  // ↓の「スケジュール情報」のlengthを使用すると、連携した直後の場面で「連携しよう」画面が表示されてしまうので「credentials」に取引所が入った段階で画面切り替えてます。
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     loadSchedules().then((schedules) => {
-  //       setSchedules(schedules);
-  //     });
-  //   }, []),
-  // );
-
-  // 取引所連携情報読み込みを有効にしたら、初期値を空配列にする
+  const [plans, setPlans] = useState<Plan[]>([]);
   const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
+
   // 取引所連携情報を読み込む
   useFocusEffect(
     useCallback(() => {
@@ -32,8 +25,6 @@ export default function AccumulateInfo() {
       });
     }, []),
   );
-
-  // TODO: schedules.length > 0 の時は<ScheduleList schedules={schedules} /> をレンダリングする
 
   return (
     <>
@@ -75,7 +66,7 @@ export default function AccumulateInfo() {
       {/* ↑ 取引所連携前 ↑ */}
 
       {/* ↓ 取引所連携後 ↓ */}
-      {credentials.length > 0 && <ScheduleList schedules={schedules} />}
+      {credentials.length > 0 && <PlanList plans={plans} />}
       {/* ↑ 取引所連携後 ↑ */}
     </>
   );

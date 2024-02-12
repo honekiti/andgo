@@ -1,11 +1,11 @@
 import { Box, Text } from '@gluestack-ui/themed';
-import { Schedule } from '../models';
+import { Plan } from '../models';
 
-export type ScheduleItemProps = {
-  item: Schedule;
+export type PlanItemProps = {
+  item: Plan;
 };
 
-export default function ScheduleItem(props: ScheduleItemProps) {
+export default function PlanItem(props: PlanItemProps) {
   return (
     <Box justifyContent="center">
       <Text>{JSON.stringify(props.item)}</Text>

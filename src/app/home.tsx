@@ -238,16 +238,6 @@ export default function HomeScreen() {
         {activeTab === 0 && <CalenderInfo />}
         {activeTab === 1 && <AccumulateInfo />}
       </Box>
-
-      {/* <ScheduleList schedules={schedules} />
-
-      <Button onPress={handlePressAddSchedule}>
-        <ButtonText>スケジュールの追加</ButtonText>
-      </Button>
-
-      <Button onPress={handleReset}>
-        <ButtonText>リセット</ButtonText>
-      </Button> */}
     </Box>
   );
 }
