@@ -33,6 +33,7 @@ import { Link } from 'expo-router';
 import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
 import { ExchangeCredential } from '../../models';
 import { EXCHANGES } from '../../master';
+import { ExchangeId } from '../../models';
 
 /**
  * 取引所連携画面
@@ -49,8 +50,9 @@ export default function ExchangeRegistrationScreen() {
   // TODO: 作成ボタン押下時にこの関数を呼び出す
   const handlePressAddCredential = async () => {
     // TODO: 下記をフォームの入力値に切り替える
+
     const newCredential: ExchangeCredential = {
-      id: 'bitbank',
+      id: selectedExchangeId as ExchangeId,
       apiKey: 'dummy',
       apiSecret: 'dummy',
     };
@@ -63,7 +65,7 @@ export default function ExchangeRegistrationScreen() {
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
-      <ScrollView>
+      <ScrollView h="auto">
         <VStack space="3xl" p="$4">
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
@@ -91,6 +93,7 @@ export default function ExchangeRegistrationScreen() {
 
           {selectedExchangeId && (
             <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
+              =======
               <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../assets/images/key-fill.png')} alt="key-fill-logo" />
               <Text color={white} fontSize={14} py="$2">
                 APIキーを発行してください

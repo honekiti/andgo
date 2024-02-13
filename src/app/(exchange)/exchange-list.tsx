@@ -5,7 +5,7 @@ import { Link, useFocusEffect } from 'expo-router';
 import { loadCredentials } from '../../services/exchange-credential-service';
 import { EXCHANGES } from '../../master';
 import { ExchangeCredential } from '../../models';
-import { white, unclearWhite, darkGrey } from '../../constants/Colors';
+import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 
 export type ExchangeInfo = {
   name: string;
@@ -32,16 +32,14 @@ export default function ExchangeListScreen() {
     );
   };
 
-
-  // // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)useFocusEffect(
-  //   useCallback(() => {
-  //     loadCredentials().then((credentials) => {
-  //       setCredentials(credentials);
-  //       // TODO: lazy load balances
-  //       setBalances(Array(credentials.length).fill(undefined));
-  //     });
-  //   }, []),
-  // );
+  // TODO: 取引所連携情報読み込みを有効にする(コメントアウトを解除する)useFocusEffect(
+  useCallback(() => {
+    loadCredentials().then((credentials) => {
+      setCredentials(credentials);
+      // TODO: lazy load balances
+      setBalances(Array(credentials.length).fill(undefined));
+    });
+  }, []);
 
   return (
     <Box flex={1} bg={darkGrey} justifyContent="space-between">

@@ -57,7 +57,7 @@ export default function HomeScreen() {
 
         <HStack h="50%" justifyContent="space-between" alignItems="flex-start" pb="$2">
           {/* ↓ positive ↓ */}
-          <VStack h="auto" w="49%" p="$3" bg={orange} rounded="$lg">
+          {/* <VStack h="auto" w="49%" p="$3" bg={orange} rounded="$lg">
             <HStack h="50%" justifyContent="space-between">
               <Text w="75%" fontSize={17} color={white} fontWeight="500">
                 運用損益
@@ -87,7 +87,7 @@ export default function HomeScreen() {
                 100,000
               </Text>
             </HStack>
-          </VStack>
+          </VStack> */}
           {/* ↑ positive ↑ */}
 
           {/* ↓ negative ↓ */}
@@ -124,7 +124,7 @@ export default function HomeScreen() {
           </VStack> */}
           {/* ↑ negative ↑ */}
 
-          {/* <VStack h="auto" w="49%" p="$3" bg={darkGrey} rounded="$lg">
+          <VStack h="auto" w="49%" p="$3" bg={darkGrey} rounded="$lg">
             <HStack h="50%" justifyContent="space-between">
               <Text w="75%" fontSize={17} color={white} fontWeight="500">
                 運用損益
@@ -134,7 +134,7 @@ export default function HomeScreen() {
             <Text fontSize={13} color={white}>
               現在、表示する情報はありません
             </Text>
-          </VStack> */}
+          </VStack>
 
           <VStack h="auto" w="49%" p="$3" bg={darkGrey} rounded="$lg">
             <Box h="50%">
@@ -144,13 +144,13 @@ export default function HomeScreen() {
             </Box>
 
             {/* ↓ 取引所連携前 ↓ */}
-            {/* <Text fontSize={13} color={white}>
+            <Text fontSize={13} color={white}>
               現在、表示する情報はありません
-            </Text> */}
+            </Text>
             {/* ↑ 取引所連携前 ↑ */}
 
             {/* ↓ 取引所連携後 ↓ */}
-            <ScrollView>
+            {/* <ScrollView>
               <HStack justifyContent="space-between">
                 <Text color={white} fontSize={13} bold>
                   Kraken
@@ -203,39 +203,37 @@ export default function HomeScreen() {
                   </Text>
                 </HStack>
               </HStack>
-            </ScrollView>
+            </ScrollView> */}
             {/* ↑ 取引所連携後 ↑ */}
           </VStack>
         </HStack>
       </Box>
 
-      <ScrollView>
-        <Box h="auto" w="100%" bg={darkGrey} rounded="$3xl">
-          <Box h="$7" justifyContent="center" alignItems="center">
-            <Box h="$1" w="$16" bg={lightGrey} rounded="$full" />
-          </Box>
-          <Box h="$11" w="100%" display="flex" flexDirection="row" alignItems="center">
-            <Pressable w="50%" onPress={() => setActiveTab(0)}>
-              <Box display="flex" flexDirection="row" justifyContent="center">
-                <AddIcon as={CalendarDaysIcon} size="md" color={white} mr="$1" />
-                <Text color={white} fontWeight="500">
-                  カレンダー
-                </Text>
-              </Box>
-            </Pressable>
-            <Pressable w="50%" onPress={() => setActiveTab(1)}>
-              <Box display="flex" flexDirection="row" justifyContent="center">
-                <AddIcon as={PaperclipIcon} size="md" color={white} mr="$1" />
-                <Text color={white} fontWeight="500">
-                  積立プラン
-                </Text>
-              </Box>
-            </Pressable>
-          </Box>
-          {activeTab === 0 && <CalenderInfo />}
-          {activeTab === 1 && <AccumulateInfo />}
+      <Box h="auto" w="100%" bg={darkGrey} rounded="$3xl">
+        <Box h="$7" justifyContent="center" alignItems="center">
+          <Box h="$1" w="$16" bg={lightGrey} rounded="$full" />
         </Box>
-      </ScrollView>
+        <Box h="$11" w="100%" display="flex" flexDirection="row" alignItems="center">
+          <Pressable w="50%" onPress={() => setActiveTab(0)}>
+            <Box display="flex" flexDirection="row" justifyContent="center">
+              <AddIcon as={CalendarDaysIcon} size="md" color={white} mr="$1" />
+              <Text color={white} fontWeight="500">
+                カレンダー
+              </Text>
+            </Box>
+          </Pressable>
+          <Pressable w="50%" onPress={() => setActiveTab(1)}>
+            <Box display="flex" flexDirection="row" justifyContent="center">
+              <AddIcon as={PaperclipIcon} size="md" color={white} mr="$1" />
+              <Text color={white} fontWeight="500">
+                積立プラン
+              </Text>
+            </Box>
+          </Pressable>
+        </Box>
+        {activeTab === 0 && <CalenderInfo />}
+        {activeTab === 1 && <AccumulateInfo />}
+      </Box>
 
       {/* <ScheduleList schedules={schedules} />
 
