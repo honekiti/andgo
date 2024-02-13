@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, Text, Button, ButtonText, CheckIcon, Checkbox, CheckboxIcon, CheckboxIndicator, ScrollView, VStack } from '@gluestack-ui/themed';
-import { Link } from 'expo-router';
+import { Stack, Link } from 'expo-router';
 import { TERMS } from '../../components/TERMS';
 import { unclearWhite, darkGrey } from '../../constants/Colors';
 
@@ -10,8 +10,16 @@ import { unclearWhite, darkGrey } from '../../constants/Colors';
 export default function TermsOfServiceScreen() {
   const [isAgreed, setIsAgreed] = useState(false);
   const handleCheckboxChange = () => setIsAgreed(!isAgreed);
+
   return (
     <Box flex={1} bg={darkGrey}>
+      <Stack.Screen
+        options={{
+          title: '利用規約のご確認',
+          presentation: 'card',
+        }}
+      />
+
       <ScrollView
         flex={1}
         flexDirection="column"

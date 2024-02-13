@@ -6,7 +6,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
+import { white, darkGrey } from '../constants/Colors';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,76 +50,14 @@ function RootLayoutNav() {
   return (
     <GluestackUIProvider config={config}>
       <SafeAreaProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ title: 'デバッグ', headerShown: false }} />
-          <Stack.Screen
-            name="home"
-            options={{
-              title: 'ホーム',
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="config"
-            options={{
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="(onbording)/terms-of-service"
-            options={{
-              title: '利用規約のご確認',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="(onbording)/tutorial"
-            options={{
-              title: 'チュートリアル',
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="(exchange)/exchange-registration"
-            options={{
-              title: '取引所連携',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="(exchange)/exchange-list"
-            options={{
-              title: '取引所',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="(schedule)/schedule-edit"
-            options={{
-              title: '積立プラン編集',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-          <Stack.Screen
-            name="(schedule)/schedule-registration"
-            options={{
-              title: '積立プラン作成',
-              presentation: 'card',
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-        </Stack>
+        <Stack
+          initialRouteName="index"
+          // 全スクリーン共通の設定
+          screenOptions={{
+            headerStyle: { backgroundColor: darkGrey },
+            headerTintColor: white,
+          }}
+        />
       </SafeAreaProvider>
     </GluestackUIProvider>
   );

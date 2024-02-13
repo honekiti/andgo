@@ -33,7 +33,6 @@ import { Link } from 'expo-router';
 import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
 import { ExchangeCredential } from '../../models';
 import { EXCHANGES } from '../../master';
-import { ExchangeId } from '../../models';
 
 /**
  * 取引所連携画面
@@ -50,9 +49,8 @@ export default function ExchangeRegistrationScreen() {
   // TODO: 作成ボタン押下時にこの関数を呼び出す
   const handlePressAddCredential = async () => {
     // TODO: 下記をフォームの入力値に切り替える
-
     const newCredential: ExchangeCredential = {
-      id: selectedExchangeId as ExchangeId,
+      id: selectedExchangeId,
       apiKey: 'dummy',
       apiSecret: 'dummy',
     };

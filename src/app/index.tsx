@@ -1,34 +1,102 @@
-import { Link } from 'expo-router';
-import { Box, Button, ButtonText, VStack } from '@gluestack-ui/themed';
+import { Link, Stack } from 'expo-router';
+import { Box, Button, ButtonText, VStack, useToast, Toast, ToastTitle } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@gluestack-ui/themed';
-import { saveScheduels } from '../services/schedule-service';
+import { savePlans } from '../services/plan-service';
 import { saveCredentials } from '../services/exchange-credential-service';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const toast = useToast();
 
-  const handleResetSchedules = async () => {
-    await saveScheduels([]);
-  };
+  const handleReset = async (withFixtures: boolean) => {
+    toast.show({
+      render: () => (
+        <Toast>
+          <ToastTitle>データを初期化しました</ToastTitle>
+        </Toast>
+      ),
+    });
 
-  const handleResetCredentials = async () => {
-    await saveCredentials([]);
+    if (!withFixtures) {
+      await saveCredentials([]);
+      await savePlans([]);
+
+      return;
+    }
+
+    await saveCredentials([
+      {
+        exchangeId: 'BITFLYER',
+        apiKey: 'DEBUG_API_KEY',
+        apiSecret: 'DEBUG_API_SECRET',
+      },
+      {
+        exchangeId: 'COINCHECK',
+        apiKey: 'DEBUG_API_KEY',
+        apiSecret: 'DEBUG_API_SECRET',
+      },
+      {
+        exchangeId: 'BITBANK',
+        apiKey: 'DEBUG_API_KEY',
+        apiSecret: 'DEBUG_API_SECRET',
+      },
+    ]);
+    await savePlans([
+      {
+        id: 'DEBUG_PLAN1',
+        exchangeId: 'BITFLYER',
+        quoteAmount: 1000,
+        planTypeId: 'DAILY',
+        status: {
+          enabled: false,
+          refAt: new Date().getTime(),
+          nextIndex: 0,
+          nextAt: new Date().getTime(),
+        },
+      },
+      {
+        id: 'DEBUG_PLAN2',
+        exchangeId: 'COINCHECK',
+        quoteAmount: 1000,
+        planTypeId: 'WEEKLY',
+        status: {
+          enabled: false,
+          refAt: new Date().getTime(),
+          nextIndex: 0,
+          nextAt: new Date().getTime(),
+        },
+      },
+      {
+        id: 'DEBUG_PLAN3',
+        exchangeId: 'BITBANK',
+        quoteAmount: 1000,
+        planTypeId: 'MONTHLY',
+        status: {
+          enabled: false,
+          refAt: new Date().getTime(),
+          nextIndex: 0,
+          nextAt: new Date().getTime(),
+        },
+      },
+    ]);
   };
 
   return (
     <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right}>
+      <Stack.Screen options={{ title: 'デバッグ', headerShown: false }} />
+
       <Text>デバッグ</Text>
       <Text>テストテストテストテスト</Text>
 
       <VStack space="xs">
-        <Link href="/exchange-list" asChild>
+        <Link href="/exchanges" asChild>
           <Button borderRadius="$full">
             <ButtonText>取引所一覧画面</ButtonText>
           </Button>
         </Link>
 
-        <Link href="/exchange-registration" asChild>
+        <Link href="/exchanges/add" asChild>
           <Button borderRadius="$full">
             <ButtonText>取引所連携画面</ButtonText>
           </Button>
@@ -46,13 +114,13 @@ export default function HomeScreen() {
           </Button>
         </Link>
 
-        <Link href="/schedule-edit" asChild>
+        <Link href="/plans/DEBUG_PLAN1" asChild>
           <Button borderRadius="$full">
             <ButtonText>積立プラン編集画面</ButtonText>
           </Button>
         </Link>
 
-        <Link href="/schedule-registration" asChild>
+        <Link href="/plans/add" asChild>
           <Button borderRadius="$full">
             <ButtonText>積立プラン作成画面</ButtonText>
           </Button>
@@ -64,12 +132,18 @@ export default function HomeScreen() {
           </Button>
         </Link>
 
-        <Button borderRadius="$full" onPress={handleResetSchedules}>
-          <ButtonText>スケジュール初期化</ButtonText>
+        <Link href="/config" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>設定画面</ButtonText>
+          </Button>
+        </Link>
+
+        <Button borderRadius="$full" onPress={() => handleReset(false)}>
+          <ButtonText>データ初期化(空データ)</ButtonText>
         </Button>
 
-        <Button borderRadius="$full" onPress={handleResetCredentials}>
-          <ButtonText>取引所初期化</ButtonText>
+        <Button borderRadius="$full" onPress={() => handleReset(true)}>
+          <ButtonText>データ初期化(モックデータ)</ButtonText>
         </Button>
       </VStack>
     </Box>

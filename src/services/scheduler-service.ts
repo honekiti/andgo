@@ -1,17 +1,17 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { Schedule, ExchangeId, ExchangeCredential } from '../models';
+import { Plan, ExchangeId, ExchangeCredential } from '../models';
 import { VIEW_PRECISION, EXCHANGES } from '../master';
-import { loadSchedules, getNextIndexFromNow, getNextAtByIndex } from './schedule-service';
+import { loadPlans, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
 import { loadCredentials } from './exchange-credential-service';
 import { getTicker, execBuyOrder } from './exchange-api-service/universal';
 
 export const FIND_ORDERS_TASK = 'FIND_ORDERS_TASK';
 export const MAX_NEXT_AT_DELTA_MS = 1000 * 60 * 20; // 20 minutes
 
-export const findWindowedSchedules = (now: number, schedules: Schedule[]) => {
-  return schedules
-    .filter((schedule) => schedule.status.enabled && now - MAX_NEXT_AT_DELTA_MS < schedule.status.nextAt && schedule.status.nextAt < now)
+export const findWindowedSchedules = (now: number, plans: Plan[]) => {
+  return plans
+    .filter((plan) => plan.status.enabled && now - MAX_NEXT_AT_DELTA_MS < plan.status.nextAt && plan.status.nextAt < now)
     .toSorted((a, b) => a.status.nextAt - b.status.nextAt); // ascending order
 };
 
@@ -43,8 +43,8 @@ export const buyQuoteAmount = async (
   exchangeCredential: ExchangeCredential,
   quoteAmount: number,
 ): Promise<{ status: 'SUCCESS' | 'ORDER_FAILED' | 'EXCHANGE_CREDENTIAL_NOT_FOUND' }> => {
-  const ticker = await getTicker(exchangeCredential.id);
-  const btcAmount = calcBtcAmount(ticker.ask, quoteAmount, exchangeCredential.id);
+  const ticker = await getTicker(exchangeCredential.exchangeId);
+  const btcAmount = calcBtcAmount(ticker.ask, quoteAmount, exchangeCredential.exchangeId);
   const result = await execBuyOrder(exchangeCredential, btcAmount);
 
   return result;
@@ -56,12 +56,12 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
   console.log(`got background fetch call at date: ${new Date(now).toISOString()}`);
 
   const credentials = await loadCredentials();
-  const schedules = await loadSchedules();
+  const schedules = await loadPlans();
   const windowedSchedules = findWindowedSchedules(now, schedules);
 
   for (const schedule of windowedSchedules) {
     const { exchangeId, quoteAmount } = schedule;
-    const exchangeCredential = credentials.find((c) => c.id === exchangeId);
+    const exchangeCredential = credentials.find((c) => c.exchangeId === exchangeId);
     if (!exchangeCredential) {
       console.log(`exchange credential not found: exchangeId=${exchangeId}`);
       schedule.status.enabled = false;
