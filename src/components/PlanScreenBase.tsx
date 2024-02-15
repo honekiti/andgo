@@ -171,7 +171,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                 </SelectTrigger>
                 <SelectPortal>
                   <SelectBackdrop />
-                  <SelectContent>
+                  <SelectContent bg="#fffe">
                     <SelectDragIndicatorWrapper>
                       <SelectDragIndicator />
                     </SelectDragIndicatorWrapper>
@@ -197,9 +197,9 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                     <SelectInput color={white} placeholder="毎週" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
-                  <SelectPortal h="$20" w="$40">
+                  <SelectPortal>
                     <SelectBackdrop />
-                    <SelectContent>
+                    <SelectContent bg="#fffe">
                       <SelectDragIndicatorWrapper>
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
@@ -214,12 +214,12 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                 {planTypeId === 'WEEKLY' && (
                   <Select onValueChange={(v) => setDayOfWeek(Number(v))}>
                     <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                      <SelectInput color={white} />
+                      <SelectInput color={white} placeholder="未選択" />
                       <SelectIcon mr="$3" as={ChevronDownIcon} />
                     </SelectTrigger>
                     <SelectPortal>
                       <SelectBackdrop />
-                      <SelectContent>
+                      <SelectContent bg="#fffe">
                         <SelectDragIndicatorWrapper>
                           <SelectDragIndicator />
                         </SelectDragIndicatorWrapper>
@@ -233,18 +233,20 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                 {planTypeId === 'MONTHLY' && (
                   <Select onValueChange={(v) => setDate(Number(v))}>
                     <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                      <SelectInput color={white} />
+                      <SelectInput color={white} placeholder="未選択" />
                       <SelectIcon mr="$3" as={ChevronDownIcon} />
                     </SelectTrigger>
                     <SelectPortal>
                       <SelectBackdrop />
-                      <SelectContent>
+                      <SelectContent h="40%" bg="#fffe">
                         <SelectDragIndicatorWrapper>
                           <SelectDragIndicator />
                         </SelectDragIndicatorWrapper>
-                        {DATE_OPTIONS.map((o) => (
-                          <SelectItem key={o.value} label={o.label} value={`${o.value}`} />
-                        ))}
+                        <ScrollView>
+                          {DATE_OPTIONS.map((o) => (
+                            <SelectItem key={o.value} label={o.label} value={`${o.value}`} w="$80" />
+                          ))}
+                        </ScrollView>
                       </SelectContent>
                     </SelectPortal>
                   </Select>
@@ -264,15 +266,17 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                     <SelectInput color={white} placeholder="12時" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
-                  <SelectPortal h="$20" w="$40">
+                  <SelectPortal>
                     <SelectBackdrop />
-                    <SelectContent>
+                    <SelectContent h="40%" bg="#fffe">
                       <SelectDragIndicatorWrapper>
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
-                      {HOUR_OPTIONS.map((o) => (
-                        <SelectItem key={o.value} label={o.label} value={`${o.value}`} />
-                      ))}
+                      <ScrollView>
+                        {HOUR_OPTIONS.map((o) => (
+                          <SelectItem key={o.value} label={o.label} value={`${o.value}`} w="$80" />
+                        ))}
+                      </ScrollView>
                     </SelectContent>
                   </SelectPortal>
                 </Select>
@@ -285,7 +289,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                   </SelectTrigger>
                   <SelectPortal>
                     <SelectBackdrop />
-                    <SelectContent>
+                    <SelectContent bg="#fffe">
                       <SelectDragIndicatorWrapper>
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
