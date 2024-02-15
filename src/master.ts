@@ -80,7 +80,7 @@ export const REF_AT_MINUTE_DELTA = 15;
 
 // e.g. [{ label: '1日', value: 1 }, { label: '2日', value: 2 }, ...]
 export const DATE_OPTIONS = [...Array(28).keys()].map((i) => ({
-  label: `${i + 1}日`,
+  label: `${i}日`,
   value: i + 1,
 }));
 
