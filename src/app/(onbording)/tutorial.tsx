@@ -43,7 +43,7 @@ const SLIDES: SlideType[] = [
     ],
     imageSrc: require('../../../assets/images/tutorial2.png'),
     messages: [
-      { id: '1', text: ' 暗号資産(仮想通貨)取引所にアカウントを開設、取引所アカウントにビットコイン購入の原資を入金します。' },
+      { id: '1', text: '暗号資産(仮想通貨)取引所にアカウントを開設、取引所アカウントにビットコイン購入の原資を入金します。' },
       { id: '2', text: '＊このアプリでは、暗号資産(仮想通貨)取引所の開設は行なえません。' },
     ],
   },
@@ -156,27 +156,35 @@ export default function TutorialScreen() {
           {SLIDES.map((slide) => (
             <VStack w={width} key={slide.id}>
               {/* 画像より上の部分 */}
-              <Text>{slide.title}</Text>
-              <HStack>
+              <Text color="white" fontWeight="$bold" fontSize={'$lg'} textAlign="center">
+                {slide.title}
+              </Text>
+              <HStack h={'5%'} alignItems="center" justifyContent="center">
                 {slide.subTitle.map((sub) => (
-                  <Text key={sub.id}>{sub.text}</Text>
+                  <Text key={sub.id} color="white" fontWeight="$bold" fontSize={21}>
+                    {sub.text}
+                  </Text>
                 ))}
               </HStack>
               {slide.lastslide ? (
                 <VStack>
-                  <Text>{slide.lastslide}</Text>
+                  <Text color="white" fontWeight="$bold" textAlign="center" fontSize={22}>
+                    {slide.lastslide}
+                  </Text>
                 </VStack>
               ) : (
                 <></>
               )}
 
               {/* 画像 */}
-              <Image alignSelf="center" source={slide.imageSrc} alt={slide.title} />
+              <Image alignSelf="center" size="2xl" resizeMode="contain" source={slide.imageSrc} alt={slide.title} />
 
               {/* 画像より下の部分 */}
-              <VStack>
+              <VStack alignItems="center" justifyContent="center">
                 {slide.messages.map((message) => (
-                  <Text key={message.id}>{message.text}</Text>
+                  <Text w={'90%'} key={message.id} color="white">
+                    {message.text}
+                  </Text>
                 ))}
               </VStack>
             </VStack>
