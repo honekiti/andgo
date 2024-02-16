@@ -1,11 +1,36 @@
+import React from 'react';
 import { useState, useCallback } from 'react';
 import { ListRenderItem } from 'react-native';
-import { Box, Button, FlatList, HStack, VStack, Text, Icon, ButtonText, GripVerticalIcon, useToast, Toast, ToastTitle } from '@gluestack-ui/themed';
+import {
+  Box,
+  Button,
+  FlatList,
+  HStack,
+  VStack,
+  Text,
+  Icon,
+  ButtonText,
+  CloseCircleIcon,
+  useToast,
+  Toast,
+  ToastTitle,
+  Center,
+  ModalBackdrop,
+  ModalContent,
+  Heading,
+  ModalHeader,
+  ModalCloseButton,
+  CloseIcon,
+  ModalBody,
+  ModalFooter,
+  Pressable,
+  Modal,
+} from '@gluestack-ui/themed';
 import { Stack, Link, useFocusEffect } from 'expo-router';
 import { loadCredentials } from '../../services/exchange-credential-service';
 import { EXCHANGES } from '../../master';
 import { ExchangeCredential, ExchangeId } from '../../models';
-import { white, unclearWhite, darkGrey } from '../../constants/Colors';
+import { white, unclearWhite, darkGrey, red } from '../../constants/Colors';
 import { saveCredentials } from '../../services/exchange-credential-service';
 
 export type ExchangeInfo = {
@@ -36,6 +61,9 @@ export default function ExchangeListScreen() {
     });
   };
 
+  const [showCloseModal, setShowCloseModal] = useState(false);
+  const ref = React.useRef(null);
+
   const renderItem: ListRenderItem<ExchangeInfo> = ({ item }) => {
     return (
       <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
@@ -55,7 +83,51 @@ export default function ExchangeListScreen() {
             </Text>
           </HStack>
         </VStack>
-        <Icon as={GripVerticalIcon} color={white} size="lg" />
+
+        <Button h="$12" w="$10" onPress={() => setShowCloseModal(true)} ref={ref} justifyContent="center" alignItems="center" bg="#0000">
+          <Icon as={CloseCircleIcon} color={red} size="xl" />
+        </Button>
+        <Modal
+          isOpen={showCloseModal}
+          onClose={() => {
+            setShowCloseModal(false);
+          }}
+          finalFocusRef={ref}
+        >
+          <ModalBackdrop />
+          <ModalContent>
+            <ModalHeader>
+              <Heading size="lg">連携を解除します</Heading>
+              <ModalCloseButton>
+                <Icon as={CloseIcon} />
+              </ModalCloseButton>
+            </ModalHeader>
+            <ModalFooter>
+              <Button
+                variant="outline"
+                size="sm"
+                action="secondary"
+                mr="$3"
+                onPress={() => {
+                  setShowCloseModal(false);
+                }}
+              >
+                <ButtonText>キャンセル</ButtonText>
+              </Button>
+              <Button
+                size="sm"
+                action="positive"
+                borderWidth="$0"
+                onPress={() => {
+                  handlePressUnregister();
+                  setShowCloseModal(false);
+                }}
+              >
+                <ButtonText>OK</ButtonText>
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </HStack>
     );
   };
