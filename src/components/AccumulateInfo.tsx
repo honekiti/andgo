@@ -4,7 +4,6 @@ import { white, unclearWhite } from '../constants/Colors';
 import { Link } from 'expo-router';
 import PlanList from './PlanList';
 import { exchangeCredentialsAtom } from '../services/exchange-credential-service';
-import { plansAtom } from '../services/plan-service';
 
 /**
  * プラン一覧コンポーネント
@@ -12,7 +11,6 @@ import { plansAtom } from '../services/plan-service';
  */
 export default function AccumulateInfo() {
   const credentials = useAtomValue(exchangeCredentialsAtom);
-  const plans = useAtomValue(plansAtom);
 
   return (
     <>
@@ -54,7 +52,7 @@ export default function AccumulateInfo() {
       {/* ↑ 取引所連携前 ↑ */}
 
       {/* ↓ 取引所連携後 ↓ */}
-      {credentials.length > 0 && <PlanList plans={plans} />}
+      {credentials.length > 0 && <PlanList />}
       {/* ↑ 取引所連携後 ↑ */}
     </>
   );
