@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useAtom } from 'jotai';
 import {
   Box,
@@ -13,7 +13,10 @@ import {
   SelectDragIndicator,
   SelectContent,
   SelectItem,
+  Icon,
+  Image,
   ChevronDownIcon,
+  Text,
   Button,
   ButtonText,
   FormControl,
@@ -22,69 +25,42 @@ import {
   Input,
   InputField,
   ScrollView,
+  Divider,
+  ChevronRightIcon,
   useToast,
   Toast,
   ToastTitle,
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
-import { Stack, router } from 'expo-router';
+import { router } from 'expo-router';
 import { exchangeCredentialsAtom } from '../../services/exchange-credential-service';
 import { ExchangeCredential, ExchangeId } from '../../models';
+import { Link } from 'expo-router';
 import { EXCHANGES } from '../../master';
 
-type Item = {
-  id: ExchangeId;
-  name: string;
-  isAlreadyRegistered: boolean;
+const getExchange = (exchangeId: ExchangeId) => {
+  const exchange = EXCHANGES.find((ex) => ex.id === exchangeId);
+
+  if (!exchange) {
+    throw new Error('Exchange not found');
+  }
+
+  return exchange;
 };
 
 /**
  * 取引所連携画面
  */
-export default function ExchangeAddScreen() {
+export default function ExchangeRegistrationScreen() {
   const toast = useToast();
   const [credentials, setCredentials] = useAtom(exchangeCredentialsAtom);
-
-  // form state
-  const [exchangeId, setExchangeId] = useState<ExchangeId>('UNKNOWN');
-  const [apiKey, setApiKey] = useState<string>('');
-  const [apiSecret, setApiSecret] = useState<string>('');
-
-  // reactive status
-  const canSubmit = exchangeId !== 'UNKNOWN' && apiKey && apiSecret;
-  const items: Item[] = useMemo(
-    () =>
-      EXCHANGES.filter((exchange) => exchange.id !== 'UNKNOWN').map((exchange) => {
-        const isAlreadyRegistered = credentials.some((c) => c.exchangeId === exchange.id);
-
-        return {
-          id: exchange.id,
-          name: isAlreadyRegistered ? `${exchange.name} (連携済み)` : exchange.name,
-          isAlreadyRegistered,
-        };
-      }),
-    [credentials],
-  );
+  const [selectedExchangeId, setSelectedExchangeId] = useState<ExchangeId>('UNKNOWN');
 
   const handlePressAddCredential = async () => {
-    const isAlreadyRegistered = credentials.some((c) => c.exchangeId === exchangeId);
-
-    if (isAlreadyRegistered) {
-      toast.show({
-        render: () => (
-          <Toast action="error">
-            <ToastTitle>指定した取引所は既に連携済みです</ToastTitle>
-          </Toast>
-        ),
-      });
-
-      return;
-    }
-
     const newCredential: ExchangeCredential = {
-      exchangeId: exchangeId,
-      apiKey,
-      apiSecret,
+      exchangeId: selectedExchangeId,
+      apiKey: 'dummy',
+      apiSecret: 'dummy',
     };
 
     const updatedCredentials = [...credentials, newCredential];
@@ -107,20 +83,13 @@ export default function ExchangeAddScreen() {
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
-      <Stack.Screen
-        options={{
-          title: '取引所連携',
-          presentation: 'card',
-        }}
-      />
-
       <ScrollView h="auto">
         <VStack space="3xl" p="$4">
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
               <FormControlLabelText color={white}>取引所</FormControlLabelText>
             </FormControlLabel>
-            <Select onValueChange={(v) => setExchangeId(v as ExchangeId)}>
+            <Select onValueChange={(v) => setSelectedExchangeId(v as ExchangeId)}>
               <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
                 <SelectInput color={white} placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
@@ -132,27 +101,26 @@ export default function ExchangeAddScreen() {
                     <SelectDragIndicator />
                   </SelectDragIndicatorWrapper>
 
-                  {items.map((item) => (
-                    <SelectItem key={item.id} label={item.name} value={item.id} isDisabled={item.isAlreadyRegistered} />
+                  {EXCHANGES.map((exchange) => (
+                    <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
                   ))}
                 </SelectContent>
               </SelectPortal>
             </Select>
           </FormControl>
 
-          {/* {selectedExchangeId && (
+          {selectedExchangeId !== 'UNKNOWN' && (
             <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
-              =======
-              <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../assets/images/key-fill.png')} alt="key-fill-logo" />
+              <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../../assets/images/key-fill.png')} alt="key-fill-logo" />
               <Text color={white} fontSize={14} py="$2">
                 APIキーを発行してください
               </Text>
               <Divider bg={unclearWhite} />
               <Text color={white} bold p="$2">
-                {selectedExchangeId}
+                {getExchange(selectedExchangeId).name}
               </Text>
               <Text color={white} fontSize={13}>
-                {selectedExchangeId}へログインし、「APIキーの発行」メニューで「参照」「取引」の権限を選択して、APIを発行してください
+                {getExchange(selectedExchangeId).name}へログインし、「APIキーの発行」メニューで「参照」「取引」の権限を選択して、APIを発行してください
               </Text>
               <VStack space="md" pt="$2">
                 <Link href="https://bitbank.cc/">
@@ -170,7 +138,7 @@ export default function ExchangeAddScreen() {
                   >
                     <Icon as={ChevronRightIcon} size="md" color="#0000" />
                     <Text color={white} bold>
-                      {selectedExchangeId ? getExchangeName(selectedExchangeId) : '取引所'}サイト
+                      {getExchange(selectedExchangeId).name}サイト
                     </Text>
                     <Icon as={ChevronRightIcon} size="md" color={white} />
                   </Box>
@@ -197,14 +165,14 @@ export default function ExchangeAddScreen() {
                 </Link>
               </VStack>
             </Box>
-          )} */}
+          )}
 
           <FormControl size="md" isRequired={true}>
             <FormControlLabel>
               <FormControlLabelText color={white}>APIキー</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField color={white} placeholder="発行したAPIキーを入力" value={apiKey} onChangeText={setApiKey} />
+              <InputField color={white} placeholder="発行したAPIキーを入力" />
             </Input>
           </FormControl>
 
@@ -213,33 +181,28 @@ export default function ExchangeAddScreen() {
               <FormControlLabelText color={white}>APIシークレット</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField
-                textContentType="none" // for iOS (disable password manager)
-                importantForAutofill="no" // for Android
-                color={white}
-                placeholder="発行したAPIシークレットを入力"
-                value={apiSecret}
-                onChangeText={setApiSecret}
-              />
+              <InputField color={white} placeholder="発行したAPIシークレットを入力" />
             </Input>
           </FormControl>
         </VStack>
       </ScrollView>
 
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
-        <Button
-          onPress={handlePressAddCredential}
-          w="100%"
-          size="lg"
-          variant="solid"
-          action="primary"
-          isDisabled={!canSubmit}
-          isFocusVisible={false}
-          rounded="$lg"
-          bgColor="#f97316"
-        >
-          <ButtonText>連携する</ButtonText>
-        </Button>
+        <Link href="/home" asChild>
+          <Button
+            onPress={() => handlePressAddCredential()}
+            w="100%"
+            size="lg"
+            variant="solid"
+            action="primary"
+            isDisabled={false}
+            isFocusVisible={false}
+            rounded="$lg"
+            bgColor="#f97316"
+          >
+            <ButtonText>連携する</ButtonText>
+          </Button>
+        </Link>
       </Box>
     </Box>
   );

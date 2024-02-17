@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Stack, Link } from 'expo-router';
 import { Box, Button, ButtonIcon, HStack, Pressable, Text, VStack } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SettingsIcon, ArrowRightIcon, AddIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
-import { white, darkGrey, lightGrey } from '../constants/Colors';
+import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
+import { white, unclearWhite, darkGrey, lightGrey, orange } from '../constants/Colors';
 import CalenderInfo from '../components/CalenderInfo';
 import AccumulateInfo from '../components/AccumulateInfo';
 
