@@ -1,11 +1,11 @@
 import { useAtom } from 'jotai';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { ListRenderItem } from 'react-native';
 import { Box, Button, FlatList, HStack, VStack, Text, Icon, ButtonText, GripVerticalIcon, useToast, Toast, ToastTitle } from '@gluestack-ui/themed';
-import { Stack, Link, useFocusEffect } from 'expo-router';
-import { exchangeCredentialsAtom } from '../../services/exchange-credential-service';
+import { Stack, Link } from 'expo-router';
+import { exchangeCredentialsAtom } from '../../services/exchange-service';
 import { EXCHANGES } from '../../master';
-import { ExchangeCredential, ExchangeId } from '../../models';
+import { ExchangeId } from '../../models';
 import { white, unclearWhite, darkGrey } from '../../constants/Colors';
 
 export type ExchangeInfo = {

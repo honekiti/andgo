@@ -3,7 +3,7 @@ import * as TaskManager from 'expo-task-manager';
 import { Plan, ExchangeId, ExchangeCredential } from '../models';
 import { VIEW_PRECISION, EXCHANGES } from '../master';
 import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
-import { exchangeCredentialsAtom } from './exchange-credential-service';
+import { exchangeCredentialsAtom } from './exchange-service';
 import { store } from '../store';
 import { getTicker, execBuyOrder } from './exchange-api-service/universal';
 

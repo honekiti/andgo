@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai';
 import { Box, Button, ButtonText, HStack, LinkText, ScrollView, Text, VStack } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey, green, red } from '../constants/Colors';
 import { Link } from 'expo-router';
-import { exchangeCredentialsAtom } from '../services/exchange-credential-service';
+import { exchangeCredentialsAtom } from '../services/exchange-service';
 
 export default function CalenderInfo() {
   const credentials = useAtomValue(exchangeCredentialsAtom);

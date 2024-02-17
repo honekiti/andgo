@@ -1,6 +1,8 @@
+import invariant from 'tiny-invariant';
 import { atomWithStorage, createJSONStorage } from 'jotai/utils';
 import * as SecureStore from 'expo-secure-store';
-import { ExchangeCredential } from '../models';
+import { EXCHANGES } from '../master';
+import { ExchangeMaster, ExchangeId, ExchangeCredential } from '../models';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class CommonSecureStore {
@@ -19,14 +21,18 @@ const EXCHANGES_KEY = 'EXCHANGES_KEY';
 const storage = createJSONStorage<ExchangeCredential[]>(() => CommonSecureStore);
 export const exchangeCredentialsAtom = atomWithStorage(EXCHANGES_KEY, [], storage, { getOnInit: true });
 
-// export const saveCredentials = async (credentials: ExchangeCredential[]): Promise<void> => {
-//   await SecureStore.setItemAsync(EXCHANGES_KEY, JSON.stringify(credentials));
-// };
+export const getExchange = (exchangeId: ExchangeId): ExchangeMaster => {
+  const found = EXCHANGES.find((ex) => ex.id === exchangeId);
 
-// export const loadCredentials = async (): Promise<ExchangeCredential[]> => {
-//   const credentials = await SecureStore.getItemAsync(EXCHANGES_KEY);
-//   if (!credentials) {
-//     return [];
-//   }
-//   return JSON.parse(credentials);
-// };
+  invariant(found, `Exchange not found: ${exchangeId}`);
+
+  return found;
+};
+
+export const getExchangeFromCredential = (credential: ExchangeCredential): ExchangeMaster => {
+  const found = EXCHANGES.find((ex) => ex.id === credential.exchangeId);
+
+  invariant(found, `Exchange not found: ${credential.exchangeId}`);
+
+  return found;
+};

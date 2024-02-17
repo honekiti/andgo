@@ -3,7 +3,7 @@ import { Box, Button, ButtonText, ScrollView, Text } from '@gluestack-ui/themed'
 import { white, unclearWhite } from '../constants/Colors';
 import { Link } from 'expo-router';
 import PlanList from './PlanList';
-import { exchangeCredentialsAtom } from '../services/exchange-credential-service';
+import { exchangeCredentialsAtom } from '../services/exchange-service';
 
 /**
  * プラン一覧コンポーネント

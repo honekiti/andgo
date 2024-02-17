@@ -33,20 +33,10 @@ import {
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { router } from 'expo-router';
-import { exchangeCredentialsAtom } from '../../services/exchange-credential-service';
+import { exchangeCredentialsAtom, getExchange } from '../../services/exchange-service';
 import { ExchangeCredential, ExchangeId } from '../../models';
 import { Link } from 'expo-router';
 import { EXCHANGES } from '../../master';
-
-const getExchange = (exchangeId: ExchangeId) => {
-  const exchange = EXCHANGES.find((ex) => ex.id === exchangeId);
-
-  if (!exchange) {
-    throw new Error('Exchange not found');
-  }
-
-  return exchange;
-};
 
 /**
  * 取引所連携画面

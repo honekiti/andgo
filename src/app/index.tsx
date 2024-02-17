@@ -4,7 +4,7 @@ import { Box, Button, ButtonText, VStack, useToast, Toast, ToastTitle } from '@g
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@gluestack-ui/themed';
 import { plansAtom } from '../services/plan-service';
-import { exchangeCredentialsAtom } from '../services/exchange-credential-service';
+import { exchangeCredentialsAtom } from '../services/exchange-service';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
