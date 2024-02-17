@@ -1,22 +1,11 @@
+import { useAtomValue } from 'jotai';
 import { Box, Button, ButtonText, HStack, LinkText, ScrollView, Text, VStack } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey, green, red } from '../constants/Colors';
 import { Link } from 'expo-router';
-import { useCallback, useState } from 'react';
-import { ExchangeCredential } from '../models';
-import { useFocusEffect } from '@react-navigation/native';
-import { loadCredentials } from '../services/exchange-credential-service';
+import { exchangeCredentialsAtom } from '../services/exchange-credential-service';
 
 export default function CalenderInfo() {
-  // 取引所連携情報読み込みを有効にしたら、初期値を空配列にする
-  const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
-  // 取引所連携情報を読み込む
-  useFocusEffect(
-    useCallback(() => {
-      loadCredentials().then((credentials) => {
-        setCredentials(credentials);
-      });
-    }, []),
-  );
+  const credentials = useAtomValue(exchangeCredentialsAtom);
 
   return (
     <>

@@ -1,30 +1,18 @@
-import { useState, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import { useAtomValue } from 'jotai';
 import { Box, Button, ButtonText, ScrollView, Text } from '@gluestack-ui/themed';
-import { white, unclearWhite, darkGrey, lightGrey, red, green } from '../constants/Colors';
+import { white, unclearWhite } from '../constants/Colors';
 import { Link } from 'expo-router';
-import { genId } from '../utils/crypto';
-import { loadPlans, savePlans } from '../services/plan-service';
-import { ExchangeCredential, Plan } from '../models';
 import PlanList from './PlanList';
-import { loadCredentials } from '../services/exchange-credential-service';
+import { exchangeCredentialsAtom } from '../services/exchange-credential-service';
+import { plansAtom } from '../services/plan-service';
 
 /**
  * プラン一覧コンポーネント
  * @returns
  */
 export default function AccumulateInfo() {
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
-
-  // 取引所連携情報を読み込む
-  useFocusEffect(
-    useCallback(() => {
-      loadCredentials().then((credentials) => {
-        setCredentials(credentials);
-      });
-    }, []),
-  );
+  const credentials = useAtomValue(exchangeCredentialsAtom);
+  const plans = useAtomValue(plansAtom);
 
   return (
     <>

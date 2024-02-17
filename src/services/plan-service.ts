@@ -1,6 +1,7 @@
+import { atomWithStorage, createJSONStorage } from 'jotai/utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import invariant from 'tiny-invariant';
 import { setHours, setMinutes, setDay, setDate, getDate, getDay, getHours, getMinutes } from 'date-fns';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addDays, addHours, addMinutes, addMonths, differenceInDays, differenceInHours, differenceInMinutes, differenceInMonths } from 'date-fns';
 import { EXCHANGES, PLAN_TYPES, REF_AT_MINUTE_DELTA } from '../master';
 import { ExchangeMaster, ExchangeId, ExchangeCredential, IntervalUnit, Plan } from '../models';
@@ -20,17 +21,20 @@ const DIFF_FUNC = {
   MONTHS: differenceInMonths,
 } satisfies Record<IntervalUnit, (dateLeft: Date, dateRight: Date) => number>;
 
-export const savePlans = async (plans: Plan[]) => {
-  await AsyncStorage.setItem(PLANS_KEY, JSON.stringify(plans));
-};
+const storage = createJSONStorage<Plan[]>(() => AsyncStorage);
+export const plansAtom = atomWithStorage(PLANS_KEY, [], storage, { getOnInit: true });
 
-export const loadPlans = async (): Promise<Plan[]> => {
-  const plans = await AsyncStorage.getItem(PLANS_KEY);
-  if (!plans) {
-    return [];
-  }
-  return JSON.parse(plans);
-};
+// export const savePlans = async (plans: Plan[]) => {
+//   await AsyncStorage.setItem(PLANS_KEY, JSON.stringify(plans));
+// };
+
+// export const loadPlans = async (): Promise<Plan[]> => {
+//   const plans = await AsyncStorage.getItem(PLANS_KEY);
+//   if (!plans) {
+//     return [];
+//   }
+//   return JSON.parse(plans);
+// };
 
 export const getNextIndexFromNow = (plan: Plan, now: number): number => {
   const {

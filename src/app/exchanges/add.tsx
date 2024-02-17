@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAtom } from 'jotai';
 import {
   Box,
   VStack,
@@ -26,39 +27,58 @@ import {
   ScrollView,
   Divider,
   ChevronRightIcon,
-  LinkText,
+  useToast,
+  Toast,
+  ToastTitle,
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
+import { router } from 'expo-router';
+import { exchangeCredentialsAtom } from '../../services/exchange-credential-service';
+import { ExchangeCredential, ExchangeId } from '../../models';
 import { Link } from 'expo-router';
-import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
-import { ExchangeCredential } from '../../models';
 import { EXCHANGES } from '../../master';
+
+const getExchange = (exchangeId: ExchangeId) => {
+  const exchange = EXCHANGES.find((ex) => ex.id === exchangeId);
+
+  if (!exchange) {
+    throw new Error('Exchange not found');
+  }
+
+  return exchange;
+};
 
 /**
  * 取引所連携画面
  */
-
-const getExchangeName = (exchangeId: string) => {
-  const exchange = EXCHANGES.find((ex) => ex.id === exchangeId);
-  return exchange ? exchange.name : '取引所';
-};
-
 export default function ExchangeRegistrationScreen() {
-  const [selectedExchangeId, setSelectedExchangeId] = useState<string | undefined>(undefined);
+  const toast = useToast();
+  const [credentials, setCredentials] = useAtom(exchangeCredentialsAtom);
+  const [selectedExchangeId, setSelectedExchangeId] = useState<ExchangeId>('UNKNOWN');
 
-  // TODO: 作成ボタン押下時にこの関数を呼び出す
   const handlePressAddCredential = async () => {
-    // TODO: 下記をフォームの入力値に切り替える
     const newCredential: ExchangeCredential = {
-      id: selectedExchangeId,
+      exchangeId: selectedExchangeId,
       apiKey: 'dummy',
       apiSecret: 'dummy',
     };
 
-    const credentials = await loadCredentials();
     const updatedCredentials = [...credentials, newCredential];
 
-    await saveCredentials(updatedCredentials);
+    await setCredentials(updatedCredentials);
+
+    toast.show({
+      render: () => (
+        <Toast action="success">
+          <ToastTitle>取引所を連携しました</ToastTitle>
+        </Toast>
+      ),
+    });
+
+    // ホーム画面まで戻る(開発中はデバッグ画面まで戻る)
+    while (router.canGoBack()) {
+      router.back();
+    }
   };
 
   return (
@@ -69,7 +89,7 @@ export default function ExchangeRegistrationScreen() {
             <FormControlLabel>
               <FormControlLabelText color={white}>取引所</FormControlLabelText>
             </FormControlLabel>
-            <Select onValueChange={(v) => setSelectedExchangeId(v)}>
+            <Select onValueChange={(v) => setSelectedExchangeId(v as ExchangeId)}>
               <SelectTrigger variant="outline" size="md" borderWidth={0} bg={lightGrey}>
                 <SelectInput color={white} placeholder="選択してください" />
                 <SelectIcon mr="$3" as={ChevronDownIcon} />
@@ -89,19 +109,18 @@ export default function ExchangeRegistrationScreen() {
             </Select>
           </FormControl>
 
-          {selectedExchangeId && (
+          {selectedExchangeId !== 'UNKNOWN' && (
             <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
-              =======
               <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../../assets/images/key-fill.png')} alt="key-fill-logo" />
               <Text color={white} fontSize={14} py="$2">
                 APIキーを発行してください
               </Text>
               <Divider bg={unclearWhite} />
               <Text color={white} bold p="$2">
-                {selectedExchangeId}
+                {getExchange(selectedExchangeId).name}
               </Text>
               <Text color={white} fontSize={13}>
-                {selectedExchangeId}へログインし、「APIキーの発行」メニューで「参照」「取引」の権限を選択して、APIを発行してください
+                {getExchange(selectedExchangeId).name}へログインし、「APIキーの発行」メニューで「参照」「取引」の権限を選択して、APIを発行してください
               </Text>
               <VStack space="md" pt="$2">
                 <Link href="https://bitbank.cc/">
@@ -119,7 +138,7 @@ export default function ExchangeRegistrationScreen() {
                   >
                     <Icon as={ChevronRightIcon} size="md" color="#0000" />
                     <Text color={white} bold>
-                      {selectedExchangeId ? getExchangeName(selectedExchangeId) : '取引所'}サイト
+                      {getExchange(selectedExchangeId).name}サイト
                     </Text>
                     <Icon as={ChevronRightIcon} size="md" color={white} />
                   </Box>
