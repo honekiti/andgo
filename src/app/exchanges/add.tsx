@@ -1,4 +1,5 @@
 import { useCallback, useState, useMemo } from 'react';
+import { useAtom } from 'jotai';
 import {
   Box,
   VStack,
@@ -26,8 +27,8 @@ import {
   ToastTitle,
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
-import { Stack, router, useFocusEffect } from 'expo-router';
-import { loadCredentials, saveCredentials } from '../../services/exchange-credential-service';
+import { Stack, router } from 'expo-router';
+import { exchangeCredentialsAtom } from '../../services/exchange-credential-service';
 import { ExchangeCredential, ExchangeId } from '../../models';
 import { EXCHANGES } from '../../master';
 
@@ -42,7 +43,7 @@ type Item = {
  */
 export default function ExchangeAddScreen() {
   const toast = useToast();
-  const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
+  const [credentials, setCredentials] = useAtom(exchangeCredentialsAtom);
 
   // form state
   const [exchangeId, setExchangeId] = useState<ExchangeId>('UNKNOWN');
@@ -88,7 +89,7 @@ export default function ExchangeAddScreen() {
 
     const updatedCredentials = [...credentials, newCredential];
 
-    await saveCredentials(updatedCredentials);
+    await setCredentials(updatedCredentials);
 
     toast.show({
       render: () => (
@@ -103,14 +104,6 @@ export default function ExchangeAddScreen() {
       router.back();
     }
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      loadCredentials().then((credentials) => {
-        setCredentials(credentials);
-      });
-    }, []),
-  );
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">

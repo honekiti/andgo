@@ -1,12 +1,12 @@
+import { useAtom } from 'jotai';
 import { useState, useCallback } from 'react';
 import { ListRenderItem } from 'react-native';
 import { Box, Button, FlatList, HStack, VStack, Text, Icon, ButtonText, GripVerticalIcon, useToast, Toast, ToastTitle } from '@gluestack-ui/themed';
 import { Stack, Link, useFocusEffect } from 'expo-router';
-import { loadCredentials } from '../../services/exchange-credential-service';
+import { exchangeCredentialsAtom } from '../../services/exchange-credential-service';
 import { EXCHANGES } from '../../master';
 import { ExchangeCredential, ExchangeId } from '../../models';
 import { white, unclearWhite, darkGrey } from '../../constants/Colors';
-import { saveCredentials } from '../../services/exchange-credential-service';
 
 export type ExchangeInfo = {
   name: string;
@@ -14,18 +14,17 @@ export type ExchangeInfo = {
 };
 
 export default function ExchangeListScreen() {
+  const [credentials, setCredentials] = useAtom(exchangeCredentialsAtom);
   const toast = useToast();
-  const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
   const [balances, setBalances] = useState<(number | undefined)[]>([]);
   const items: ExchangeInfo[] = credentials.map((credential, index) => ({
     name: EXCHANGES.find((ex) => ex.id === credential.exchangeId)?.name ?? 'unknown',
     balance: balances[index],
   }));
 
-  const handlePressUnregister = (id: ExchangeId) => {
+  const handlePressUnregister = async (id: ExchangeId) => {
     const newCredentials = credentials.filter((c) => c.exchangeId !== id);
-    saveCredentials(newCredentials);
-    setCredentials(newCredentials);
+    await setCredentials(newCredentials);
 
     toast.show({
       render: () => (
@@ -59,16 +58,6 @@ export default function ExchangeListScreen() {
       </HStack>
     );
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      loadCredentials().then((credentials) => {
-        setCredentials(credentials);
-        // TODO: lazy load balances
-        setBalances(Array(credentials.length).fill(undefined));
-      });
-    }, []),
-  );
 
   return (
     <Box flex={1} bg={darkGrey} justifyContent="space-between">
