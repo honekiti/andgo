@@ -1,9 +1,10 @@
+import { atomWithStorage, createJSONStorage } from 'jotai/utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import invariant from 'tiny-invariant';
 import { setHours, setMinutes, setDay, setDate, getDate, getDay, getHours, getMinutes } from 'date-fns';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addDays, addHours, addMinutes, addMonths, differenceInDays, differenceInHours, differenceInMinutes, differenceInMonths } from 'date-fns';
-import { EXCHANGES, PLAN_TYPES, REF_AT_MINUTE_DELTA } from '../master';
-import { ExchangeMaster, ExchangeId, ExchangeCredential, IntervalUnit, Plan } from '../models';
+import { PLAN_TYPES, REF_AT_MINUTE_DELTA } from '../master';
+import { IntervalUnit, Plan } from '../models';
 import type { PlanTypeId } from '../models';
 
 const PLANS_KEY = 'PLANS_KEY';
@@ -20,17 +21,8 @@ const DIFF_FUNC = {
   MONTHS: differenceInMonths,
 } satisfies Record<IntervalUnit, (dateLeft: Date, dateRight: Date) => number>;
 
-export const savePlans = async (plans: Plan[]) => {
-  await AsyncStorage.setItem(PLANS_KEY, JSON.stringify(plans));
-};
-
-export const loadPlans = async (): Promise<Plan[]> => {
-  const plans = await AsyncStorage.getItem(PLANS_KEY);
-  if (!plans) {
-    return [];
-  }
-  return JSON.parse(plans);
-};
+const storage = createJSONStorage<Plan[]>(() => AsyncStorage);
+export const plansAtom = atomWithStorage(PLANS_KEY, [], storage, { getOnInit: true });
 
 export const getNextIndexFromNow = (plan: Plan, now: number): number => {
   const {
@@ -49,22 +41,6 @@ export const getNextAtByIndex = (plan: Plan, nextIndex: number): number => {
   const { intervalUnit, interval } = getPlanType(planTypeId);
 
   return ADD_FUNC[intervalUnit](refAt, interval * nextIndex).getTime();
-};
-
-export const getExchange = (exchangeId: ExchangeId): ExchangeMaster => {
-  const found = EXCHANGES.find((ex) => ex.id === exchangeId);
-
-  invariant(found, `Exchange not found: ${exchangeId}`);
-
-  return found;
-};
-
-export const getExchangeFromCredential = (credential: ExchangeCredential): ExchangeMaster => {
-  const found = EXCHANGES.find((ex) => ex.id === credential.exchangeId);
-
-  invariant(found, `Exchange not found: ${credential.exchangeId}`);
-
-  return found;
 };
 
 export const getPlanType = (planTypeId: PlanTypeId) => {

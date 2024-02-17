@@ -30,21 +30,13 @@ import {
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
 import { useFocusEffect, router } from 'expo-router';
-import {
-  loadPlans,
-  savePlans,
-  getExchange,
-  getExchangeFromCredential,
-  getModifiedRefAt,
-  getNextIndexFromNow,
-  getNextAtByIndex,
-  getRefAtDetails,
-} from '../services/plan-service';
+import { plansAtom, getModifiedRefAt, getNextIndexFromNow, getNextAtByIndex, getRefAtDetails } from '../services/plan-service';
+import { exchangeCredentialsAtom, getExchange, getExchangeFromCredential } from '../services/exchange-service';
 import { genId } from '../utils/crypto';
 import type { Plan, ExchangeCredential, ExchangeId, PlanTypeId, PlanId } from '../models';
 import { PLAN_TYPES, DAY_OF_WEEK_OPTIONS, DATE_OPTIONS, HOUR_OPTIONS, MINUTE_OPTIONS } from '../master';
-import { loadCredentials } from '../services/exchange-credential-service';
 import ExchangeInfo from '../components/ExchangeInfo';
+import { store } from '../store';
 
 type PlanScreenBaseProps = {
   targetPlanId?: PlanId;
@@ -86,12 +78,12 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
     const nextIndex = getNextIndexFromNow(newPlan, new Date().getTime());
     const nextAt = getNextAtByIndex(newPlan, nextIndex);
 
-    const plans = await loadPlans();
+    const plans = await store.get(plansAtom);
 
     // 一番後ろに追加
     const updatedPlans = [...plans, { ...newPlan, nextIndex, nextAt }];
 
-    await savePlans(updatedPlans);
+    await store.set(plansAtom, updatedPlans);
 
     // 閉じる
     router.back();
@@ -101,7 +93,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
     useCallback(() => {
       const loadData = async () => {
         // 取引所連係情報を読み込む
-        const credentials = await loadCredentials();
+        const credentials = await store.get(exchangeCredentialsAtom);
         if (credentials.length === 0) {
           // 取引所連携がない場合は、モーダルを閉じる
           toast.show({
@@ -121,7 +113,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
 
         // プラン編集の場合は、プラン情報を読み込む
         if (props.targetPlanId) {
-          const plans = await loadPlans();
+          const plans = await store.get(plansAtom);
           const targetPlan = plans.find((p) => p.id === props.targetPlanId);
           if (!targetPlan) {
             toast.show({

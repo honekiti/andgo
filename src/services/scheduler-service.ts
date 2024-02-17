@@ -2,14 +2,15 @@ import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { Plan, ExchangeId, ExchangeCredential } from '../models';
 import { VIEW_PRECISION, EXCHANGES } from '../master';
-import { loadPlans, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
-import { loadCredentials } from './exchange-credential-service';
+import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
+import { exchangeCredentialsAtom } from './exchange-service';
+import { store } from '../store';
 import { getTicker, execBuyOrder } from './exchange-api-service/universal';
 
 export const FIND_ORDERS_TASK = 'FIND_ORDERS_TASK';
 export const MAX_NEXT_AT_DELTA_MS = 1000 * 60 * 20; // 20 minutes
 
-export const findWindowedSchedules = (now: number, plans: Plan[]) => {
+export const findWindowedPlans = (now: number, plans: Plan[]) => {
   return plans
     .filter((plan) => plan.status.enabled && now - MAX_NEXT_AT_DELTA_MS < plan.status.nextAt && plan.status.nextAt < now)
     .toSorted((a, b) => a.status.nextAt - b.status.nextAt); // ascending order
@@ -55,16 +56,17 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
 
   console.log(`got background fetch call at date: ${new Date(now).toISOString()}`);
 
-  const credentials = await loadCredentials();
-  const schedules = await loadPlans();
-  const windowedSchedules = findWindowedSchedules(now, schedules);
+  const plans = await store.get(plansAtom);
+  const exchangeCredentials = await store.get(exchangeCredentialsAtom);
 
-  for (const schedule of windowedSchedules) {
-    const { exchangeId, quoteAmount } = schedule;
-    const exchangeCredential = credentials.find((c) => c.exchangeId === exchangeId);
+  const windowedPlans = findWindowedPlans(now, plans);
+
+  for (const plan of windowedPlans) {
+    const { exchangeId, quoteAmount } = plan;
+    const exchangeCredential = exchangeCredentials.find((c) => c.exchangeId === exchangeId);
     if (!exchangeCredential) {
       console.log(`exchange credential not found: exchangeId=${exchangeId}`);
-      schedule.status.enabled = false;
+      plan.status.enabled = false;
       continue;
     }
 
@@ -75,13 +77,13 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
     console.log(`order result: ${JSON.stringify(orderResult)}`);
 
     if (orderResult.status === 'SUCCESS') {
-      const nextIndex = getNextIndexFromNow(schedule, now);
-      const nextAt = getNextAtByIndex(schedule, nextIndex);
+      const nextIndex = getNextIndexFromNow(plan, now);
+      const nextAt = getNextAtByIndex(plan, nextIndex);
 
-      schedule.status.nextIndex = nextIndex;
-      schedule.status.nextAt = nextAt;
+      plan.status.nextIndex = nextIndex;
+      plan.status.nextAt = nextAt;
     } else {
-      schedule.status.enabled = false;
+      plan.status.enabled = false;
     }
   }
 

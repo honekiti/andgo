@@ -1,13 +1,16 @@
+import { useSetAtom } from 'jotai';
 import { Link, Stack } from 'expo-router';
 import { Box, Button, ButtonText, VStack, useToast, Toast, ToastTitle } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@gluestack-ui/themed';
-import { savePlans } from '../services/plan-service';
-import { saveCredentials } from '../services/exchange-credential-service';
+import { plansAtom } from '../services/plan-service';
+import { exchangeCredentialsAtom } from '../services/exchange-service';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const toast = useToast();
+  const setPlans = useSetAtom(plansAtom);
+  const setExchangeCredentials = useSetAtom(exchangeCredentialsAtom);
 
   const handleReset = async (withFixtures: boolean) => {
     toast.show({
@@ -19,13 +22,13 @@ export default function HomeScreen() {
     });
 
     if (!withFixtures) {
-      await saveCredentials([]);
-      await savePlans([]);
+      await setExchangeCredentials([]);
+      await setPlans([]);
 
       return;
     }
 
-    await saveCredentials([
+    await setExchangeCredentials([
       {
         exchangeId: 'BITFLYER',
         apiKey: 'DEBUG_API_KEY',
@@ -42,7 +45,7 @@ export default function HomeScreen() {
         apiSecret: 'DEBUG_API_SECRET',
       },
     ]);
-    await savePlans([
+    await setPlans([
       {
         id: 'DEBUG_PLAN1',
         exchangeId: 'BITFLYER',

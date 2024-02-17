@@ -8,12 +8,20 @@ type CarouselIndicatorProps = {
 
 export default function CarouselIndicator(props: CarouselIndicatorProps) {
   return (
-    <HStack h="$10" alignItems="center" justifyContent="center" bgColor="grey">
+    <HStack h="$10" alignItems="center" justifyContent="center" bgColor="#0000">
       {Array.from({ length: props.pages })
         .map((_, index) => index)
         .map((index) => (
           <Pressable key={index} onPress={() => props.onChangePage(index)}>
-            <Box width="$4" height="$4" borderRadius="$full" marginHorizontal="$1" backgroundColor={index === props.activePage ? 'white' : 'red'} />
+            <Box
+              width="$3"
+              height="$3"
+              borderRadius="$full"
+              marginHorizontal="$1"
+              borderWidth={1}
+              borderColor="white"
+              bgColor={index === props.activePage ? 'white' : '#0000'}
+            />
           </Pressable>
         ))}
     </HStack>

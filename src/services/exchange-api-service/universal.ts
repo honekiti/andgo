@@ -3,7 +3,7 @@ import { Bitbank } from './bitbank';
 
 export const getTicker = async (exchangeId: ExchangeId): Promise<Ticker> => {
   switch (exchangeId) {
-    case 'bitbank': {
+    case 'BITBANK': {
       const r = await Bitbank.getTicker();
 
       return {
@@ -22,8 +22,8 @@ export const execBuyOrder = async (exchangeCredential: ExchangeCredential, btcAm
     return { status: 'SUCCESS' };
   }
 
-  switch (exchangeCredential.id) {
-    case 'bitbank': {
+  switch (exchangeCredential.exchangeId) {
+    case 'BITBANK': {
       const r = await new Bitbank(exchangeCredential).postOrder({
         pair: 'btc_jpy',
         amount: `${btcAmount}`,

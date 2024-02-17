@@ -1,6 +1,6 @@
 import { Box, VStack, Text } from '@gluestack-ui/themed';
 import { white } from '../constants/Colors';
-import { getExchange } from '../services/plan-service';
+import { getExchange } from '../services/exchange-service';
 import type { ExchangeId } from '../models';
 
 type ExchangeInfoProps = {
