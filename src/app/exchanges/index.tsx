@@ -51,6 +51,7 @@ export default function ExchangeListScreen() {
     const newCredentials = credentials.filter((c) => c.exchangeId !== id);
     saveCredentials(newCredentials);
     setCredentials(newCredentials);
+    setShowCloseModal(false);
 
     toast.show({
       render: () => (
@@ -120,7 +121,6 @@ export default function ExchangeListScreen() {
                 borderWidth="$0"
                 onPress={() => {
                   handlePressUnregister();
-                  setShowCloseModal(false);
                 }}
               >
                 <ButtonText>OK</ButtonText>
