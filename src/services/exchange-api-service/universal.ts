@@ -1,5 +1,23 @@
 import { ExchangeId, ExchangeCredential, Ticker } from '../../models';
 import { Bitbank } from './bitbank';
+import { BitFlyer, REQUIRED_PERMISSIONS } from './bitflyer';
+
+export const getPermissionsStatus = async (exchangeCredential: ExchangeCredential): Promise<boolean> => {
+  switch (exchangeCredential.exchangeId) {
+    case 'BITBANK': {
+      // TODO: 実装する
+      return true;
+    }
+    case 'BITFLYER': {
+      const bitFlyer = new BitFlyer(exchangeCredential);
+      const permissions = await bitFlyer.getPermissions();
+
+      return REQUIRED_PERMISSIONS.every((p) => permissions.includes(p));
+    }
+    default:
+      throw new Error('EXCHANGE_NOT_SUPPORTED');
+  }
+};
 
 export const getTicker = async (exchangeId: ExchangeId): Promise<Ticker> => {
   switch (exchangeId) {
@@ -8,6 +26,24 @@ export const getTicker = async (exchangeId: ExchangeId): Promise<Ticker> => {
 
       return {
         ask: Number(r.sell),
+      };
+    }
+    case 'BITFLYER': {
+      const r = await BitFlyer.getTicker();
+      return {
+        ask: r.best_ask,
+      };
+    }
+    case 'COINCHECK': {
+      // TODO: 実装する
+      return {
+        ask: 0,
+      };
+    }
+    case 'GMO': {
+      // TODO: 実装する
+      return {
+        ask: 0,
       };
     }
     default:
@@ -35,6 +71,18 @@ export const execBuyOrder = async (exchangeCredential: ExchangeCredential, btcAm
         return { status: 'SUCCESS' };
       }
 
+      return { status: 'ORDER_FAILED' };
+    }
+    case 'BITFLYER': {
+      // TODO: 実装する
+      return { status: 'ORDER_FAILED' };
+    }
+    case 'COINCHECK': {
+      // TODO: 実装する
+      return { status: 'ORDER_FAILED' };
+    }
+    case 'GMO': {
+      // TODO: 実装する
       return { status: 'ORDER_FAILED' };
     }
     default:

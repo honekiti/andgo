@@ -5,7 +5,10 @@ import { ExchangeCredential } from '../../models';
 import { BitbankResponse, Ticker, OrderRequest, OrderResponse, AssetsResponse } from './bitbank.types';
 
 const PUBLIC_ENDPOINT = 'https://public.bitbank.cc';
-const PRIVATE_ENDPOINT = 'https://api.bitbank.cc/v1';
+const PRIVATE_ENDPOINT = 'https://api.bitbank.cc';
+const GET_ASSETS_PATH = '/v1/user/assets';
+const POST_ORDER_PATH = '/v1/user/spot/order';
+const GET_TICKER_PATH = '/v1/btc_jpy/ticker';
 
 export class Bitbank extends BaseApi {
   private readonly exchangeCredential: ExchangeCredential;
@@ -19,13 +22,11 @@ export class Bitbank extends BaseApi {
   }
 
   public getAssets(): Promise<BitbankResponse<AssetsResponse>> {
-    const path = '/user/assets';
-    return this.get(path, {});
+    return this.get(GET_ASSETS_PATH, {});
   }
 
   public async postOrder(params: OrderRequest): Promise<BitbankResponse<OrderResponse>> {
-    const path = '/user/spot/order';
-    return await this.post(path, params);
+    return await this.post(POST_ORDER_PATH, params);
   }
 
   async get<T>(path: string, query?: unknown) {
@@ -33,7 +34,7 @@ export class Bitbank extends BaseApi {
     if (query && Object.keys(query).length) {
       params += `?${querystring.stringify(query as Record<string, string>)}`;
     }
-    const headers = this.makeHeader('/v1'.concat(path, params));
+    const headers = this.makeHeader(path.concat(params));
     return super.get(path, query, headers) as T;
   }
 
@@ -56,7 +57,7 @@ export class Bitbank extends BaseApi {
 
   // === public api ===
   public static async getTicker(): Promise<Ticker> {
-    const response = await fetch(`${PUBLIC_ENDPOINT}/btc_jpy/ticker`);
+    const response = await fetch(`${PUBLIC_ENDPOINT}${GET_TICKER_PATH}`);
 
     const ticker = (await response.json()) as Ticker;
 
