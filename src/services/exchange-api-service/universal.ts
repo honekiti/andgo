@@ -1,4 +1,4 @@
-import { ExchangeId, ExchangeCredential, Ticker } from '../../models';
+import { ExchangeId, ExchangeCredential, Ticker, Balance } from '../../models';
 import { Bitbank } from './bitbank';
 import { BitFlyer, REQUIRED_PERMISSIONS } from './bitflyer';
 
@@ -13,6 +13,14 @@ export const getPermissionsStatus = async (exchangeCredential: ExchangeCredentia
       const permissions = await bitFlyer.getPermissions();
 
       return REQUIRED_PERMISSIONS.every((p) => permissions.includes(p));
+    }
+    case 'COINCHECK': {
+      // TODO: 実装する
+      return true;
+    }
+    case 'GMO': {
+      // TODO: 実装する
+      return true;
     }
     default:
       throw new Error('EXCHANGE_NOT_SUPPORTED');
@@ -44,6 +52,45 @@ export const getTicker = async (exchangeId: ExchangeId): Promise<Ticker> => {
       // TODO: 実装する
       return {
         ask: 0,
+      };
+    }
+    default:
+      throw new Error('EXCHANGE_NOT_SUPPORTED');
+  }
+};
+
+export const getBalance = async (exchangeCredential: ExchangeCredential): Promise<Balance> => {
+  switch (exchangeCredential.exchangeId) {
+    case 'BITBANK': {
+      const bitbank = new Bitbank(exchangeCredential);
+      const assets = await bitbank.getAssets();
+      const jpy = assets.find((a) => a.asset === 'jpy');
+      const btc = assets.find((a) => a.asset === 'btc');
+
+      return {
+        JPY: jpy !== undefined ? Number(jpy.free_amount) : null,
+        BTC: btc !== undefined ? Number(btc.free_amount) : null,
+      };
+    }
+    case 'BITFLYER': {
+      // TODO: 実装する
+      return {
+        JPY: 0,
+        BTC: 0,
+      };
+    }
+    case 'COINCHECK': {
+      // TODO: 実装する
+      return {
+        JPY: 0,
+        BTC: 0,
+      };
+    }
+    case 'GMO': {
+      // TODO: 実装する
+      return {
+        JPY: 0,
+        BTC: 0,
       };
     }
     default:

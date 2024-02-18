@@ -42,7 +42,7 @@ export type OrderResponse = {
   status: string;
 };
 
-export type AssetResponse = {
+export type Asset = {
   asset: string;
   amount_precision: number;
   onhand_amount: string;
@@ -72,5 +72,5 @@ export type AssetResponse = {
 };
 
 export type AssetsResponse = {
-  assets: AssetResponse[];
+  assets: Asset[];
 };

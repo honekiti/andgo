@@ -2,7 +2,7 @@ import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
 import { ExchangeCredential } from '../../models';
-import { BitbankResponse, Ticker, OrderRequest, OrderResponse, AssetsResponse } from './bitbank.types';
+import { BitbankResponse, Ticker, OrderRequest, OrderResponse, Asset, AssetsResponse } from './bitbank.types';
 
 const PUBLIC_ENDPOINT = 'https://public.bitbank.cc';
 const PRIVATE_ENDPOINT = 'https://api.bitbank.cc';
@@ -21,8 +21,16 @@ export class Bitbank extends BaseApi {
     this.nonce = new Date().getTime();
   }
 
-  public getAssets(): Promise<BitbankResponse<AssetsResponse>> {
-    return this.get(GET_ASSETS_PATH, {});
+  public async getAssets(): Promise<Asset[]> {
+    const response = (await this.get(GET_ASSETS_PATH, {})) as BitbankResponse<AssetsResponse>;
+
+    console.log(`bitbank assets: ${JSON.stringify(response)}`);
+
+    if (response.success !== 1) {
+      throw new Error('Failed to fetch assets info from bitbank');
+    }
+
+    return response.data.assets;
   }
 
   public async postOrder(params: OrderRequest): Promise<BitbankResponse<OrderResponse>> {
