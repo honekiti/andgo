@@ -8,7 +8,7 @@ const PUBLIC_ENDPOINT = 'https://public.bitbank.cc';
 const PRIVATE_ENDPOINT = 'https://api.bitbank.cc';
 const GET_ASSETS_PATH = '/v1/user/assets';
 const POST_ORDER_PATH = '/v1/user/spot/order';
-const GET_TICKER_PATH = '/v1/btc_jpy/ticker';
+const GET_TICKER_PATH = '/btc_jpy/ticker';
 
 export class Bitbank extends BaseApi {
   private readonly exchangeCredential: ExchangeCredential;
@@ -58,10 +58,15 @@ export class Bitbank extends BaseApi {
   // === public api ===
   public static async getTicker(): Promise<Ticker> {
     const response = await fetch(`${PUBLIC_ENDPOINT}${GET_TICKER_PATH}`);
+    const obj = await response.json();
 
-    const ticker = (await response.json()) as Ticker;
+    console.log(`bitbank: ${JSON.stringify(obj)}`);
 
-    console.log(`bitbank: ${JSON.stringify(ticker)}`);
+    if (response.status >= 400) {
+      throw new Error('Failed to fetch ticker info from bitbank');
+    }
+
+    const ticker = obj.data as Ticker;
 
     return ticker;
   }

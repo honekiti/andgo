@@ -1,8 +1,10 @@
 import invariant from 'tiny-invariant';
-import { atomWithStorage, createJSONStorage } from 'jotai/utils';
+import { atomWithStorage, createJSONStorage, atomFamily } from 'jotai/utils';
+import { atomWithQuery } from 'jotai-tanstack-query';
 import * as SecureStore from 'expo-secure-store';
 import { EXCHANGES } from '../master';
 import { ExchangeMaster, ExchangeId, ExchangeCredential } from '../models';
+import { getTicker } from './exchange-api-service/universal';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class CommonSecureStore {
@@ -19,7 +21,19 @@ class CommonSecureStore {
 
 const EXCHANGES_KEY = 'EXCHANGES_KEY';
 const storage = createJSONStorage<ExchangeCredential[]>(() => CommonSecureStore);
+
+// 取引所の認証情報を扱うAtom
 export const exchangeCredentialsAtom = atomWithStorage(EXCHANGES_KEY, [], storage, { getOnInit: true });
+
+// 各取引所のティッカー情報を取得するためのAtomFamily
+export const exchangeTickerFamily = atomFamily((exchangeId: ExchangeId) => {
+  return atomWithQuery(() => ({
+    queryKey: ['balance', exchangeId],
+    queryFn: async () => {
+      return await getTicker(exchangeId as ExchangeId);
+    },
+  }));
+});
 
 export const getExchange = (exchangeId: ExchangeId): ExchangeMaster => {
   const found = EXCHANGES.find((ex) => ex.id === exchangeId);
