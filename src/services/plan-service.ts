@@ -24,20 +24,12 @@ const DIFF_FUNC = {
 const storage = createJSONStorage<Plan[]>(() => AsyncStorage);
 export const plansAtom = atomWithStorage(PLANS_KEY, [], storage, { getOnInit: true });
 
-export const getNextIndexFromNow = (plan: Plan, now: number): number => {
-  const {
-    planTypeId,
-    status: { refAt },
-  } = plan;
+export const getNextIndexFromNow = (planTypeId: PlanTypeId, refAt: number, now: number): number => {
   const { intervalUnit, interval } = getPlanType(planTypeId);
   return refAt < now ? Math.floor(DIFF_FUNC[intervalUnit](now, refAt) / interval) + 1 : 0;
 };
 
-export const getNextAtByIndex = (plan: Plan, nextIndex: number): number => {
-  const {
-    planTypeId,
-    status: { refAt },
-  } = plan;
+export const getNextAtByIndex = (planTypeId: PlanTypeId, refAt: number, nextIndex: number): number => {
   const { intervalUnit, interval } = getPlanType(planTypeId);
 
   return ADD_FUNC[intervalUnit](refAt, interval * nextIndex).getTime();

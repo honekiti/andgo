@@ -53,6 +53,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
   // form data
   const [exchangeId, setExchangeId] = useState<ExchangeId>('UNKNOWN');
   const [planTypeId, setPlanTypeId] = useState<PlanTypeId>('MONTHLY');
+  const [isEnabled, setIsEnabled] = useState<boolean>(false);
   // planId === 'WEEKLY' の場合のみ有効
   const [dayOfWeek, setDayOfWeek] = useState<number>(0);
   // planId === 'MONTHLY' の場合のみ有効
@@ -62,26 +63,38 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
 
   const handleSubmit = async () => {
     const refAt = getModifiedRefAt({ refAt: new Date().getTime(), date, dayOfWeek, hours: hour, minutes: minute });
+    // 次回発動時刻に調整
+    const nextIndex = getNextIndexFromNow(planTypeId, refAt, new Date().getTime());
+    const nextAt = getNextAtByIndex(planTypeId, refAt, nextIndex);
+
     const newPlan: Plan = {
-      id: genId(),
+      id: props.targetPlanId ?? genId(),
       exchangeId,
       quoteAmount: 123,
       planTypeId,
       status: {
         enabled: true,
         refAt,
-        nextIndex: 0,
-        nextAt: 0,
+        nextIndex,
+        nextAt,
       },
     };
-    // 次回発動時刻に調整
-    const nextIndex = getNextIndexFromNow(newPlan, new Date().getTime());
-    const nextAt = getNextAtByIndex(newPlan, nextIndex);
 
     const plans = await store.get(plansAtom);
 
-    // 一番後ろに追加
-    const updatedPlans = [...plans, { ...newPlan, nextIndex, nextAt }];
+    const updatedPlans = [...plans];
+
+    if (props.targetPlanId) {
+      // 更新
+      plans.splice(
+        plans.findIndex((p) => p.id === props.targetPlanId),
+        1,
+        newPlan,
+      );
+    } else {
+      // 一番後ろに追加
+      updatedPlans.push(newPlan);
+    }
 
     await store.set(plansAtom, updatedPlans);
 
@@ -115,6 +128,9 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
         if (props.targetPlanId) {
           const plans = await store.get(plansAtom);
           const targetPlan = plans.find((p) => p.id === props.targetPlanId);
+
+          console.log('targetPlan', targetPlan);
+
           if (!targetPlan) {
             toast.show({
               render: () => (
@@ -129,6 +145,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
 
             setExchangeId(targetPlan.exchangeId);
             setPlanTypeId(targetPlan.planTypeId);
+            setIsEnabled(targetPlan.status.enabled);
 
             if (targetPlan.planTypeId === 'WEEKLY') {
               setDayOfWeek(refAtDetails.dayOfWeek);
@@ -320,7 +337,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
           {props.targetPlanId && (
             <HStack justifyContent="space-between">
               <Text color={white}>積立プランのステータス</Text>
-              <Switch size="sm" isDisabled={false} />
+              <Switch size="sm" isDisabled={false} value={isEnabled} onToggle={() => setIsEnabled(!isEnabled)} />
             </HStack>
           )}
 
@@ -335,7 +352,8 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
       </ScrollView>
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
         <Button onPress={handleSubmit} w="100%" size="lg" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} rounded="$lg">
-          <ButtonText>作成する</ButtonText>
+          {props.targetPlanId && <ButtonText>作成する</ButtonText>}
+          {!props.targetPlanId && <ButtonText>更新する</ButtonText>}
         </Button>
       </Box>
     </Box>
