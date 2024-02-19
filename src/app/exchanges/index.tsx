@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import React from 'react';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { ListRenderItem } from 'react-native';
 import {
   Box,
@@ -15,28 +15,22 @@ import {
   useToast,
   Toast,
   ToastTitle,
-  Center,
   ModalBackdrop,
   ModalContent,
   Heading,
   ModalHeader,
   ModalCloseButton,
   CloseIcon,
-  ModalBody,
   ModalFooter,
-  Pressable,
   Modal,
 } from '@gluestack-ui/themed';
-import { Stack, Link, useFocusEffect } from 'expo-router';
-import { loadCredentials } from '../../services/exchange-credential-service';
-import { EXCHANGES } from '../../master';
-import { ExchangeCredential, ExchangeId } from '../../models';
+import { Stack, Link } from 'expo-router';
+import { ExchangeMaster, ExchangeId } from '../../models';
 import { white, unclearWhite, darkGrey, red } from '../../constants/Colors';
-import { saveCredentials } from '../../services/exchange-credential-service';
-import { exchangeCredentialsAtom } from '../../services/exchange-service';
+import { exchangeCredentialsAtom, getExchangeFromCredential } from '../../services/exchange-service';
 
 export type ExchangeInfo = {
-  name: string;
+  exchange: ExchangeMaster;
   balance?: number;
 };
 
@@ -45,13 +39,12 @@ export default function ExchangeListScreen() {
   const toast = useToast();
   const [balances, setBalances] = useState<(number | undefined)[]>([]);
   const items: ExchangeInfo[] = credentials.map((credential, index) => ({
-    name: EXCHANGES.find((ex) => ex.id === credential.exchangeId)?.name ?? 'unknown',
+    exchange: getExchangeFromCredential(credential),
     balance: balances[index],
   }));
 
   const handlePressUnregister = async (id: ExchangeId) => {
     const newCredentials = credentials.filter((c) => c.exchangeId !== id);
-    saveCredentials(newCredentials);
     await setCredentials(newCredentials);
     setShowCloseModal(false);
 
@@ -72,7 +65,7 @@ export default function ExchangeListScreen() {
       <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
         <VStack space="md" py="$1">
           <Text color={white} fontSize={23} bold>
-            {item.name}
+            {item.exchange.name}
           </Text>
           <HStack space="xs">
             <Text color={white} fontSize={12}>
@@ -122,7 +115,7 @@ export default function ExchangeListScreen() {
                 action="positive"
                 borderWidth="$0"
                 onPress={() => {
-                  handlePressUnregister();
+                  handlePressUnregister(item.exchange.id);
                 }}
               >
                 <ButtonText>OK</ButtonText>
@@ -146,7 +139,7 @@ export default function ExchangeListScreen() {
       <VStack>
         {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
         {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-        <FlatList data={items} renderItem={renderItem as any} keyExtractor={(item) => (item as ExchangeInfo).name} />
+        <FlatList data={items} renderItem={renderItem as any} keyExtractor={(item) => (item as ExchangeInfo).exchange.name} />
       </VStack>
 
       <HStack justifyContent="space-between" alignItems="center" p="$4" mb="$3" borderTopWidth={0.3} borderColor={unclearWhite}>
