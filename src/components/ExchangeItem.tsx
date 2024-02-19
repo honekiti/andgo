@@ -19,15 +19,16 @@ import {
   ModalFooter,
   Modal,
 } from '@gluestack-ui/themed';
+import { useAtomValue } from 'jotai';
 import { ExchangeMaster } from '../models';
 import { white, red, unclearWhite } from '../constants/Colors';
 import { store } from '../store';
-import { exchangeCredentialsAtom } from '../services/exchange-service';
+import { exchangeCredentialsAtom, exchangeBalanceFamily } from '../services/exchange-service';
 export type ExchangeItemProps = { exchange: ExchangeMaster };
 export default function ExchangeItem(props: { exchange: ExchangeMaster }) {
   const toast = useToast();
   const [showPrompt, setShowPrompt] = useState(false);
-  const balance = 1000;
+  const balanceInfo = useAtomValue(exchangeBalanceFamily(props.exchange.id));
 
   const handlePressUnregister = async () => {
     const credentials = await store.get(exchangeCredentialsAtom);
@@ -57,11 +58,16 @@ export default function ExchangeItem(props: { exchange: ExchangeMaster }) {
             残高
           </Text>
           <Text color={white} fontSize={18}>
-            {balance !== undefined ? balance.toLocaleString() : '---'}
+            {balanceInfo.data?.JPY !== undefined ? balanceInfo.data.JPY.toLocaleString() : '---'}
           </Text>
           <Text color={white} fontSize={12}>
             円
           </Text>
+          {balanceInfo.isError && (
+            <Text ml="$2" color={red}>
+              参照エラー
+            </Text>
+          )}
         </HStack>
       </VStack>
 

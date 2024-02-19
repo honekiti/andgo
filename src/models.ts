@@ -24,8 +24,8 @@ export type Ticker = {
 
 // 取引所の残高情報
 export type Balance = {
-  JPY: number | null;
-  BTC: number | null;
+  JPY?: number;
+  BTC?: number;
 };
 
 export type PlanId = string;

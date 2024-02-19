@@ -67,10 +67,7 @@ export const getBalance = async (exchangeCredential: ExchangeCredential): Promis
       const jpy = assets.find((a) => a.asset === 'jpy');
       const btc = assets.find((a) => a.asset === 'btc');
 
-      return {
-        JPY: jpy !== undefined ? Number(jpy.free_amount) : null,
-        BTC: btc !== undefined ? Number(btc.free_amount) : null,
-      };
+      return Object.assign({}, jpy ? { JPY: Number(jpy.free_amount) } : {}, btc ? { BTC: Number(btc.free_amount) } : {});
     }
     case 'BITFLYER': {
       // TODO: 実装する

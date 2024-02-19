@@ -3,7 +3,7 @@ import { atomWithStorage, createJSONStorage, atomFamily, loadable } from 'jotai/
 import { atomWithQuery } from 'jotai-tanstack-query';
 import * as SecureStore from 'expo-secure-store';
 import { EXCHANGES } from '../master';
-import { ExchangeMaster, ExchangeId, ExchangeCredential } from '../models';
+import { ExchangeMaster, ExchangeId, ExchangeCredential, Balance } from '../models';
 import { getTicker, getBalance } from './exchange-api-service/universal';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
@@ -33,6 +33,7 @@ export const exchangeTickerFamily = atomFamily((exchangeId: ExchangeId) => {
     queryFn: async () => {
       return await getTicker(exchangeId as ExchangeId);
     },
+    retry: false,
   }));
 });
 
@@ -45,20 +46,18 @@ export const exchangeBalanceFamily = atomFamily((exchangeId: ExchangeId) => {
 
       if (credential) {
         return {
-          queryKey: ['balances', credential.apiKey, credential.apiSecret],
-          queryFn: async ({ queryKey: [, apiKey, apiSecret] }) => {
+          queryKey: ['balances', exchangeId, credential.apiKey, credential.apiSecret],
+          queryFn: async ({ queryKey: [, exchangeId, apiKey, apiSecret] }) => {
             return await getBalance({ exchangeId, apiKey, apiSecret } as ExchangeCredential);
           },
+          retry: false,
         };
       }
 
       return {
         queryKey: ['balances', '', ''],
         queryFn: async () => {
-          return await Promise.resolve({
-            JPY: null,
-            BTC: null,
-          });
+          return await Promise.resolve({} as Balance);
         },
       };
     }
@@ -66,10 +65,7 @@ export const exchangeBalanceFamily = atomFamily((exchangeId: ExchangeId) => {
     return {
       queryKey: ['balances', '', ''],
       queryFn: async () => {
-        return await Promise.resolve({
-          JPY: null,
-          BTC: null,
-        });
+        return await Promise.resolve({} as Balance);
       },
     };
   });
