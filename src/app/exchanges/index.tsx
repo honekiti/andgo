@@ -1,131 +1,14 @@
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import React from 'react';
-import { useState } from 'react';
-import { ListRenderItem } from 'react-native';
-import {
-  Box,
-  Button,
-  FlatList,
-  HStack,
-  VStack,
-  Text,
-  Icon,
-  ButtonText,
-  CloseCircleIcon,
-  useToast,
-  Toast,
-  ToastTitle,
-  ModalBackdrop,
-  ModalContent,
-  Heading,
-  ModalHeader,
-  ModalCloseButton,
-  CloseIcon,
-  ModalFooter,
-  Modal,
-} from '@gluestack-ui/themed';
+import { Box, Button, FlatList, HStack, VStack, Text, ButtonText } from '@gluestack-ui/themed';
 import { Stack, Link } from 'expo-router';
-import { ExchangeMaster, ExchangeId } from '../../models';
-import { white, unclearWhite, darkGrey, red } from '../../constants/Colors';
+import { ExchangeCredential } from '../../models';
+import { white, unclearWhite, darkGrey } from '../../constants/Colors';
 import { exchangeCredentialsAtom, getExchangeFromCredential } from '../../services/exchange-service';
-
-export type ExchangeInfo = {
-  exchange: ExchangeMaster;
-  balance?: number;
-};
+import ExchangeItem from '../../components/ExchangeItem';
 
 export default function ExchangeListScreen() {
-  const [credentials, setCredentials] = useAtom(exchangeCredentialsAtom);
-  const toast = useToast();
-  const [balances, setBalances] = useState<(number | undefined)[]>([]);
-  const items: ExchangeInfo[] = credentials.map((credential, index) => ({
-    exchange: getExchangeFromCredential(credential),
-    balance: balances[index],
-  }));
-
-  const handlePressUnregister = async (id: ExchangeId) => {
-    const newCredentials = credentials.filter((c) => c.exchangeId !== id);
-    await setCredentials(newCredentials);
-    setShowCloseModal(false);
-
-    toast.show({
-      render: () => (
-        <Toast action="success">
-          <ToastTitle>連携を解除しました</ToastTitle>
-        </Toast>
-      ),
-    });
-  };
-
-  const [showCloseModal, setShowCloseModal] = useState(false);
-  const ref = React.useRef(null);
-
-  const renderItem: ListRenderItem<ExchangeInfo> = ({ item }) => {
-    return (
-      <HStack justifyContent="space-between" alignItems="center" p="$4" borderBottomWidth={0.3} borderBottomColor={unclearWhite}>
-        <VStack space="md" py="$1">
-          <Text color={white} fontSize={23} bold>
-            {item.exchange.name}
-          </Text>
-          <HStack space="xs">
-            <Text color={white} fontSize={12}>
-              残高
-            </Text>
-            <Text color={white} fontSize={18}>
-              {item.balance !== undefined ? item.balance.toLocaleString() : '---'}
-            </Text>
-            <Text color={white} fontSize={12}>
-              円
-            </Text>
-          </HStack>
-        </VStack>
-
-        <Button h="$12" w="$10" onPress={() => setShowCloseModal(true)} ref={ref} justifyContent="center" alignItems="center" bg="#0000">
-          <Icon as={CloseCircleIcon} color={red} size="xl" />
-        </Button>
-        <Modal
-          isOpen={showCloseModal}
-          onClose={() => {
-            setShowCloseModal(false);
-          }}
-          finalFocusRef={ref}
-        >
-          <ModalBackdrop />
-          <ModalContent>
-            <ModalHeader>
-              <Heading size="lg">連携を解除します</Heading>
-              <ModalCloseButton>
-                <Icon as={CloseIcon} />
-              </ModalCloseButton>
-            </ModalHeader>
-            <ModalFooter>
-              <Button
-                variant="outline"
-                size="sm"
-                action="secondary"
-                mr="$3"
-                onPress={() => {
-                  setShowCloseModal(false);
-                }}
-              >
-                <ButtonText>キャンセル</ButtonText>
-              </Button>
-              <Button
-                size="sm"
-                action="positive"
-                borderWidth="$0"
-                onPress={() => {
-                  handlePressUnregister(item.exchange.id);
-                }}
-              >
-                <ButtonText>OK</ButtonText>
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </HStack>
-    );
-  };
+  const credentials = useAtomValue(exchangeCredentialsAtom);
 
   return (
     <Box flex={1} bg={darkGrey} justifyContent="space-between">
@@ -138,8 +21,11 @@ export default function ExchangeListScreen() {
 
       <VStack>
         {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
-        {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-        <FlatList data={items} renderItem={renderItem as any} keyExtractor={(item) => (item as ExchangeInfo).exchange.name} />
+        <FlatList
+          data={credentials}
+          renderItem={({ item }) => <ExchangeItem exchange={getExchangeFromCredential(item as ExchangeCredential)} />}
+          keyExtractor={(item) => (item as ExchangeCredential).exchangeId}
+        />
       </VStack>
 
       <HStack justifyContent="space-between" alignItems="center" p="$4" mb="$3" borderTopWidth={0.3} borderColor={unclearWhite}>
