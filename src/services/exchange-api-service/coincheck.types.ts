@@ -4,42 +4,40 @@ export type Ticker = {
   ask: number; // 現在の売り注文の最安価格
   high: number; // 24時間での最高取引価格
   low: number; // 24時間での最安取引価格
-  volume: number; // 24時間での取引量
+  volume: string; // 24時間での取引量
   timestamp: number; // 現在の時刻 -> ex)1423377841
 };
 
 export type OrderRequest = {
   market_buy_amount: string; // 成行買で利用する日本円の金額
-  order_type: string;
-  pair: string;
+  order_type: 'market_buy';
+  pair: 'btc_jpy';
 };
 
 export type OrderResponse = {
   success: boolean;
-  id: string; // 新規注文のID
-  rate: number;
-  amount: number;
-  order_type: string;
-  time_in_force: string; // 注文有効期間
-  stop_loss_rate: string; // 逆指値レート
-  pair: string;
+  id: number; // 新規注文のID
+  rate: string;
+  amount: string;
+  order_type: 'market_buy';
+  time_in_force?: string; // 注文有効期間
+  stop_loss_rate: string | null; // 逆指値レート
+  pair: 'btc_jpy';
   created_at: string; // 注文の作成日時
 };
 
-export type BalanceElement = {
+export type GetBalanceResponse = {
   success: boolean;
-  jpy: number;
-  btc: number;
-  jpy_reserved: number;
-  btc_reserved: number;
-  jpy_lend_in_use: number;
-  btc_lend_in_use: number;
-  jpy_lent: number;
-  btc_lent: number;
-  jpy_debt: number;
-  btc_debt: number;
-  jpy_tsumitate: number;
-  btc_tsumitate: number;
+  jpy: string;
+  btc: string;
+  jpy_reserved: string;
+  btc_reserved: string;
+  jpy_lend_in_use: string;
+  btc_lend_in_use: string;
+  jpy_lent: string;
+  btc_lent: string;
+  jpy_debt: string;
+  btc_debt: string;
+  jpy_tsumitate: string;
+  btc_tsumitate: string;
 };
-
-export type GetBalanceResponse = BalanceElement[];
