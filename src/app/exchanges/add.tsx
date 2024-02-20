@@ -46,11 +46,14 @@ export default function ExchangeRegistrationScreen() {
   const [credentials, setCredentials] = useAtom(exchangeCredentialsAtom);
   const [selectedExchangeId, setSelectedExchangeId] = useState<ExchangeId>('UNKNOWN');
 
+  const [apiKey, setApiKey] = useState('');
+  const [apiSecret, setApiSecret] = useState('');
+
   const handlePressAddCredential = async () => {
     const newCredential: ExchangeCredential = {
       exchangeId: selectedExchangeId,
-      apiKey: 'dummy',
-      apiSecret: 'dummy',
+      apiKey,
+      apiSecret,
     };
 
     const updatedCredentials = [...credentials, newCredential];
@@ -162,7 +165,7 @@ export default function ExchangeRegistrationScreen() {
               <FormControlLabelText color={white}>APIキー</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField color={white} placeholder="発行したAPIキーを入力" />
+              <InputField color={white} placeholder="発行したAPIキーを入力" value={apiKey} onChangeText={setApiKey} />
             </Input>
           </FormControl>
 
@@ -171,7 +174,7 @@ export default function ExchangeRegistrationScreen() {
               <FormControlLabelText color={white}>APIシークレット</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField color={white} placeholder="発行したAPIシークレットを入力" />
+              <InputField color={white} placeholder="発行したAPIシークレットを入力" value={apiSecret} onChangeText={setApiSecret} />
             </Input>
           </FormControl>
         </VStack>
