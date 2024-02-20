@@ -1,20 +1,21 @@
+import { useAtomValue } from 'jotai';
 import { ListRenderItem } from 'react-native';
 import { Box, Text, FlatList, ScrollView, VStack, Button, HStack, Icon, CheckCircleIcon, CloseCircleIcon, ButtonText } from '@gluestack-ui/themed';
 import { Plan } from '../models';
 import PlanItem from './PlanItem';
+import { plansAtom } from '../services/plan-service';
 import { darkGrey, green, lightGrey, red, unclearWhite, white } from '../constants/Colors';
 import { Link } from 'expo-router';
-export type PlanListProps = {
-  plans: Plan[];
-};
-export default function PlanList(props: PlanListProps) {
+
+export default function PlanList() {
+  const plans = useAtomValue(plansAtom);
   const renderItem: ListRenderItem<Plan> = ({ item }) => <PlanItem item={item} />;
 
   return (
     <Box>
       {/* type bug: https://github.com/gluestack/gluestack-ui/issues/1041 */}
       {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-      <FlatList data={props.plans} renderItem={renderItem as any} keyExtractor={(item) => (item as Plan).id} />
+      <FlatList data={plans} renderItem={renderItem as any} keyExtractor={(item) => (item as Plan).id} />
       <Box h="auto" w="$full" justifyContent="space-between">
         <ScrollView h="auto">
           <VStack space="sm" p="$4">

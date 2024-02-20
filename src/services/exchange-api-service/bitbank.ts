@@ -2,10 +2,13 @@ import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
 import { ExchangeCredential } from '../../models';
-import { BitbankResponse, Ticker, OrderRequest, OrderResponse, AssetsResponse } from './bitbank.types';
+import { BitbankResponse, Ticker, OrderRequest, OrderResponse, Asset, AssetsResponse } from './bitbank.types';
 
 const PUBLIC_ENDPOINT = 'https://public.bitbank.cc';
-const PRIVATE_ENDPOINT = 'https://api.bitbank.cc/v1';
+const PRIVATE_ENDPOINT = 'https://api.bitbank.cc';
+const GET_ASSETS_PATH = '/v1/user/assets';
+const POST_ORDER_PATH = '/v1/user/spot/order';
+const GET_TICKER_PATH = '/btc_jpy/ticker';
 
 export class Bitbank extends BaseApi {
   private readonly exchangeCredential: ExchangeCredential;
@@ -18,14 +21,20 @@ export class Bitbank extends BaseApi {
     this.nonce = new Date().getTime();
   }
 
-  public getAssets(): Promise<BitbankResponse<AssetsResponse>> {
-    const path = '/user/assets';
-    return this.get(path, {});
+  public async getAssets(): Promise<Asset[]> {
+    const response = (await this.get(GET_ASSETS_PATH, {})) as BitbankResponse<AssetsResponse>;
+
+    console.log(`bitbank assets: ${JSON.stringify(response)}`);
+
+    if (response.success !== 1) {
+      throw new Error('Failed to fetch assets info from bitbank');
+    }
+
+    return response.data.assets;
   }
 
   public async postOrder(params: OrderRequest): Promise<BitbankResponse<OrderResponse>> {
-    const path = '/user/spot/order';
-    return await this.post(path, params);
+    return await this.post(POST_ORDER_PATH, params);
   }
 
   async get<T>(path: string, query?: unknown) {
@@ -33,7 +42,7 @@ export class Bitbank extends BaseApi {
     if (query && Object.keys(query).length) {
       params += `?${querystring.stringify(query as Record<string, string>)}`;
     }
-    const headers = this.makeHeader('/v1'.concat(path, params));
+    const headers = this.makeHeader(path.concat(params));
     return super.get(path, query, headers) as T;
   }
 
@@ -56,11 +65,16 @@ export class Bitbank extends BaseApi {
 
   // === public api ===
   public static async getTicker(): Promise<Ticker> {
-    const response = await fetch(`${PUBLIC_ENDPOINT}/btc_jpy/ticker`);
+    const response = await fetch(`${PUBLIC_ENDPOINT}${GET_TICKER_PATH}`);
+    const obj = await response.json();
 
-    const ticker = (await response.json()) as Ticker;
+    console.log(`bitbank: ${JSON.stringify(obj)}`);
 
-    console.log(`bitbank: ${JSON.stringify(ticker)}`);
+    if (response.status >= 400) {
+      throw new Error('Failed to fetch ticker info from bitbank');
+    }
+
+    const ticker = obj.data as Ticker;
 
     return ticker;
   }

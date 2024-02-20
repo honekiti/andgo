@@ -1,5 +1,6 @@
 import '../utils/polyfills';
 import { useEffect } from 'react';
+import { Provider as JotaiProvider } from 'jotai';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { config } from '@gluestack-ui/config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -7,6 +8,7 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { white, darkGrey } from '../constants/Colors';
+import { store } from '../store';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -48,17 +50,19 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <GluestackUIProvider config={config}>
-      <SafeAreaProvider>
-        <Stack
-          initialRouteName="index"
-          // 全スクリーン共通の設定
-          screenOptions={{
-            headerStyle: { backgroundColor: darkGrey },
-            headerTintColor: white,
-          }}
-        />
-      </SafeAreaProvider>
-    </GluestackUIProvider>
+    <JotaiProvider store={store}>
+      <GluestackUIProvider config={config}>
+        <SafeAreaProvider>
+          <Stack
+            initialRouteName="index"
+            // 全スクリーン共通の設定
+            screenOptions={{
+              headerStyle: { backgroundColor: darkGrey },
+              headerTintColor: white,
+            }}
+          />
+        </SafeAreaProvider>
+      </GluestackUIProvider>
+    </JotaiProvider>
   );
 }

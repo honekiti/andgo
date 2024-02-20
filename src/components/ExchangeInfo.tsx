@@ -1,6 +1,7 @@
+import { useAtomValue } from 'jotai';
 import { Box, VStack, Text } from '@gluestack-ui/themed';
 import { white } from '../constants/Colors';
-import { getExchange } from '../services/plan-service';
+import { getExchange, exchangeTickerFamily } from '../services/exchange-service';
 import type { ExchangeId } from '../models';
 
 type ExchangeInfoProps = {
@@ -9,6 +10,7 @@ type ExchangeInfoProps = {
 
 export default function ExchangeInfo(props: ExchangeInfoProps) {
   const exchange = getExchange(props.exchangeId);
+  const { data, isPending, isError } = useAtomValue(exchangeTickerFamily(props.exchangeId));
 
   return (
     <Box h="auto" w="$full" bg="#000" rounded="$lg">
@@ -22,6 +24,9 @@ export default function ExchangeInfo(props: ExchangeInfoProps) {
         </Text>
         <Text fontSize={11} color={white}>
           1000円相当
+          {JSON.stringify(data)}
+          {isPending && '取得中...'}
+          {isError && 'エラーが発生しました'}
         </Text>
       </VStack>
     </Box>

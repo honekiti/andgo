@@ -22,6 +22,12 @@ export type Ticker = {
   ask: number; // 現在の売り注文の最安値
 };
 
+// 取引所の残高情報
+export type Balance = {
+  JPY?: number;
+  BTC?: number;
+};
+
 export type PlanId = string;
 
 export type PlanTypeId = 'DAILY' | 'WEEKLY' | 'MONTHLY';
