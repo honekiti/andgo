@@ -170,7 +170,7 @@ export default function ExchangeRegistrationScreen() {
               <FormControlLabelText color={white}>APIキー</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField color={white} placeholder="発行したAPIキーを入力" />
+              <InputField autoCapitalize="none" autoComplete="off" autoCorrect={false} color={white} placeholder="発行したAPIキーを入力" />
             </Input>
           </FormControl>
 
@@ -179,7 +179,7 @@ export default function ExchangeRegistrationScreen() {
               <FormControlLabelText color={white}>APIシークレット</FormControlLabelText>
             </FormControlLabel>
             <Input borderWidth={0} bg={lightGrey}>
-              <InputField color={white} placeholder="発行したAPIシークレットを入力" />
+              <InputField autoCapitalize="none" autoComplete="off" autoCorrect={false} color={white} placeholder="発行したAPIシークレットを入力" />
             </Input>
           </FormControl>
         </VStack>
