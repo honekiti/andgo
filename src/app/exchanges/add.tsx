@@ -31,6 +31,7 @@ import {
   Toast,
   ToastTitle,
 } from '@gluestack-ui/themed';
+import { Stack } from 'expo-router';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { router } from 'expo-router';
 import { exchangeCredentialsAtom, getExchange } from '../../services/exchange-service';
@@ -73,6 +74,13 @@ export default function ExchangeRegistrationScreen() {
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
+      <Stack.Screen
+        options={{
+          title: '取引所連携',
+          presentation: 'card',
+        }}
+      />
+
       <ScrollView h="auto">
         <VStack space="3xl" p="$4">
           <FormControl size="md" isRequired={true}>
