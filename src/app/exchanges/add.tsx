@@ -91,17 +91,17 @@ export default function ExchangeRegistrationScreen() {
 
           {selectedExchangeId && (
             <Box h="auto" w="$full" bg="#000" rounded="$md" alignItems="center" p="$4">
-              =======
               <Image size="xs" bgColor="#0000" resizeMode="contain" source={require('../../../assets/images/key-fill.png')} alt="key-fill-logo" />
               <Text color={white} fontSize={14} py="$2">
                 APIキーを発行してください
               </Text>
               <Divider bg={unclearWhite} />
               <Text color={white} bold p="$2">
-                {selectedExchangeId}
+                {selectedExchangeId ? getExchangeName(selectedExchangeId) : '取引所'}
               </Text>
               <Text color={white} fontSize={13}>
-                {selectedExchangeId}へログインし、「APIキーの発行」メニューで「参照」「取引」の権限を選択して、APIを発行してください
+                {selectedExchangeId ? getExchangeName(selectedExchangeId) : '取引所'}
+                へログインし、「APIキーの発行」メニューで「参照」「取引」の権限を選択して、APIを発行してください
               </Text>
               <VStack space="md" pt="$2">
                 <Link href="https://bitbank.cc/">
