@@ -1,6 +1,7 @@
 import { ExchangeId, ExchangeCredential, Ticker, Balance } from '../../models';
 import { Bitbank } from './bitbank';
 import { BitFlyer, REQUIRED_PERMISSIONS } from './bitflyer';
+import { Coincheck } from './coincheck';
 
 export const getPermissionsStatus = async (exchangeCredential: ExchangeCredential): Promise<boolean> => {
   switch (exchangeCredential.exchangeId) {
@@ -43,9 +44,9 @@ export const getTicker = async (exchangeId: ExchangeId): Promise<Ticker> => {
       };
     }
     case 'COINCHECK': {
-      // TODO: 実装する
+      const r = await Coincheck.getTicker();
       return {
-        ask: 0,
+        ask: r.ask,
       };
     }
     case 'GMO': {
@@ -122,7 +123,16 @@ export const execBuyOrder = async (exchangeCredential: ExchangeCredential, btcAm
       return { status: 'ORDER_FAILED' };
     }
     case 'COINCHECK': {
-      // TODO: 実装する
+      const r = await new Coincheck(exchangeCredential).postOrder({
+        market_buy_amount: `${btcAmount}`,
+        order_type: 'market_buy',
+        pair: 'btc_jpy',
+      });
+
+      if (r.success === true) {
+        return { status: 'SUCCESS' };
+      }
+
       return { status: 'ORDER_FAILED' };
     }
     case 'GMO': {
