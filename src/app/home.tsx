@@ -12,7 +12,7 @@ export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <Box h="$full" pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
+    <Box h="100%" pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
       <Stack.Screen
         options={{
           title: 'ホーム',
@@ -20,7 +20,7 @@ export default function HomeScreen() {
         }}
       />
 
-      <Box h="$64" p="$3" display="flex" flexDirection="column">
+      <Box h="35%" p="$3" display="flex" flexDirection="column">
         <Box h="50%" display="flex" flexDirection="column">
           <HStack h="40%" justifyContent="space-between">
             <Box w="auto" justifyContent="center">
@@ -213,12 +213,12 @@ export default function HomeScreen() {
         </HStack>
       </Box>
 
-      <Box h="auto" w="100%" bg={darkGrey} rounded="$3xl">
-        <Box h="$7" justifyContent="center" alignItems="center">
+      <Box h="65%" w="100%" bg={darkGrey} rounded="$3xl">
+        <Box h="3%" justifyContent="flex-end" alignItems="center">
           <Box h="$1" w="$16" bg={lightGrey} rounded="$full" />
         </Box>
-        <Box h="$11" w="100%" display="flex" flexDirection="row" alignItems="center">
-          <Pressable w="50%" onPress={() => setActiveTab(0)}>
+        <HStack h="11%" w="100%" alignItems="center">
+          <Pressable h="100%" w="50%" justifyContent="center" pt="$2" onPress={() => setActiveTab(0)}>
             <Box display="flex" flexDirection="row" justifyContent="center">
               <AddIcon as={CalendarDaysIcon} size="md" color={white} mr="$1" />
               <Text color={white} fontWeight="500">
@@ -226,7 +226,7 @@ export default function HomeScreen() {
               </Text>
             </Box>
           </Pressable>
-          <Pressable w="50%" onPress={() => setActiveTab(1)}>
+          <Pressable h="100%" w="50%" justifyContent="center" pt="$2" onPress={() => setActiveTab(1)}>
             <Box display="flex" flexDirection="row" justifyContent="center">
               <AddIcon as={PaperclipIcon} size="md" color={white} mr="$1" />
               <Text color={white} fontWeight="500">
@@ -234,9 +234,11 @@ export default function HomeScreen() {
               </Text>
             </Box>
           </Pressable>
+        </HStack>
+        <Box h="85.5%">
+          {activeTab === 0 && <CalenderInfo />}
+          {activeTab === 1 && <AccumulateInfo />}
         </Box>
-        {activeTab === 0 && <CalenderInfo />}
-        {activeTab === 1 && <AccumulateInfo />}
       </Box>
     </Box>
   );

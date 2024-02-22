@@ -9,10 +9,10 @@ export default function CalenderInfo() {
 
   return (
     <>
-      <Box display="flex" flexDirection="row">
-        <Box h="$0.5" w="50%" bg={white} rounded="$full" />
-        <Box h="$0.5" w="50%" bg={unclearWhite} rounded="$full" />
-      </Box>
+      <HStack h="0.5%">
+        <Box h="100%" w="50%" bg={white} rounded="$full" />
+        <Box h="100%" w="50%" bg={unclearWhite} rounded="$full" />
+      </HStack>
       <ScrollView h="$full" w="$full">
         {/* ↓ 取引所連携前 ↓ */}
         {credentials.length === 0 && (

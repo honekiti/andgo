@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { Box, Button, ButtonText, ScrollView, Text } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, HStack, ScrollView, Text } from '@gluestack-ui/themed';
 import { white, unclearWhite } from '../constants/Colors';
 import { Link } from 'expo-router';
 import PlanList from './PlanList';
@@ -14,10 +14,10 @@ export default function AccumulateInfo() {
 
   return (
     <>
-      <Box display="flex" flexDirection="row">
-        <Box h="$0.5" w="50%" bg={unclearWhite} rounded="$full" />
-        <Box h="$0.5" w="50%" bg={white} rounded="$full" />
-      </Box>
+      <HStack h="0.5%">
+        <Box h="100%" w="50%" bg={unclearWhite} rounded="$full" />
+        <Box h="100%" w="50%" bg={white} rounded="$full" />
+      </HStack>
 
       {/* ↓ 取引所連携前 ↓ */}
       {credentials.length === 0 && (
