@@ -25,10 +25,7 @@ export default function AccumulateInfo() {
           <Box h="auto" alignItems="center" my="$7">
             <Box h="$20" w="$20" bg="#f003" rounded={'$full'} />
             <Text mt="$2">暗号資産(仮想通貨)取引所と</Text>
-            <Text>連携しましょう</Text>
-          </Box>
-
-          <Box h="auto" alignItems="center" mb="$7">
+            <Text mb="$7">連携しましょう</Text>
             <Link href="/exchange-registration" asChild>
               <Button
                 h="$12"
@@ -45,7 +42,6 @@ export default function AccumulateInfo() {
                 <ButtonText color={white}>取引所と連携する</ButtonText>
               </Button>
             </Link>
-            <Box h="$40" />
           </Box>
         </ScrollView>
       )}

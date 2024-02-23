@@ -16,14 +16,11 @@ export default function CalenderInfo() {
       <ScrollView h="$full" w="$full">
         {/* ↓ 取引所連携前 ↓ */}
         {credentials.length === 0 && (
-          <>
+          <Box justifyContent="space-between">
             <Box h="auto" alignItems="center" my="$7">
               <Box h="$20" w="$20" bg="#00f3" rounded={'$full'} />
               <Text mt="$2">暗号資産(仮想通貨)取引所と</Text>
-              <Text>連携しましょう</Text>
-            </Box>
-
-            <Box h="auto" alignItems="center" mb="$7">
+              <Text mb="$7">連携しましょう</Text>
               <Link href="/exchange-registration" asChild>
                 <Button
                   h="$12"
@@ -45,9 +42,8 @@ export default function CalenderInfo() {
                   連携する方法を見る
                 </LinkText>
               </Link>
-              <Box h="$40" />
             </Box>
-          </>
+          </Box>
         )}
         {/* ↑ 取引所連携前 ↑ */}
         {/* ↓ 取引所連携後 ↓ */}
