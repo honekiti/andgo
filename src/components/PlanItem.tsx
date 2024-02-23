@@ -2,9 +2,10 @@ import { Box, Button, CheckCircleIcon, CloseCircleIcon, HStack, Icon, Text, VSta
 import { Plan } from '../models';
 import { Link } from 'expo-router';
 import { green, lightGrey, red, unclearWhite, white, btnFalse } from '../constants/Colors';
-import { getExchange } from '../services/exchange-service';
+import { exchangeTickerFamily, getExchange } from '../services/exchange-service';
 import { getPlanType, getRefAtDetails } from '../services/plan-service';
 import { DAY_OF_WEEK_OPTIONS } from '../master';
+import { useAtomValue } from 'jotai';
 
 export type PlanItemProps = {
   item: Plan;
@@ -15,6 +16,10 @@ export default function PlanItem(props: PlanItemProps) {
   const planType = getPlanType(props.item.planTypeId);
   const refAtDetails = getRefAtDetails(props.item);
   const btnColor = props.item.status.enabled ? lightGrey : btnFalse;
+  const btcPrice: number =
+    useAtomValue(exchangeTickerFamily(props.item.exchangeId)).data?.ask !== undefined
+      ? props.item.quoteAmount / useAtomValue(exchangeTickerFamily(props.item.exchangeId)).data?.ask
+      : 0;
   return (
     <Box justifyContent="center">
       <Link href="/schedule-edit" asChild>
@@ -39,10 +44,9 @@ export default function PlanItem(props: PlanItemProps) {
                   {props.item.planTypeId !== 'DAILY' && (
                     <Text color={unclearWhite} fontSize={13}>
                       {props.item.planTypeId === 'WEEKLY' && DAY_OF_WEEK_OPTIONS[refAtDetails.dayOfWeek].label}
-                      {props.item.planTypeId === 'MONTHLY' && refAtDetails.date}
                       {props.item.planTypeId === 'MONTHLY' && (
                         <Text color={unclearWhite} fontSize={13}>
-                          日
+                          {refAtDetails.date}日
                         </Text>
                       )}
                     </Text>
@@ -51,7 +55,7 @@ export default function PlanItem(props: PlanItemProps) {
                     -
                   </Text>
                   <Text color={unclearWhite} fontSize={13}>
-                    ????
+                    {refAtDetails.hour}:{refAtDetails.minute}
                   </Text>
                 </HStack>
               ) : (
@@ -80,7 +84,7 @@ export default function PlanItem(props: PlanItemProps) {
                   alt="bit-coin-line-logo"
                 />
                 <Text color={white} fontSize={11}>
-                  ????
+                  {btcPrice.toFixed(8)}
                 </Text>
                 <Text color={white} fontSize={11}>
                   相当
