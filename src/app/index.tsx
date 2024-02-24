@@ -98,6 +98,42 @@ export default function HomeScreen() {
           nextAt: new Date().getTime(),
         },
       },
+      {
+        id: 'DEBUG_PLAN4',
+        exchangeId: 'BITFLYER',
+        quoteAmount: 1000,
+        planTypeId: 'DAILY',
+        status: {
+          enabled: true,
+          refAt: new Date().getTime(),
+          nextIndex: 0,
+          nextAt: new Date().getTime(),
+        },
+      },
+      {
+        id: 'DEBUG_PLAN5',
+        exchangeId: 'COINCHECK',
+        quoteAmount: 1000,
+        planTypeId: 'WEEKLY',
+        status: {
+          enabled: true,
+          refAt: new Date().getTime(),
+          nextIndex: 0,
+          nextAt: new Date().getTime(),
+        },
+      },
+      {
+        id: 'DEBUG_PLAN6',
+        exchangeId: 'BITBANK',
+        quoteAmount: 1000,
+        planTypeId: 'MONTHLY',
+        status: {
+          enabled: true,
+          refAt: new Date().getTime(),
+          nextIndex: 0,
+          nextAt: new Date().getTime(),
+        },
+      },
     ]);
   };
 

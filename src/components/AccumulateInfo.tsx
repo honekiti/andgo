@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { Box, Button, ButtonText, ScrollView, Text } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, HStack, ScrollView, Text } from '@gluestack-ui/themed';
 import { white, unclearWhite } from '../constants/Colors';
 import { Link } from 'expo-router';
 import PlanList from './PlanList';
@@ -14,10 +14,10 @@ export default function AccumulateInfo() {
 
   return (
     <>
-      <Box display="flex" flexDirection="row">
-        <Box h="$0.5" w="50%" bg={unclearWhite} rounded="$full" />
-        <Box h="$0.5" w="50%" bg={white} rounded="$full" />
-      </Box>
+      <HStack h="0.5%">
+        <Box h="100%" w="50%" bg={unclearWhite} rounded="$full" />
+        <Box h="100%" w="50%" bg={white} rounded="$full" />
+      </HStack>
 
       {/* ↓ 取引所連携前 ↓ */}
       {credentials.length === 0 && (
@@ -25,10 +25,7 @@ export default function AccumulateInfo() {
           <Box h="auto" alignItems="center" my="$7">
             <Box h="$20" w="$20" bg="#f003" rounded={'$full'} />
             <Text mt="$2">暗号資産(仮想通貨)取引所と</Text>
-            <Text>連携しましょう</Text>
-          </Box>
-
-          <Box h="auto" alignItems="center" mb="$7">
+            <Text mb="$7">連携しましょう</Text>
             <Link href="/exchange-registration" asChild>
               <Button
                 h="$12"
@@ -45,7 +42,6 @@ export default function AccumulateInfo() {
                 <ButtonText color={white}>取引所と連携する</ButtonText>
               </Button>
             </Link>
-            <Box h="$40" />
           </Box>
         </ScrollView>
       )}
