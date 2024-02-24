@@ -1,11 +1,11 @@
+import { useAtomValue } from 'jotai';
+import { Link } from 'expo-router';
 import { Box, Button, CheckCircleIcon, CloseCircleIcon, HStack, Icon, Text, VStack, Image } from '@gluestack-ui/themed';
 import { Plan } from '../models';
-import { Link } from 'expo-router';
 import { green, lightGrey, red, unclearWhite, white, btnFalse } from '../constants/Colors';
-import { exchangeTickerFamily, getExchange } from '../services/exchange-service';
+import { getExchange, useRefBtcAmount } from '../services/exchange-service';
 import { getPlanType, getRefAtDetails } from '../services/plan-service';
 import { DAY_OF_WEEK_OPTIONS } from '../master';
-import { useAtomValue } from 'jotai';
 
 export type PlanItemProps = {
   item: Plan;
@@ -16,10 +16,8 @@ export default function PlanItem(props: PlanItemProps) {
   const planType = getPlanType(props.item.planTypeId);
   const refAtDetails = getRefAtDetails(props.item);
   const btnColor = props.item.status.enabled ? lightGrey : btnFalse;
-  const btcPrice: number =
-    useAtomValue(exchangeTickerFamily(props.item.exchangeId)).data?.ask !== undefined
-      ? props.item.quoteAmount / useAtomValue(exchangeTickerFamily(props.item.exchangeId)).data?.ask
-      : 0;
+  const refBtcAmount = useRefBtcAmount(props.item.exchangeId, props.item.quoteAmount);
+
   return (
     <Box justifyContent="center">
       <Link href="/schedule-edit" asChild>
@@ -83,8 +81,13 @@ export default function PlanItem(props: PlanItemProps) {
                   source={require('../../assets/images/bit-coin-line.png')}
                   alt="bit-coin-line-logo"
                 />
-                <Text color={white} fontSize={11}>
-                  {btcPrice.toFixed(8)}
+                <Text>
+                  <Text color={white} fontSize={11}>
+                    {refBtcAmount.refBtcAmountStr !== undefined ? refBtcAmount.refBtcAmountStr : '---'}
+                  </Text>
+                  <Text color={unclearWhite} fontSize={11}>
+                    {refBtcAmount.extraZerosStr !== undefined ? refBtcAmount.extraZerosStr : ''}
+                  </Text>
                 </Text>
                 <Text color={white} fontSize={11}>
                   相当
