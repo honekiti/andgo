@@ -1,10 +1,13 @@
 import invariant from 'tiny-invariant';
+import { useAtomValue } from 'jotai';
 import { atomWithStorage, createJSONStorage, atomFamily, loadable } from 'jotai/utils';
 import { atomWithQuery } from 'jotai-tanstack-query';
 import * as SecureStore from 'expo-secure-store';
 import { EXCHANGES } from '../master';
 import { ExchangeMaster, ExchangeId, ExchangeCredential, Balance } from '../models';
 import { getTicker, getBalance } from './exchange-api-service/universal';
+
+const BTC_PRECISION = 8;
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class CommonSecureStore {
@@ -70,6 +73,52 @@ export const exchangeBalanceFamily = atomFamily((exchangeId: ExchangeId) => {
     };
   });
 });
+
+// 参考取得量を取得するためのhook.
+export const useRefBtcAmount = (
+  exchangeId: ExchangeId,
+  quoteAmount: number,
+): {
+  // 参考購入BTC量 (購入予定額 / BTC/JPYレート)
+  refBtcAmountStr?: string;
+  // 桁調整用のゼロ文字列
+  extraZerosStr?: string;
+  // ステータス
+  status: // 値を取得済み
+    | 'FETCHED'
+    // 取得中
+    | 'FETCHING'
+    // 取得エラー
+    | 'FETCH_ERROR'
+    // 最少購入量エラー
+    | 'MIN_BTC_AMT_ERROR';
+} => {
+  const master = getExchange(exchangeId);
+  // BTC/JPYレートを取得（非同期）
+  const exchangeTicker = useAtomValue(exchangeTickerFamily(exchangeId));
+  const exchangeBtcJpyRate = exchangeTicker.data?.ask;
+
+  if (exchangeBtcJpyRate === undefined) {
+    if (exchangeTicker.isFetching) {
+      return { status: 'FETCHING' };
+    }
+
+    return { status: 'FETCH_ERROR' };
+  }
+
+  const rawBtcAmountPrice = quoteAmount / exchangeBtcJpyRate;
+
+  // 最低購入量の確認
+  if (rawBtcAmountPrice < master.minBtcAmt) {
+    return { status: 'MIN_BTC_AMT_ERROR' };
+  }
+
+  // 購入粒度調整
+  const refBtcAmountStr = rawBtcAmountPrice.toFixed(master.orderPrecision);
+  const extraZerosStr = '0'.repeat(BTC_PRECISION - master.orderPrecision);
+
+  return { refBtcAmountStr, extraZerosStr, status: 'FETCHED' };
+};
 
 export const getExchange = (exchangeId: ExchangeId): ExchangeMaster => {
   const found = EXCHANGES.find((ex) => ex.id === exchangeId);
