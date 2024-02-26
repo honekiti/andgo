@@ -56,3 +56,8 @@ export type PlanTypeMaster = {
   intervalUnit: IntervalUnit; // スケジュールの繰り返し単位
   interval: number; // 繰り返し間隔
 };
+
+export type Account = {
+  // 利用規約に同意済みのときtrueがセットされる
+  agreement: boolean;
+};

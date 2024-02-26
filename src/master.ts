@@ -1,4 +1,4 @@
-import { ExchangeMaster, PlanTypeMaster } from './models';
+import { ExchangeMaster, PlanTypeMaster, Account } from './models';
 
 export const VIEW_PRECISION = 8;
 
@@ -97,3 +97,5 @@ export const MINUTE_OPTIONS = [...Array(60 / REF_AT_MINUTE_DELTA).keys()]
     label: `${i}分`,
     value: i,
   }));
+
+export const DEFAULT_ACCOUNT_VALUE = { agreement: false };
