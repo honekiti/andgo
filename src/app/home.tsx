@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Stack, Link } from 'expo-router';
-import { Box, Button, ButtonIcon, HStack, Pressable, Text, VStack } from '@gluestack-ui/themed';
+import { Box, Button, ButtonIcon, HStack, Pressable, ScrollView, Text, VStack } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey, orange } from '../constants/Colors';
 import CalenderInfo from '../components/CalenderInfo';
 import AccumulateInfo from '../components/AccumulateInfo';
+import ExchangeBalanceList from '../components/ExchangeBalanceList';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -140,75 +141,9 @@ export default function HomeScreen() {
             </Text>
           </VStack>
 
+          {/* 取引所残高一覧表示カード */}
           <VStack h="auto" w="49%" p="$3" bg={darkGrey} rounded="$lg">
-            <Box h="50%">
-              <Text w="75%" fontSize={17} color={white} fontWeight="500">
-                取引所残高
-              </Text>
-            </Box>
-
-            {/* ↓ 取引所連携前 ↓ */}
-            <Text fontSize={13} color={white}>
-              現在、表示する情報はありません
-            </Text>
-            {/* ↑ 取引所連携前 ↑ */}
-
-            {/* ↓ 取引所連携後 ↓ */}
-            {/* <ScrollView>
-              <HStack justifyContent="space-between">
-                <Text color={white} fontSize={13} bold>
-                  Kraken
-                </Text>
-                <HStack>
-                  <Text color={white} fontSize={13}>
-                    123,456
-                  </Text>
-                  <Text color={white} fontSize={13}>
-                    円
-                  </Text>
-                </HStack>
-              </HStack>
-              <HStack justifyContent="space-between">
-                <Text color={white} fontSize={13} bold>
-                  bitFlyer
-                </Text>
-                <HStack>
-                  <Text color={white} fontSize={13}>
-                    123,456
-                  </Text>
-                  <Text color={white} fontSize={13}>
-                    円
-                  </Text>
-                </HStack>
-              </HStack>
-              <HStack justifyContent="space-between">
-                <Text color={white} fontSize={13} bold>
-                  GMOコイン
-                </Text>
-                <HStack>
-                  <Text color={white} fontSize={13}>
-                    123,456
-                  </Text>
-                  <Text color={white} fontSize={13}>
-                    円
-                  </Text>
-                </HStack>
-              </HStack>
-              <HStack justifyContent="space-between">
-                <Text color={white} fontSize={13} bold>
-                  Kraken
-                </Text>
-                <HStack>
-                  <Text color={white} fontSize={13}>
-                    123,456
-                  </Text>
-                  <Text color={white} fontSize={13}>
-                    円
-                  </Text>
-                </HStack>
-              </HStack>
-            </ScrollView> */}
-            {/* ↑ 取引所連携後 ↑ */}
+            <ExchangeBalanceList />
           </VStack>
         </HStack>
       </Box>
