@@ -38,6 +38,7 @@ import { exchangeCredentialsAtom, getExchange } from '../../services/exchange-se
 import { ExchangeCredential, ExchangeId } from '../../models';
 import { Link } from 'expo-router';
 import { EXCHANGES } from '../../master';
+import { getPermissionsStatus } from '../../services/exchange-api-service/universal';
 
 /**
  * 取引所連携画面
@@ -50,17 +51,28 @@ export default function ExchangeRegistrationScreen() {
   const [apiKey, setApiKey] = useState('');
   const [apiSecret, setApiSecret] = useState('');
 
-  const handlePressAddCredential = async () => {
+  const permissionsCheck = async () => {
     const newCredential: ExchangeCredential = {
       exchangeId: selectedExchangeId,
       apiKey,
       apiSecret,
     };
 
+    (await getPermissionsStatus(newCredential))
+      ? await handlePressAddCredential(newCredential)
+      : toast.show({
+          render: () => (
+            <Toast action="error">
+              <ToastTitle>エラーが発生しました</ToastTitle>
+            </Toast>
+          ),
+        });
+  };
+
+  const handlePressAddCredential = async (newCredential: ExchangeCredential) => {
     const updatedCredentials = [...credentials, newCredential];
 
     await setCredentials(updatedCredentials);
-
     toast.show({
       render: () => (
         <Toast action="success">
@@ -191,7 +203,7 @@ export default function ExchangeRegistrationScreen() {
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
         <Link href="/home" asChild>
           <Button
-            onPress={() => handlePressAddCredential()}
+            onPress={() => permissionsCheck()}
             w="100%"
             size="lg"
             variant="solid"
