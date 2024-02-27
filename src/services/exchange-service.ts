@@ -106,6 +106,7 @@ export const useRefBtcAmount = (
     return { status: 'FETCH_ERROR' };
   }
 
+  // const rawBtcAmountPrice = quoteAmount / 5000000;
   const rawBtcAmountPrice = quoteAmount / exchangeBtcJpyRate;
 
   // 最低購入量の確認
@@ -114,8 +115,24 @@ export const useRefBtcAmount = (
   }
 
   // 購入粒度調整
-  const refBtcAmountStr = rawBtcAmountPrice.toFixed(master.orderPrecision);
-  const extraZerosStr = '0'.repeat(BTC_PRECISION - master.orderPrecision);
+  let refBtcAmountStr: string;
+  let digit: number;
+  (rawBtcAmountPrice % 1).toString().substring(2).length > BTC_PRECISION
+    ? // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+      (refBtcAmountStr = rawBtcAmountPrice.toFixed(BTC_PRECISION))
+    : // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+      (refBtcAmountStr = rawBtcAmountPrice.toString());
+
+  (rawBtcAmountPrice % 1).toString().substring(2).length > BTC_PRECISION
+    ? // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+      (digit = (parseFloat(refBtcAmountStr) % 1).toFixed(BTC_PRECISION).substring(2).length)
+    : // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+      (digit = (rawBtcAmountPrice % 1).toString().substring(2).length);
+
+  if (parseFloat(refBtcAmountStr) % 1 === 0) {
+    refBtcAmountStr = `${refBtcAmountStr}.`;
+  }
+  const extraZerosStr = '0'.repeat(BTC_PRECISION - digit);
 
   return { refBtcAmountStr, extraZerosStr, status: 'FETCHED' };
 };
