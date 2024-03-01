@@ -2,7 +2,7 @@ import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
 import { ExchangeCredential } from '../../models';
-import { Ticker, OrderRequest, OrderResponse, AssetsResponse } from './gmo.types';
+import { Ticker, OrderRequest, OrderResponse, AssetsResponse, GMOResponse } from './gmo.types';
 
 const PUBLIC_ENDPOINT = 'https://api.coin.z.com/public';
 const PRIVATE_ENDPOINT = 'https://api.coin.z.com/private';
@@ -69,9 +69,15 @@ export class gmo extends BaseApi {
   public static async getTicker(): Promise<Ticker> {
     const response = await fetch(`${PUBLIC_TICKER_PATH}`);
 
-    const ticker = (await response.json()) as Ticker;
+    const obj = (await response.json()) as GMOResponse;
 
-    console.log(`gmo: ${JSON.stringify(ticker)}`);
+    console.log(`gmo: ${JSON.stringify(obj)}`);
+
+    if (obj.status !== 0) {
+      throw new Error('Failed to fetch ticker info from GMO Coin');
+    }
+
+    const ticker = obj.data[0];
 
     return ticker;
   }

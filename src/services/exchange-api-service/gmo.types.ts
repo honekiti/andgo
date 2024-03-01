@@ -34,6 +34,6 @@ export type AssetsResponse = Asset[];
 
 export type GMOResponse = {
   status: number;
-  data: Ticker;
+  data: Ticker[];
   responsetime: string;
 };
