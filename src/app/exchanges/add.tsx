@@ -31,13 +31,12 @@ import {
   Toast,
   ToastTitle,
 } from '@gluestack-ui/themed';
-import { Stack } from 'expo-router';
+import { Stack, Link, router } from 'expo-router';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
-import { router } from 'expo-router';
 import { exchangeCredentialsAtom, getExchange } from '../../services/exchange-service';
 import { ExchangeCredential, ExchangeId } from '../../models';
-import { Link } from 'expo-router';
 import { EXCHANGES } from '../../master';
+import { getPermissionsStatus } from '../../services/exchange-api-service/universal';
 
 /**
  * 取引所連携画面
@@ -56,22 +55,27 @@ export default function ExchangeRegistrationScreen() {
       apiKey,
       apiSecret,
     };
-
-    const updatedCredentials = [...credentials, newCredential];
-
-    await setCredentials(updatedCredentials);
-
-    toast.show({
-      render: () => (
-        <Toast action="success">
-          <ToastTitle>取引所を連携しました</ToastTitle>
-        </Toast>
-      ),
-    });
-
-    // ホーム画面まで戻る(開発中はデバッグ画面まで戻る)
-    while (router.canGoBack()) {
-      router.back();
+    const permissionIsOk = await getPermissionsStatus(newCredential);
+    if (permissionIsOk) {
+      const updatedCredentials = [...credentials, newCredential];
+      await setCredentials(updatedCredentials);
+      toast.show({
+        render: () => (
+          <Toast action="success">
+            <ToastTitle>取引所を連携しました</ToastTitle>
+          </Toast>
+        ),
+      });
+      // ホーム画面まで戻る
+      router.replace('/home');
+    } else {
+      toast.show({
+        render: () => (
+          <Toast action="error">
+            <ToastTitle>エラーが発生しました</ToastTitle>
+          </Toast>
+        ),
+      });
     }
   };
 
@@ -177,7 +181,7 @@ export default function ExchangeRegistrationScreen() {
             </Input>
           </FormControl>
 
-          <FormControl size="md" isRequired={true}>
+          <FormControl size="md" isRequired={true} pb="$96">
             <FormControlLabel>
               <FormControlLabelText color={white}>APIシークレット</FormControlLabelText>
             </FormControlLabel>
@@ -189,21 +193,19 @@ export default function ExchangeRegistrationScreen() {
       </ScrollView>
 
       <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
-        <Link href="/home" asChild>
-          <Button
-            onPress={() => handlePressAddCredential()}
-            w="100%"
-            size="lg"
-            variant="solid"
-            action="primary"
-            isDisabled={false}
-            isFocusVisible={false}
-            rounded="$lg"
-            bgColor="#f97316"
-          >
-            <ButtonText>連携する</ButtonText>
-          </Button>
-        </Link>
+        <Button
+          onPress={() => handlePressAddCredential()}
+          w="100%"
+          size="lg"
+          variant="solid"
+          action="primary"
+          isDisabled={false}
+          isFocusVisible={false}
+          rounded="$lg"
+          bgColor="#f97316"
+        >
+          <ButtonText>連携する</ButtonText>
+        </Button>
       </Box>
     </Box>
   );
