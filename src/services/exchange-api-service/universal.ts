@@ -2,6 +2,7 @@ import { ExchangeId, ExchangeCredential, Ticker, Balance, SuccessOrderResult, Fa
 import { Bitbank } from './bitbank';
 import { BitFlyer, REQUIRED_PERMISSIONS } from './bitflyer';
 import { Coincheck } from './coincheck';
+import { gmo } from './gmo';
 
 export const getPermissionsStatus = async (exchangeCredential: ExchangeCredential): Promise<boolean> => {
   switch (exchangeCredential.exchangeId) {
@@ -50,9 +51,9 @@ export const getTicker = async (exchangeId: ExchangeId): Promise<Ticker> => {
       };
     }
     case 'GMO': {
-      // TODO: 実装する
+      const r = await gmo.getTicker();
       return {
-        ask: 0,
+        ask: Number(r.ask),
       };
     }
     default:
