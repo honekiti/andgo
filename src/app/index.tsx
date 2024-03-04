@@ -34,7 +34,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN1',
     exchangeId: 'BITFLYER',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'DAILY',
     status: {
       enabled: false,
@@ -46,7 +46,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN2',
     exchangeId: 'COINCHECK',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'WEEKLY',
     status: {
       enabled: false,
@@ -58,7 +58,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN3',
     exchangeId: 'BITBANK',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'MONTHLY',
     status: {
       enabled: false,
@@ -70,7 +70,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN4',
     exchangeId: 'BITFLYER',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'DAILY',
     status: {
       enabled: true,
@@ -82,7 +82,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN5',
     exchangeId: 'COINCHECK',
-    quoteAmount: 1000,
+    quoteAmount: 50000000,
     planTypeId: 'WEEKLY',
     status: {
       enabled: true,
@@ -94,7 +94,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN6',
     exchangeId: 'BITBANK',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'MONTHLY',
     status: {
       enabled: true,
