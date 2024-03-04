@@ -65,7 +65,7 @@ export default function HomeScreen() {
       {
         id: 'DEBUG_PLAN1',
         exchangeId: 'BITFLYER',
-        quoteAmount: 10000,
+        quoteAmount: 100000,
         planTypeId: 'DAILY',
         status: {
           enabled: false,
@@ -77,7 +77,7 @@ export default function HomeScreen() {
       {
         id: 'DEBUG_PLAN2',
         exchangeId: 'COINCHECK',
-        quoteAmount: 10000,
+        quoteAmount: 100000,
         planTypeId: 'WEEKLY',
         status: {
           enabled: false,
@@ -89,7 +89,7 @@ export default function HomeScreen() {
       {
         id: 'DEBUG_PLAN3',
         exchangeId: 'BITBANK',
-        quoteAmount: 10000,
+        quoteAmount: 100000,
         planTypeId: 'MONTHLY',
         status: {
           enabled: false,
@@ -101,7 +101,7 @@ export default function HomeScreen() {
       {
         id: 'DEBUG_PLAN4',
         exchangeId: 'BITFLYER',
-        quoteAmount: 10000,
+        quoteAmount: 100000,
         planTypeId: 'DAILY',
         status: {
           enabled: true,
@@ -125,7 +125,7 @@ export default function HomeScreen() {
       {
         id: 'DEBUG_PLAN6',
         exchangeId: 'BITBANK',
-        quoteAmount: 10000,
+        quoteAmount: 100000,
         planTypeId: 'MONTHLY',
         status: {
           enabled: true,
