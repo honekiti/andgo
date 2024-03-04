@@ -1,7 +1,8 @@
-import { ExchangeId, ExchangeCredential, Ticker, Balance } from '../../models';
+import { ExchangeId, ExchangeCredential, Ticker, Balance, SuccessOrderResult, FailedOrderResult } from '../../models';
 import { Bitbank } from './bitbank';
 import { BitFlyer, REQUIRED_PERMISSIONS } from './bitflyer';
 import { Coincheck } from './coincheck';
+import { gmo } from './gmo';
 
 export const getPermissionsStatus = async (exchangeCredential: ExchangeCredential): Promise<boolean> => {
   switch (exchangeCredential.exchangeId) {
@@ -50,9 +51,9 @@ export const getTicker = async (exchangeId: ExchangeId): Promise<Ticker> => {
       };
     }
     case 'GMO': {
-      // TODO: 実装する
+      const r = await gmo.getTicker();
       return {
-        ask: 0,
+        ask: Number(r.ask),
       };
     }
     default:
@@ -96,11 +97,11 @@ export const getBalance = async (exchangeCredential: ExchangeCredential): Promis
   }
 };
 
-export const execBuyOrder = async (exchangeCredential: ExchangeCredential, btcAmount: number): Promise<{ status: 'SUCCESS' | 'ORDER_FAILED' }> => {
+export const execBuyOrder = async (exchangeCredential: ExchangeCredential, btcAmount: number): Promise<SuccessOrderResult | FailedOrderResult> => {
   if (process.env.EXPO_PUBLIC_DRY_RUN) {
     console.log('dry run');
 
-    return { status: 'SUCCESS' };
+    return { status: 'SUCCESS', btcAmount };
   }
 
   switch (exchangeCredential.exchangeId) {
@@ -113,14 +114,14 @@ export const execBuyOrder = async (exchangeCredential: ExchangeCredential, btcAm
       });
 
       if (r.success === 1) {
-        return { status: 'SUCCESS' };
+        return { status: 'SUCCESS', btcAmount };
       }
 
-      return { status: 'ORDER_FAILED' };
+      return { status: 'FAILED', errorCode: `BITBANK:${r.success}` };
     }
     case 'BITFLYER': {
       // TODO: 実装する
-      return { status: 'ORDER_FAILED' };
+      return { status: 'FAILED', errorCode: 'BITFLYER:-1' };
     }
     case 'COINCHECK': {
       const r = await new Coincheck(exchangeCredential).postOrder({
@@ -130,14 +131,14 @@ export const execBuyOrder = async (exchangeCredential: ExchangeCredential, btcAm
       });
 
       if (r.success === true) {
-        return { status: 'SUCCESS' };
+        return { status: 'SUCCESS', btcAmount };
       }
 
-      return { status: 'ORDER_FAILED' };
+      return { status: 'FAILED', errorCode: 'COINCHECK:-1' };
     }
     case 'GMO': {
       // TODO: 実装する
-      return { status: 'ORDER_FAILED' };
+      return { status: 'FAILED', errorCode: 'GMO:-1' };
     }
     default:
       throw new Error('EXCHANGE_NOT_SUPPORTED');

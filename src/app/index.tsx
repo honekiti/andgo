@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { Link, Stack } from 'expo-router';
 import { Box, Button, ButtonText, VStack, useToast, Toast, ToastTitle } from '@gluestack-ui/themed';
@@ -5,6 +6,114 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@gluestack-ui/themed';
 import { plansAtom } from '../services/plan-service';
 import { exchangeCredentialsAtom, exchangeTickerFamily } from '../services/exchange-service';
+import { accountAtom } from '../services/account-service';
+import { orderFamily } from '../services/order-service';
+import { DEFAULT_ACCOUNT_VALUE } from '../master';
+import { store } from '../store';
+import type { ExchangeCredential, Plan, Order, SuccessOrderResult } from '../models';
+
+const DEBUG_CREDENTIALS: ExchangeCredential[] = [
+  {
+    exchangeId: 'BITFLYER',
+    apiKey: 'DEBUG_API_KEY',
+    apiSecret: 'DEBUG_API_SECRET',
+  },
+  {
+    exchangeId: 'COINCHECK',
+    apiKey: 'DEBUG_API_KEY',
+    apiSecret: 'DEBUG_API_SECRET',
+  },
+  {
+    exchangeId: 'BITBANK',
+    apiKey: 'DEBUG_API_KEY',
+    apiSecret: 'DEBUG_API_SECRET',
+  },
+];
+
+const DEBUG_PLANS: Plan[] = [
+  {
+    id: 'DEBUG_PLAN1',
+    exchangeId: 'BITFLYER',
+    quoteAmount: 100000,
+    planTypeId: 'DAILY',
+    status: {
+      enabled: false,
+      refAt: new Date().getTime(),
+      nextIndex: 0,
+      nextAt: new Date().getTime(),
+    },
+  },
+  {
+    id: 'DEBUG_PLAN2',
+    exchangeId: 'COINCHECK',
+    quoteAmount: 100000,
+    planTypeId: 'WEEKLY',
+    status: {
+      enabled: false,
+      refAt: new Date().getTime(),
+      nextIndex: 0,
+      nextAt: new Date().getTime(),
+    },
+  },
+  {
+    id: 'DEBUG_PLAN3',
+    exchangeId: 'BITBANK',
+    quoteAmount: 100000,
+    planTypeId: 'MONTHLY',
+    status: {
+      enabled: false,
+      refAt: new Date().getTime(),
+      nextIndex: 0,
+      nextAt: new Date().getTime(),
+    },
+  },
+  {
+    id: 'DEBUG_PLAN4',
+    exchangeId: 'BITFLYER',
+    quoteAmount: 100000,
+    planTypeId: 'DAILY',
+    status: {
+      enabled: true,
+      refAt: new Date().getTime(),
+      nextIndex: 0,
+      nextAt: new Date().getTime(),
+    },
+  },
+  {
+    id: 'DEBUG_PLAN5',
+    exchangeId: 'COINCHECK',
+    quoteAmount: 50000000,
+    planTypeId: 'WEEKLY',
+    status: {
+      enabled: true,
+      refAt: new Date().getTime(),
+      nextIndex: 0,
+      nextAt: new Date().getTime(),
+    },
+  },
+  {
+    id: 'DEBUG_PLAN6',
+    exchangeId: 'BITBANK',
+    quoteAmount: 100000,
+    planTypeId: 'MONTHLY',
+    status: {
+      enabled: true,
+      refAt: new Date().getTime(),
+      nextIndex: 0,
+      nextAt: new Date().getTime(),
+    },
+  },
+];
+
+const DEBUG_ORDERS: Order[] = Array.from({ length: 10 }, (_, i) => ({
+  id: `${i + 1}`,
+  orderedAt: new Date().getTime() + i * 1000 * 60 * 60 * 24,
+  planSnapshot: DEBUG_PLANS[i % DEBUG_PLANS.length],
+  result: {
+    status: 'SUCCESS',
+    btcAmount: 0.01,
+  },
+}));
 
 const TickerInfos = () => {
   const bitFlyer = useAtomValue(exchangeTickerFamily('BITFLYER'));
@@ -27,6 +136,7 @@ export default function HomeScreen() {
   const toast = useToast();
   const setPlans = useSetAtom(plansAtom);
   const setExchangeCredentials = useSetAtom(exchangeCredentialsAtom);
+  const setAccount = useSetAtom(accountAtom);
 
   const handleReset = async (withFixtures: boolean) => {
     toast.show({
@@ -38,103 +148,25 @@ export default function HomeScreen() {
     });
 
     if (!withFixtures) {
+      await AsyncStorage.clear();
+      await setAccount(DEFAULT_ACCOUNT_VALUE);
       await setExchangeCredentials([]);
       await setPlans([]);
+      // ORDERは初期化しなくてよい
 
       return;
     }
 
-    await setExchangeCredentials([
-      {
-        exchangeId: 'BITFLYER',
-        apiKey: 'DEBUG_API_KEY',
-        apiSecret: 'DEBUG_API_SECRET',
-      },
-      {
-        exchangeId: 'COINCHECK',
-        apiKey: 'DEBUG_API_KEY',
-        apiSecret: 'DEBUG_API_SECRET',
-      },
-      {
-        exchangeId: 'BITBANK',
-        apiKey: 'DEBUG_API_KEY',
-        apiSecret: 'DEBUG_API_SECRET',
-      },
-    ]);
-    await setPlans([
-      {
-        id: 'DEBUG_PLAN1',
-        exchangeId: 'BITFLYER',
-        quoteAmount: 100000,
-        planTypeId: 'DAILY',
-        status: {
-          enabled: false,
-          refAt: new Date().getTime(),
-          nextIndex: 0,
-          nextAt: new Date().getTime(),
-        },
-      },
-      {
-        id: 'DEBUG_PLAN2',
-        exchangeId: 'COINCHECK',
-        quoteAmount: 100000,
-        planTypeId: 'WEEKLY',
-        status: {
-          enabled: false,
-          refAt: new Date().getTime(),
-          nextIndex: 0,
-          nextAt: new Date().getTime(),
-        },
-      },
-      {
-        id: 'DEBUG_PLAN3',
-        exchangeId: 'BITBANK',
-        quoteAmount: 100000,
-        planTypeId: 'MONTHLY',
-        status: {
-          enabled: false,
-          refAt: new Date().getTime(),
-          nextIndex: 0,
-          nextAt: new Date().getTime(),
-        },
-      },
-      {
-        id: 'DEBUG_PLAN4',
-        exchangeId: 'BITFLYER',
-        quoteAmount: 100000,
-        planTypeId: 'DAILY',
-        status: {
-          enabled: true,
-          refAt: new Date().getTime(),
-          nextIndex: 0,
-          nextAt: new Date().getTime(),
-        },
-      },
-      {
-        id: 'DEBUG_PLAN5',
-        exchangeId: 'COINCHECK',
-        quoteAmount: 50000000,
-        planTypeId: 'WEEKLY',
-        status: {
-          enabled: true,
-          refAt: new Date().getTime(),
-          nextIndex: 0,
-          nextAt: new Date().getTime(),
-        },
-      },
-      {
-        id: 'DEBUG_PLAN6',
-        exchangeId: 'BITBANK',
-        quoteAmount: 100000,
-        planTypeId: 'MONTHLY',
-        status: {
-          enabled: true,
-          refAt: new Date().getTime(),
-          nextIndex: 0,
-          nextAt: new Date().getTime(),
-        },
-      },
-    ]);
+    const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
+    await setAccount({
+      agreement: false,
+      numOfOrders: successOrders.length,
+      totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
+    });
+
+    await setExchangeCredentials(DEBUG_CREDENTIALS);
+    await setPlans(DEBUG_PLANS);
+    await Promise.all(DEBUG_ORDERS.map((order) => store.set(orderFamily(order.id), order)));
   };
 
   return (

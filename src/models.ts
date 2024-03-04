@@ -60,4 +60,27 @@ export type PlanTypeMaster = {
 export type Account = {
   // 利用規約に同意済みのときtrueがセットされる
   agreement: boolean;
+  // 購入指示数
+  numOfOrders: number;
+  // 累計購入BTC量
+  totalBtcAmount: number;
+};
+
+export type SuccessOrderResult = {
+  status: 'SUCCESS';
+  // 購入指示BTC量
+  btcAmount: number;
+};
+
+export type FailedOrderResult = {
+  status: 'FAILED';
+  errorCode: string;
+};
+
+// 購入指示
+export type Order<R = SuccessOrderResult | FailedOrderResult> = {
+  id: string; // '1', '2', '3', ...
+  orderedAt: number; // 注文日時 [unix time]
+  planSnapshot: Plan;
+  result: R;
 };
