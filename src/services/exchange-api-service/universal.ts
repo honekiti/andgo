@@ -79,11 +79,9 @@ export const getBalance = async (exchangeCredential: ExchangeCredential): Promis
       };
     }
     case 'COINCHECK': {
-      // TODO: 実装する
-      return {
-        JPY: 0,
-        BTC: 0,
-      };
+      const coincheck = new Coincheck(exchangeCredential);
+      const balance = await coincheck.getBalance();
+      return Object.assign({}, { JPY: Number(balance.jpy) }, { BTC: Number(balance.btc) });
     }
     case 'GMO': {
       // TODO: 実装する
