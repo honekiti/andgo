@@ -28,7 +28,6 @@ export class Coincheck extends BaseApi {
   public async postOrder(params: OrderRequest): Promise<OrderResponse> {
     return await this.post(POST_ORDER_PATH, params);
   }
-
   async get<T>(path: string, query?: unknown) {
     let params = '';
     if (query && Object.keys(query).length) {
@@ -45,8 +44,7 @@ export class Coincheck extends BaseApi {
   }
 
   private makeHeader(uri: string) {
-    this.nonce++;
-    const message: string = this.nonce.toString().concat(uri);
+    const message: string = this.nonce.toString().concat(`${this.endPoint}${uri}`);
     return {
       'Content-Type': 'application/json',
       'ACCESS-KEY': this.exchangeCredential.apiKey,
