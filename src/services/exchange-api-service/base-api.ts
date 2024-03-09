@@ -28,13 +28,21 @@ export class BaseApi {
       Object.assign(options, { headers });
     }
 
-    const response = await fetch(`${this.endPoint}${path}`, options);
+    const url = `${this.endPoint}${path}`;
+
+    console.debug('FETCH:', url, options);
+
+    const response = await fetch(url, options);
 
     if (!response.ok) {
-      throw new Error(`fetch error: ${response.status}`);
+      console.log('RESPONSE STATUS:', response.status);
+
+      throw new Error(`FETCH ERROR: ${response.status}`);
     }
 
     const json = await response.json();
+
+    console.debug('RESPONSE:', json);
 
     return json;
   }
