@@ -24,9 +24,9 @@ export class BitFlyer extends BaseApi {
   /**
    * APIキーの権限を取得する.
    */
-  public getPermissions(): Promise<string[]> {
-    return this.get(GET_PERMISSIONS_PATH, {});
-  }
+  // public getPermissions(): Promise<string[]> {
+  //   return this.get(GET_PERMISSIONS_PATH, {});
+  // }
 
   /**
    * 残高を返す.
@@ -50,6 +50,8 @@ export class BitFlyer extends BaseApi {
       params += `?${querystring.stringify(query as Record<string, string>)}`;
     }
     const headers = this.makeHeader('GET', path.concat(params));
+    console.log('Request URL:', this.endPoint + path + params);
+    console.log('Request Headers:', headers);
     return super.get(path, query, headers) as T;
   }
 
@@ -63,10 +65,10 @@ export class BitFlyer extends BaseApi {
     const timestamp = Date.now().toString();
     const message: string = timestamp.concat(method, uri, body ?? '');
     return {
-      'Content-Type': 'application/json',
       'ACCESS-KEY': this.exchangeCredential.apiKey,
       'ACCESS-TIMESTAMP': timestamp,
-      'ACCESS-SIG': hmacSha256(this.exchangeCredential.apiSecret, message),
+      'ACCESS-SIGN': hmacSha256(this.exchangeCredential.apiSecret, message),
+      'Content-Type': 'application/json',
     };
   }
 

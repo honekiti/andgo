@@ -11,10 +11,11 @@ export const getPermissionsStatus = async (exchangeCredential: ExchangeCredentia
       return true;
     }
     case 'BITFLYER': {
-      const bitFlyer = new BitFlyer(exchangeCredential);
-      const permissions = await bitFlyer.getPermissions();
+      // const bitFlyer = new BitFlyer(exchangeCredential);
+      // const permissions = await bitFlyer.getPermissions();
 
-      return REQUIRED_PERMISSIONS.every((p) => permissions.includes(p));
+      // return REQUIRED_PERMISSIONS.every((p) => permissions.includes(p));
+      return true;
     }
     case 'COINCHECK': {
       // TODO: 実装する
@@ -72,11 +73,12 @@ export const getBalance = async (exchangeCredential: ExchangeCredential): Promis
       return Object.assign({}, jpy ? { JPY: Number(jpy.free_amount) } : {}, btc ? { BTC: Number(btc.free_amount) } : {});
     }
     case 'BITFLYER': {
-      // TODO: 実装する
-      return {
-        JPY: 0,
-        BTC: 0,
-      };
+      const bitflyer = new BitFlyer(exchangeCredential);
+      const balance = await bitflyer.getBalance();
+      const jpy = balance.find((b) => b.currency_code === 'JPY');
+      const btc = balance.find((b) => b.currency_code === 'BTC');
+
+      return Object.assign({}, jpy ? { JPY: Number(jpy.amount) } : {}, btc ? { BTC: Number(btc.amount) } : {});
     }
     case 'COINCHECK': {
       const coincheck = new Coincheck(exchangeCredential);
