@@ -11,6 +11,7 @@ import { orderFamily } from '../services/order-service';
 import { DEFAULT_ACCOUNT_VALUE } from '../master';
 import { store } from '../store';
 import type { ExchangeCredential, Plan, Order, SuccessOrderResult } from '../models';
+import { p } from '@tanstack/query-core/build/legacy/queryClient-Ho-z40Sw';
 
 const DEBUG_CREDENTIALS: ExchangeCredential[] = [
   {
@@ -30,90 +31,90 @@ const DEBUG_CREDENTIALS: ExchangeCredential[] = [
   },
 ];
 
-const DEBUG_PLANS: Plan[] = [
-  {
-    id: 'DEBUG_PLAN1',
-    exchangeId: 'BITFLYER',
-    quoteAmount: 1000,
-    planTypeId: 'DAILY',
-    status: {
-      enabled: false,
-      refAt: new Date().getTime(),
-      nextIndex: 0,
-      nextAt: new Date().getTime(),
-    },
-  },
-  {
-    id: 'DEBUG_PLAN2',
-    exchangeId: 'COINCHECK',
-    quoteAmount: 1000,
-    planTypeId: 'WEEKLY',
-    status: {
-      enabled: false,
-      refAt: new Date().getTime(),
-      nextIndex: 0,
-      nextAt: new Date().getTime(),
-    },
-  },
-  {
-    id: 'DEBUG_PLAN3',
-    exchangeId: 'BITBANK',
-    quoteAmount: 1000,
-    planTypeId: 'MONTHLY',
-    status: {
-      enabled: false,
-      refAt: new Date().getTime(),
-      nextIndex: 0,
-      nextAt: new Date().getTime(),
-    },
-  },
-  {
-    id: 'DEBUG_PLAN4',
-    exchangeId: 'BITFLYER',
-    quoteAmount: 1000,
-    planTypeId: 'DAILY',
-    status: {
-      enabled: true,
-      refAt: new Date().getTime(),
-      nextIndex: 0,
-      nextAt: new Date().getTime(),
-    },
-  },
-  {
-    id: 'DEBUG_PLAN5',
-    exchangeId: 'COINCHECK',
-    quoteAmount: 1000,
-    planTypeId: 'WEEKLY',
-    status: {
-      enabled: true,
-      refAt: new Date().getTime(),
-      nextIndex: 0,
-      nextAt: new Date().getTime(),
-    },
-  },
-  {
-    id: 'DEBUG_PLAN6',
-    exchangeId: 'BITBANK',
-    quoteAmount: 1000,
-    planTypeId: 'MONTHLY',
-    status: {
-      enabled: true,
-      refAt: new Date().getTime(),
-      nextIndex: 0,
-      nextAt: new Date().getTime(),
-    },
-  },
-];
+// const DEBUG_PLANS: Plan[] = [
+//   {
+//     id: 'DEBUG_PLAN1',
+//     exchangeId: 'BITFLYER',
+//     quoteAmount: 1000,
+//     planTypeId: 'DAILY',
+//     status: {
+//       enabled: false,
+//       refAt: new Date().getTime(),
+//       nextIndex: 0,
+//       nextAt: new Date().getTime(),
+//     },
+//   },
+//   {
+//     id: 'DEBUG_PLAN2',
+//     exchangeId: 'COINCHECK',
+//     quoteAmount: 1000,
+//     planTypeId: 'WEEKLY',
+//     status: {
+//       enabled: false,
+//       refAt: new Date().getTime(),
+//       nextIndex: 0,
+//       nextAt: new Date().getTime(),
+//     },
+//   },
+//   {
+//     id: 'DEBUG_PLAN3',
+//     exchangeId: 'BITBANK',
+//     quoteAmount: 1000,
+//     planTypeId: 'MONTHLY',
+//     status: {
+//       enabled: false,
+//       refAt: new Date().getTime(),
+//       nextIndex: 0,
+//       nextAt: new Date().getTime(),
+//     },
+//   },
+//   {
+//     id: 'DEBUG_PLAN4',
+//     exchangeId: 'BITFLYER',
+//     quoteAmount: 1000,
+//     planTypeId: 'DAILY',
+//     status: {
+//       enabled: true,
+//       refAt: new Date().getTime(),
+//       nextIndex: 0,
+//       nextAt: new Date().getTime(),
+//     },
+//   },
+//   {
+//     id: 'DEBUG_PLAN5',
+//     exchangeId: 'COINCHECK',
+//     quoteAmount: 1000,
+//     planTypeId: 'WEEKLY',
+//     status: {
+//       enabled: true,
+//       refAt: new Date().getTime(),
+//       nextIndex: 0,
+//       nextAt: new Date().getTime(),
+//     },
+//   },
+//   {
+//     id: 'DEBUG_PLAN6',
+//     exchangeId: 'BITBANK',
+//     quoteAmount: 1000,
+//     planTypeId: 'MONTHLY',
+//     status: {
+//       enabled: true,
+//       refAt: new Date().getTime(),
+//       nextIndex: 0,
+//       nextAt: new Date().getTime(),
+//     },
+//   },
+// ];
 
-const DEBUG_ORDERS: Order[] = Array.from({ length: 10 }, (_, i) => ({
-  id: `${i + 1}`,
-  orderedAt: new Date().getTime() + i * 1000 * 60 * 60 * 24,
-  planSnapshot: DEBUG_PLANS[i % DEBUG_PLANS.length],
-  result: {
-    status: 'SUCCESS',
-    btcAmount: 0.01,
-  },
-}));
+// const DEBUG_ORDERS: Order[] = Array.from({ length: 10 }, (_, i) => ({
+//   id: `${i + 1}`,
+//   orderedAt: new Date().getTime() + i * 1000 * 60 * 60 * 24,
+//   planSnapshot: DEBUG_PLANS[i % DEBUG_PLANS.length],
+//   result: {
+//     status: 'SUCCESS',
+//     btcAmount: 0.01,
+//   },
+// }));
 
 const TickerInfos = () => {
   const bitFlyer = useAtomValue(exchangeTickerFamily('BITFLYER'));
@@ -157,16 +158,16 @@ export default function HomeScreen() {
       return;
     }
 
-    const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
-    await setAccount({
-      agreement: false,
-      numOfOrders: successOrders.length,
-      totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
-    });
+    // const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
+    // await setAccount({
+    //   agreement: false,
+    //   numOfOrders: successOrders.length,
+    //   totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
+    // });
 
-    await setExchangeCredentials(DEBUG_CREDENTIALS);
-    await setPlans(DEBUG_PLANS);
-    await Promise.all(DEBUG_ORDERS.map((order) => store.set(orderFamily(order.id), order)));
+    // await setExchangeCredentials(DEBUG_CREDENTIALS);
+    // await setPlans(DEBUG_PLANS);
+    // await Promise.all(DEBUG_ORDERS.map((order) => store.set(orderFamily(order.id), order)));
   };
 
   return (
@@ -201,7 +202,7 @@ export default function HomeScreen() {
           </Button>
         </Link>
 
-        <Link href="/plans/DEBUG_PLAN1" asChild>
+        <Link href={{ pathname: '/plans/[id]', params: { id: 'c936e128-e31d-4e75-9d5d-d99c8b30e02f' } }} asChild>
           <Button borderRadius="$full">
             <ButtonText>積立プラン編集画面</ButtonText>
           </Button>
