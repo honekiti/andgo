@@ -1,3 +1,6 @@
+// References:
+// - https://coincheck.com/ja/documents/exchange/api#auth
+
 export type Ticker = {
   last: number; // 最後の取引の価格
   bid: number; // 現在の買い注文の最高価格
