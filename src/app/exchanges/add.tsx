@@ -71,6 +71,9 @@ export default function ExchangeRegistrationScreen() {
       const balance = await getBalance(newCredential);
       console.log('balance:', newCredential.exchangeId, balance);
 
+      const permissions = await getPermissionsStatus(newCredential);
+      console.log('permissions:', newCredential.exchangeId, permissions);
+
       // ホーム画面まで戻る
       router.replace('/home');
     } else {
