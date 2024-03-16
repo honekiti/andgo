@@ -14,7 +14,7 @@
       }
     },
     "preview": {
-      "extends": "production",
+      "node": "20.11.1",
       "distribution": "internal",
       "android": {
         "buildType": "apk"
@@ -29,6 +29,16 @@
     }
   },
   "submit": {
-    "production": {}
+    "preview": {
+      "android": {
+        "serviceAccountKeyPath": "./hongo-291507-adaab030c96c.json",
+        "track": "internal"
+      }
+    },
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./hongo-291507-adaab030c96c.json"
+      }
+    }
   }
 }
