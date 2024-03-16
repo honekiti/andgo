@@ -1,7 +1,8 @@
 {
   "cli": {
     "version": ">= 7.3.0",
-    "promptToConfigurePushNotifications": false
+    "promptToConfigurePushNotifications": false,
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -21,6 +22,7 @@
     },
     "production": {
       "node": "20.11.1",
+      "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
       }

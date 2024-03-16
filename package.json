@@ -14,7 +14,7 @@
     "build:dev:android": "eas build --profile development --platform android",
     "build:preview:all": "eas build --profile preview --platform all",
     "build:preview:ios": "eas build --profile preview --platform ios",
-    "build:preview:android": "eas build --profile preview --platform android",
+    "build:preview:android": "eas build --profile preview --platform android --auto-submit",
     "submit:ios": "eas submit -p ios",
     "submit:android": "eas submit -p android",
     "install:dev:simulator:ios": "eas build:run -p ios",
