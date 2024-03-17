@@ -2,7 +2,7 @@ import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
 import { ExchangeCredential } from '../../models';
-import { Ticker, OrderRequest, OrderResponse, AssetsResponse, GMOResponse, Asset } from './gmo.types';
+import { Ticker, OrderRequest, OrderResponse, AssetsResponse, GMOResponse } from './gmo.types';
 
 const PUBLIC_ENDPOINT = 'https://api.coin.z.com/public';
 const PRIVATE_ENDPOINT = 'https://api.coin.z.com/private';
@@ -25,7 +25,7 @@ export class gmo extends BaseApi {
   }
 
   public async getAsset(): Promise<AssetsResponse> {
-    const response = (await this.get(GET_ASSETS_PATH, {})) as GMOResponse<AssetsResponse>;
+    const response = await this.get<GMOResponse<AssetsResponse>>(GET_ASSETS_PATH, {});
     return response.data;
   }
 
