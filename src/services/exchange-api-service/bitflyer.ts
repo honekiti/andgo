@@ -24,9 +24,9 @@ export class BitFlyer extends BaseApi {
   /**
    * APIキーの権限を取得する.
    */
-  // public getPermissions(): Promise<string[]> {
-  //   return this.get(GET_PERMISSIONS_PATH, {});
-  // }
+  public getPermissions(): Promise<string[]> {
+    return this.get(GET_PERMISSIONS_PATH, {});
+  }
 
   /**
    * 残高を返す.

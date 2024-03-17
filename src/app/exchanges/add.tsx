@@ -68,9 +68,6 @@ export default function ExchangeRegistrationScreen() {
         ),
       });
 
-      const balance = await getBalance(newCredential);
-      console.log('balance:', newCredential.exchangeId, balance);
-
       // ホーム画面まで戻る
       router.replace('/home');
     } else {

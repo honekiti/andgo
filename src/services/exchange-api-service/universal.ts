@@ -11,11 +11,10 @@ export const getPermissionsStatus = async (exchangeCredential: ExchangeCredentia
       return true;
     }
     case 'BITFLYER': {
-      // const bitFlyer = new BitFlyer(exchangeCredential);
-      // const permissions = await bitFlyer.getPermissions();
+      const bitFlyer = new BitFlyer(exchangeCredential);
+      const permissions = await bitFlyer.getPermissions();
 
-      // return REQUIRED_PERMISSIONS.every((p) => permissions.includes(p));
-      return true;
+      return REQUIRED_PERMISSIONS.every((p) => permissions.includes(p));
     }
     case 'COINCHECK': {
       // TODO: 実装する
