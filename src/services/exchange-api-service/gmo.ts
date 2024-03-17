@@ -69,7 +69,7 @@ export class gmo extends BaseApi {
   public static async getTicker(): Promise<Ticker> {
     const response = await fetch(`${PUBLIC_ENDPOINT}${GET_TICKER_PATH}?symbol=BTC`);
 
-    const obj = await response.json();
+    const obj = (await response.json()) as GMOResponse<Ticker[]>;
 
     console.log(`gmo: ${JSON.stringify(obj)}`);
 
