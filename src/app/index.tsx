@@ -11,7 +11,6 @@ import { orderFamily } from '../services/order-service';
 import { DEFAULT_ACCOUNT_VALUE } from '../master';
 import { store } from '../store';
 import type { ExchangeCredential, Plan, Order, SuccessOrderResult } from '../models';
-import { p } from '@tanstack/query-core/build/legacy/queryClient-Ho-z40Sw';
 
 const DEBUG_CREDENTIALS: ExchangeCredential[] = [
   {
@@ -202,9 +201,15 @@ export default function HomeScreen() {
           </Button>
         </Link>
 
+        <Link href="/plans/DEBUG_PLAN1" asChild>
+          <Button borderRadius="$full">
+            <ButtonText>積立プラン編集画面(PLAN1)</ButtonText>
+          </Button>
+        </Link>
+
         <Link href="/plans/DEBUG_PLAN2" asChild>
           <Button borderRadius="$full">
-            <ButtonText>積立プラン編集画面</ButtonText>
+            <ButtonText>積立プラン編集画面(PLAN2)</ButtonText>
           </Button>
         </Link>
 

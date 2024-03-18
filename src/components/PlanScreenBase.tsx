@@ -30,7 +30,7 @@ import {
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
 import { useFocusEffect, router } from 'expo-router';
-import { plansAtom, getModifiedRefAt, getNextIndexFromNow, getNextAtByIndex, getRefAtDetails } from '../services/plan-service';
+import { plansAtom, getModifiedRefAt, getNextIndexFromNow, getNextAtByIndex, getRefAtDetails, getPlanType } from '../services/plan-service';
 import { exchangeCredentialsAtom, getExchange, getExchangeFromCredential } from '../services/exchange-service';
 import { genId } from '../utils/crypto';
 import type { Plan, ExchangeCredential, ExchangeId, PlanTypeId, PlanId } from '../models';
@@ -50,6 +50,8 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
     exchange: getExchangeFromCredential(credential),
   }));
 
+  // state
+  const [initialized, setInitialized] = useState<boolean>(false);
   // form data
   const [exchangeId, setExchangeId] = useState<ExchangeId>('UNKNOWN');
   const [planTypeId, setPlanTypeId] = useState<PlanTypeId>('MONTHLY');
@@ -88,7 +90,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
 
     if (props.targetPlanId) {
       // 更新
-      plans.splice(
+      updatedPlans.splice(
         plans.findIndex((p) => p.id === props.targetPlanId),
         1,
         newPlan,
@@ -159,11 +161,18 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
             }
           }
         }
+
+        setInitialized(true);
       };
 
       loadData();
     }, [props.targetPlanId, toast.show]),
   );
+
+  // Selectへの値反映のため、Lazyにレンダリングする
+  if (!initialized) {
+    return null;
+  }
 
   return (
     <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
@@ -173,26 +182,23 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
             <FormControlLabel>
               <FormControlLabelText color={white}>取引所</FormControlLabelText>
             </FormControlLabel>
-            {/* SelectがsetExchangeIdを反映してくれないバグをLazyにレンダリングすることで回避する */}
-            {(!props.targetPlanId || exchangeId !== 'UNKNOWN') && (
-              <Select selectedValue={exchangeId} initialLabel={getExchange(exchangeId).name} onValueChange={(v) => setExchangeId(v as ExchangeId)}>
-                <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                  <SelectInput color={white} placeholder="選択してください" />
-                  <SelectIcon mr="$3" as={ChevronDownIcon} />
-                </SelectTrigger>
-                <SelectPortal>
-                  <SelectBackdrop />
-                  <SelectContent bg="#fffe">
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {exchangeItems.map(({ exchange }) => (
-                      <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
-              </Select>
-            )}
+            <Select selectedValue={exchangeId} initialLabel={getExchange(exchangeId).name} onValueChange={(v) => setExchangeId(v as ExchangeId)}>
+              <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
+                <SelectInput color={white} placeholder="選択してください" />
+                <SelectIcon mr="$3" as={ChevronDownIcon} />
+              </SelectTrigger>
+              <SelectPortal>
+                <SelectBackdrop />
+                <SelectContent bg="#fffe">
+                  <SelectDragIndicatorWrapper>
+                    <SelectDragIndicator />
+                  </SelectDragIndicatorWrapper>
+                  {exchangeItems.map(({ exchange }) => (
+                    <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
+                  ))}
+                </SelectContent>
+              </SelectPortal>
+            </Select>
           </FormControl>
 
           {exchangeId !== 'UNKNOWN' && <ExchangeInfo exchangeId={exchangeId} />}
@@ -203,9 +209,9 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
             </FormControlLabel>
             <HStack justifyContent="space-between">
               <Box w="49%">
-                <Select onValueChange={(v) => setPlanTypeId(v as PlanTypeId)}>
+                <Select selectedValue={planTypeId} initialLabel={getPlanType(planTypeId).name} onValueChange={(v) => setPlanTypeId(v as PlanTypeId)}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput color={white} value={`${planTypeId}`} placeholder="毎週" />
+                    <SelectInput color={white} placeholder="毎週" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal>
