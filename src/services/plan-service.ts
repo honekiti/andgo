@@ -4,8 +4,7 @@ import invariant from 'tiny-invariant';
 import { setHours, setMinutes, setDay, setDate, getDate, getDay, getHours, getMinutes } from 'date-fns';
 import { addDays, addHours, addMinutes, addMonths, differenceInDays, differenceInHours, differenceInMinutes, differenceInMonths } from 'date-fns';
 import { PLAN_TYPES, REF_AT_MINUTE_DELTA } from '../master';
-import { IntervalUnit, Plan } from '../models';
-import type { PlanTypeId } from '../models';
+import type { IntervalUnit, Plan, PlanTypeId } from '../models';
 
 const PLANS_KEY = 'PLANS_KEY';
 const ADD_FUNC = {

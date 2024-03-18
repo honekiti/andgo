@@ -1,4 +1,4 @@
-import { ExchangeId, ExchangeCredential, Ticker, Balance, SuccessOrderResult, FailedOrderResult } from '../../models';
+import type { ExchangeId, ExchangeCredential, Ticker, Balance, SuccessOrderResult, FailedOrderResult } from '../../models';
 import { Bitbank } from './bitbank';
 import { BitFlyer, REQUIRED_PERMISSIONS } from './bitflyer';
 import { Coincheck } from './coincheck';
