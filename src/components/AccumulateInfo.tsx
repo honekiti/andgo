@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { Box, Button, ButtonText, HStack, ScrollView, Text } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, HStack, ScrollView, Text, Image } from '@gluestack-ui/themed';
 import { white, unclearWhite } from '../constants/Colors';
 import { Link } from 'expo-router';
 import PlanList from './PlanList';
@@ -23,7 +23,7 @@ export default function AccumulateInfo() {
       {credentials.length === 0 && (
         <ScrollView>
           <Box h="auto" alignItems="center" my="$7">
-            <Box h="$20" w="$20" bg="#f003" rounded={'$full'} />
+            <Image size="xs" my="$3" resizeMode="contain" source={require('../../assets/images/link.png')} alt="bit-coin-line-logo" />
             <Text mt="$2">暗号資産(仮想通貨)取引所と</Text>
             <Text mb="$7">連携しましょう</Text>
             <Link href="/exchange-registration" asChild>

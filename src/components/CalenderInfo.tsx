@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { Box, Button, ButtonText, HStack, LinkText, ScrollView, Text, VStack } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, HStack, LinkText, ScrollView, Text, VStack, Image } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey, green, red } from '../constants/Colors';
 import { Link } from 'expo-router';
 import { exchangeCredentialsAtom } from '../services/exchange-service';
@@ -18,7 +18,7 @@ export default function CalenderInfo() {
         {credentials.length === 0 && (
           <Box justifyContent="space-between">
             <Box h="auto" alignItems="center" my="$7">
-              <Box h="$20" w="$20" bg="#00f3" rounded={'$full'} />
+              <Image size="xs" my="$3" resizeMode="contain" source={require('../../assets/images/link.png')} alt="bit-coin-line-logo" />
               <Text mt="$2">暗号資産(仮想通貨)取引所と</Text>
               <Text mb="$7">連携しましょう</Text>
               <Link href="/exchange-registration" asChild>
