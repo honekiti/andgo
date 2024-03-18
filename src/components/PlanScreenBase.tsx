@@ -37,8 +37,6 @@ import type { Plan, ExchangeCredential, ExchangeId, PlanTypeId, PlanId } from '.
 import { PLAN_TYPES, DAY_OF_WEEK_OPTIONS, DATE_OPTIONS, HOUR_OPTIONS, MINUTE_OPTIONS } from '../master';
 import ExchangeInfo from '../components/ExchangeInfo';
 import { store } from '../store';
-import { PLANS_KEY } from '../services/plan-service';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type PlanScreenBaseProps = {
   targetPlanId?: PlanId;
@@ -59,11 +57,10 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
   // planId === 'WEEKLY' の場合のみ有効
   const [dayOfWeek, setDayOfWeek] = useState<number>(0);
   // planId === 'MONTHLY' の場合のみ有効
-  const [date, setDate] = useState<number>(0);
+  const [date, setDate] = useState<number>(1);
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
-
-  const [purchaseAmount, setPurchaseAmount] = useState<string>('');
+  const [quoteAmount, setQuoteAmount] = useState<number>(0);
 
   const handleSubmit = async () => {
     const refAt = getModifiedRefAt({ refAt: new Date().getTime(), date, dayOfWeek, hours: hour, minutes: minute });
@@ -74,7 +71,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
     const newPlan: Plan = {
       id: props.targetPlanId ?? genId(),
       exchangeId,
-      quoteAmount: purchaseAmount,
+      quoteAmount: quoteAmount,
       planTypeId,
 
       status: {
@@ -87,33 +84,20 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
 
     const plans = await store.get(plansAtom);
 
-    let updatedPlans = [...plans];
+    const updatedPlans = [...plans];
 
-    // プラン更新ロジックを修正
     if (props.targetPlanId) {
-      // 正しく更新
-      const index = plans.findIndex((p) => p.id === props.targetPlanId);
-      if (index !== -1) {
-        plans[index] = newPlan;
-      }
-      updatedPlans = plans;
+      // 更新
+      plans.splice(
+        plans.findIndex((p) => p.id === props.targetPlanId),
+        1,
+        newPlan,
+      );
     } else {
-      // 新しいプランを追加
-      updatedPlans = [...plans, newPlan];
+      // 一番後ろに追加
+      updatedPlans.push(newPlan);
     }
-    await store.set(plansAtom, plans);
-
-    await AsyncStorage.setItem(PLANS_KEY, JSON.stringify(updatedPlans));
-    // 格納されたプランを正しく取得する
-    AsyncStorage.getItem(PLANS_KEY)
-      .then((retrievedData) => {
-        if (retrievedData !== null) {
-          console.log('取得したプラン:', JSON.parse(retrievedData));
-        }
-      })
-      .catch((error) => {
-        console.error('プランの取得に失敗しました:', error);
-      });
+    await store.set(plansAtom, updatedPlans);
 
     // 閉じる
     router.back();
@@ -141,51 +125,38 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
         // 取引所の初期選択値を連携済取引所の値とする
         setExchangeId(credentials[0].exchangeId);
 
-        // プラン編集の場合は、プラン情報を読み込む
         if (props.targetPlanId) {
-          try {
-            const plans = await store.get(plansAtom);
-            console.log('全プランのリスト:', plans);
-            console.log('探しているプランのID:', props.targetPlanId);
-            const targetPlan = plans.find((p) => p.id === props.targetPlanId);
-            console.log('targetPlan', targetPlan);
+          const plans = await store.get(plansAtom);
+          const targetPlan = plans.find((p) => p.id === props.targetPlanId);
 
-            if (!targetPlan) {
-              toast.show({
-                render: () => (
-                  <Toast action="error">
-                    <ToastTitle>プランが見つかりません</ToastTitle>
-                  </Toast>
-                ),
-              });
-              router.back();
-            } else {
-              const refAtDetails = getRefAtDetails(targetPlan);
-              console.log('refAtDetails:', refAtDetails);
+          console.log('targetPlan', targetPlan);
 
-              setExchangeId(targetPlan.exchangeId);
-              setPlanTypeId(targetPlan.planTypeId);
-              setIsEnabled(targetPlan.status.enabled);
-              setPurchaseAmount(targetPlan.quoteAmount);
-
-              if (targetPlan.planTypeId === 'WEEKLY') {
-                setDayOfWeek(refAtDetails.dayOfWeek);
-              }
-              if (targetPlan.planTypeId === 'MONTHLY') {
-                setDate(refAtDetails.date);
-                setHour(refAtDetails.hour);
-                setMinute(refAtDetails.minute);
-              }
-            }
-          } catch (error) {
-            console.error('Error while fetching or processing plan details:', error);
+          if (!targetPlan) {
             toast.show({
               render: () => (
                 <Toast action="error">
-                  <ToastTitle>プランの詳細情報の取得中にエラーが発生しました</ToastTitle>
+                  <ToastTitle>プランが見つかりません</ToastTitle>
                 </Toast>
               ),
             });
+            router.back();
+          } else {
+            const refAtDetails = getRefAtDetails(targetPlan);
+            console.log('refAtDetails:', refAtDetails);
+
+            setExchangeId(targetPlan.exchangeId);
+            setPlanTypeId(targetPlan.planTypeId);
+            setIsEnabled(targetPlan.status.enabled);
+            setQuoteAmount(targetPlan.quoteAmount);
+
+            if (targetPlan.planTypeId === 'WEEKLY') {
+              setDayOfWeek(refAtDetails.dayOfWeek);
+            }
+            if (targetPlan.planTypeId === 'MONTHLY') {
+              setDate(refAtDetails.date);
+              setHour(refAtDetails.hour);
+              setMinute(refAtDetails.minute);
+            }
           }
         }
       };
@@ -234,7 +205,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
               <Box w="49%">
                 <Select onValueChange={(v) => setPlanTypeId(v as PlanTypeId)}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput color={white} placeholder={planTypeId ? `${planTypeId}` : '未選択'} />
+                    <SelectInput color={white} value={`${planTypeId}`} placeholder="毎週" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal>
@@ -254,7 +225,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                 {planTypeId === 'WEEKLY' && (
                   <Select onValueChange={(v) => setDayOfWeek(Number(v))}>
                     <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                      <SelectInput color={white} placeholder={dayOfWeek ? `${dayOfWeek}` : '未選択'} />
+                      <SelectInput color={white} value={`${dayOfWeek}`} placeholder="未選択" />
                       <SelectIcon mr="$3" as={ChevronDownIcon} />
                     </SelectTrigger>
                     <SelectPortal>
@@ -273,7 +244,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                 {planTypeId === 'MONTHLY' && (
                   <Select onValueChange={(v) => setDate(Number(v))}>
                     <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                      <SelectInput color={white} placeholder={date ? `${date}日` : '未選択'} />
+                      <SelectInput color={white} value={`${date}`} placeholder="未選択" />
                       <SelectIcon mr="$3" as={ChevronDownIcon} />
                     </SelectTrigger>
                     <SelectPortal>
@@ -303,7 +274,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
               <Box w="49%">
                 <Select onValueChange={(v) => setHour(Number(v))}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput color={white} placeholder={hour ? `${hour}時` : '未選択'} />
+                    <SelectInput color={white} value={`${hour}`} placeholder="12時" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal>
@@ -324,7 +295,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
               <Box w="49%">
                 <Select onValueChange={(v) => setMinute(Number(v))}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput color={white} placeholder={minute ? `${minute}分` : '未選択'} />
+                    <SelectInput color={white} value={`${minute}`} placeholder="0分" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal>
@@ -349,12 +320,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
             </FormControlLabel>
             <HStack justifyContent="space-between">
               <Input w="93%" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                <InputField
-                  color={white}
-                  onChangeText={(text) => setPurchaseAmount(text)}
-                  value={purchaseAmount}
-                  placeholder={purchaseAmount ? `${purchaseAmount}` : '未入力'}
-                />
+                <InputField color={white} onChangeText={(v) => setQuoteAmount(Number(v))} value={`${quoteAmount}`} placeholder="10,000" />
               </Input>
               <VStack reversed={true}>
                 <Text w="auto" fontSize={18} color={white}>

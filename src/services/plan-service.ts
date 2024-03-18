@@ -7,7 +7,7 @@ import { PLAN_TYPES, REF_AT_MINUTE_DELTA } from '../master';
 import { IntervalUnit, Plan } from '../models';
 import type { PlanTypeId } from '../models';
 
-export const PLANS_KEY = 'PLANS_KEY';
+const PLANS_KEY = 'PLANS_KEY';
 const ADD_FUNC = {
   MINUTES: addMinutes,
   HOURS: addHours,

@@ -39,7 +39,7 @@ export type IntervalUnit = 'MINUTES' | 'HOURS' | 'DAYS' | 'MONTHS';
 export type Plan = {
   id: PlanId;
   exchangeId: ExchangeId; // target exchange
-  quoteAmount: string; // quote amount [yen]
+  quoteAmount: number; // quote amount [yen]
   planTypeId: PlanTypeId; // plan id
   status: {
     enabled: boolean; // enabled or not
