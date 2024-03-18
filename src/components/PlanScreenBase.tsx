@@ -30,7 +30,15 @@ import {
 } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
 import { useFocusEffect, router } from 'expo-router';
-import { plansAtom, getModifiedRefAt, getNextIndexFromNow, getNextAtByIndex, getRefAtDetails, getPlanType } from '../services/plan-service';
+import {
+  plansAtom,
+  getModifiedRefAt,
+  getNextIndexFromNow,
+  getNextAtByIndex,
+  getRefAtDetails,
+  getPlanType,
+  getLabelFromValue,
+} from '../services/plan-service';
 import { exchangeCredentialsAtom, getExchange, getExchangeFromCredential } from '../services/exchange-service';
 import { genId } from '../utils/crypto';
 import type { Plan, ExchangeCredential, ExchangeId, PlanTypeId, PlanId } from '../models';
@@ -65,7 +73,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
   const [quoteAmount, setQuoteAmount] = useState<number>(0);
 
   const handleSubmit = async () => {
-    const refAt = getModifiedRefAt({ refAt: new Date().getTime(), date, dayOfWeek, hours: hour, minutes: minute });
+    const refAt = getModifiedRefAt({ refAt: new Date().getTime(), planTypeId, date, dayOfWeek, hours: hour, minutes: minute });
     // 次回発動時刻に調整
     const nextIndex = getNextIndexFromNow(planTypeId, refAt, new Date().getTime());
     const nextAt = getNextAtByIndex(planTypeId, refAt, nextIndex);
@@ -73,7 +81,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
     const newPlan: Plan = {
       id: props.targetPlanId ?? genId(),
       exchangeId,
-      quoteAmount: quoteAmount,
+      quoteAmount,
       planTypeId,
 
       status: {
@@ -150,14 +158,14 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
             setPlanTypeId(targetPlan.planTypeId);
             setIsEnabled(targetPlan.status.enabled);
             setQuoteAmount(targetPlan.quoteAmount);
+            setHour(refAtDetails.hour);
+            setMinute(refAtDetails.minute);
 
             if (targetPlan.planTypeId === 'WEEKLY') {
               setDayOfWeek(refAtDetails.dayOfWeek);
             }
             if (targetPlan.planTypeId === 'MONTHLY') {
               setDate(refAtDetails.date);
-              setHour(refAtDetails.hour);
-              setMinute(refAtDetails.minute);
             }
           }
         }
@@ -229,9 +237,13 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
               </Box>
               <Box w="49%">
                 {planTypeId === 'WEEKLY' && (
-                  <Select onValueChange={(v) => setDayOfWeek(Number(v))}>
+                  <Select
+                    selectedValue={`${dayOfWeek}`}
+                    initialLabel={DAY_OF_WEEK_OPTIONS[dayOfWeek].label}
+                    onValueChange={(v) => setDayOfWeek(Number(v))}
+                  >
                     <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                      <SelectInput color={white} value={`${dayOfWeek}`} placeholder="未選択" />
+                      <SelectInput color={white} placeholder="未選択" />
                       <SelectIcon mr="$3" as={ChevronDownIcon} />
                     </SelectTrigger>
                     <SelectPortal>
@@ -248,9 +260,9 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                   </Select>
                 )}
                 {planTypeId === 'MONTHLY' && (
-                  <Select onValueChange={(v) => setDate(Number(v))}>
+                  <Select selectedValue={`${date}`} initialLabel={getLabelFromValue(DATE_OPTIONS, date)} onValueChange={(v) => setDate(Number(v))}>
                     <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                      <SelectInput color={white} value={`${date}`} placeholder="未選択" />
+                      <SelectInput color={white} placeholder="未選択" />
                       <SelectIcon mr="$3" as={ChevronDownIcon} />
                     </SelectTrigger>
                     <SelectPortal>
@@ -278,9 +290,9 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
             </FormControlLabel>
             <HStack justifyContent="space-between">
               <Box w="49%">
-                <Select onValueChange={(v) => setHour(Number(v))}>
+                <Select selectedValue={`${hour}`} initialLabel={getLabelFromValue(HOUR_OPTIONS, hour)} onValueChange={(v) => setHour(Number(v))}>
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput color={white} value={`${hour}`} placeholder="12時" />
+                    <SelectInput color={white} placeholder="12時" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal>
@@ -299,9 +311,13 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                 </Select>
               </Box>
               <Box w="49%">
-                <Select onValueChange={(v) => setMinute(Number(v))}>
+                <Select
+                  selectedValue={`${minute}`}
+                  initialLabel={getLabelFromValue(MINUTE_OPTIONS, minute)}
+                  onValueChange={(v) => setMinute(Number(v))}
+                >
                   <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                    <SelectInput color={white} value={`${minute}`} placeholder="0分" />
+                    <SelectInput color={white} placeholder="0分" />
                     <SelectIcon mr="$3" as={ChevronDownIcon} />
                   </SelectTrigger>
                   <SelectPortal>
