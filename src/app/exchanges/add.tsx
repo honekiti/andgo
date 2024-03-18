@@ -34,7 +34,7 @@ import {
 import { Stack, Link, router } from 'expo-router';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { exchangeCredentialsAtom, getExchange } from '../../services/exchange-service';
-import { ExchangeCredential, ExchangeId } from '../../models';
+import type { ExchangeCredential, ExchangeId } from '../../models';
 import { EXCHANGES } from '../../master';
 import { getPermissionsStatus } from '../../services/exchange-api-service/universal';
 import { getBalance } from '../../services/exchange-api-service/universal';
