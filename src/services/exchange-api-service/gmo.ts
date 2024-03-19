@@ -10,7 +10,6 @@ const GET_ASSETS_PATH = '/v1/account/assets';
 const POST_ORDER_PATH = '/v1//order';
 const GET_TICKER_PATH = '/v1/ticker';
 const GET_STATUS_PATH = '/v1/status';
-const PUBLIC_TICKER_PATH = 'https://api.coin.z.com/public/v1/ticker?symbol=BTC';
 
 export class gmo extends BaseApi {
   private readonly exchangeCredential: ExchangeCredential;
@@ -25,8 +24,9 @@ export class gmo extends BaseApi {
     return this.get(GET_STATUS_PATH, {});
   }
 
-  public getAsset(): Promise<AssetsResponse> {
-    return this.get(GET_ASSETS_PATH, {});
+  public async getAsset(): Promise<AssetsResponse> {
+    const response = await this.get<GMOResponse<AssetsResponse>>(GET_ASSETS_PATH, {});
+    return response.data;
   }
 
   public async postOrder(params: OrderRequest): Promise<OrderResponse> {
@@ -39,19 +39,19 @@ export class gmo extends BaseApi {
    * @returns
    */
 
-  async get<Ticker>(path: string, query?: unknown) {
+  async get<T>(path: string, query?: unknown) {
     let params = '';
     if (query && Object.keys(query).length) {
       params += `?${querystring.stringify(query as Record<string, string>)}`;
     }
     const headers = this.makeHeader('GET', path.concat(params));
-    return super.get(path, query, headers) as Ticker;
+    return super.get(path, query, headers) as T;
   }
 
-  async post<Ticker>(path: string, query: unknown) {
+  async post<T>(path: string, query: unknown) {
     const data = JSON.stringify(query);
     const headers = this.makeHeader('POST', path, data);
-    return super.post(path, query, headers) as Ticker;
+    return super.post(path, query, headers) as T;
   }
 
   private makeHeader(method: string, uri: string, body?: string) {
@@ -59,17 +59,17 @@ export class gmo extends BaseApi {
     const message: string = timestamp.concat(method, uri, body ?? '');
     return {
       'Content-Type': 'application/json',
-      'ACCESS-KEY': this.exchangeCredential.apiKey,
-      'ACCESS-TIMESTAMP': timestamp,
-      'ACCESS-SIGN': hmacSha256(this.exchangeCredential.apiSecret, message),
+      'API-KEY': this.exchangeCredential.apiKey,
+      'API-TIMESTAMP': timestamp,
+      'API-SIGN': hmacSha256(this.exchangeCredential.apiSecret, message),
     };
   }
 
   // === public api ===
   public static async getTicker(): Promise<Ticker> {
-    const response = await fetch(`${PUBLIC_TICKER_PATH}`);
+    const response = await fetch(`${PUBLIC_ENDPOINT}${GET_TICKER_PATH}?symbol=BTC`);
 
-    const obj = (await response.json()) as GMOResponse;
+    const obj = (await response.json()) as GMOResponse<Ticker[]>;
 
     console.log(`gmo: ${JSON.stringify(obj)}`);
 

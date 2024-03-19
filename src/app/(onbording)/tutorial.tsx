@@ -119,6 +119,8 @@ export default function TutorialScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const isLastImage = currentIndex === SLIDES.length - 1;
+
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const handleScroll = (event: { nativeEvent: { contentOffset: { x: any } } }) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
@@ -131,8 +133,6 @@ export default function TutorialScreen() {
       scrollViewRef.current.scrollTo({ x: newPageIndex * width });
     }
   };
-
-  const isLastImage = currentIndex === SLIDES.length - 1;
 
   return (
     <Box flex={1} bg={darkGrey}>

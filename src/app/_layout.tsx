@@ -54,7 +54,6 @@ function RootLayoutNav() {
       <GluestackUIProvider config={config}>
         <SafeAreaProvider>
           <Stack
-            initialRouteName="index"
             // 全スクリーン共通の設定
             screenOptions={{
               headerStyle: { backgroundColor: darkGrey },

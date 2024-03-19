@@ -1,4 +1,4 @@
-import { ExchangeId, ExchangeCredential, Ticker, Balance, SuccessOrderResult, FailedOrderResult } from '../../models';
+import type { ExchangeId, ExchangeCredential, Ticker, Balance, SuccessOrderResult, FailedOrderResult } from '../../models';
 import { Bitbank } from './bitbank';
 import { BitFlyer, REQUIRED_PERMISSIONS } from './bitflyer';
 import { Coincheck } from './coincheck';
@@ -72,25 +72,25 @@ export const getBalance = async (exchangeCredential: ExchangeCredential): Promis
       return Object.assign({}, jpy ? { JPY: Number(jpy.free_amount) } : {}, btc ? { BTC: Number(btc.free_amount) } : {});
     }
     case 'BITFLYER': {
-      // TODO: 実装する
-      return {
-        JPY: 0,
-        BTC: 0,
-      };
+      const bitflyer = new BitFlyer(exchangeCredential);
+      const balance = await bitflyer.getBalance();
+      const jpy = balance.find((b) => b.currency_code === 'JPY');
+      const btc = balance.find((b) => b.currency_code === 'BTC');
+
+      return Object.assign({}, jpy ? { JPY: Number(jpy.amount) } : {}, btc ? { BTC: Number(btc.amount) } : {});
     }
     case 'COINCHECK': {
-      // TODO: 実装する
-      return {
-        JPY: 0,
-        BTC: 0,
-      };
+      const coincheck = new Coincheck(exchangeCredential);
+      const balance = await coincheck.getBalance();
+      return Object.assign({}, { JPY: Number(balance.jpy) }, { BTC: Number(balance.btc) });
     }
     case 'GMO': {
-      // TODO: 実装する
-      return {
-        JPY: 0,
-        BTC: 0,
-      };
+      const Gmo = new gmo(exchangeCredential);
+      const assets = await Gmo.getAsset();
+      const jpy = assets.find((a) => a.symbol === 'JPY');
+      const btc = assets.find((a) => a.symbol === 'BTC');
+
+      return Object.assign({}, jpy ? { JPY: Number(jpy.amount) } : {}, btc ? { BTC: Number(btc.amount) } : {});
     }
     default:
       throw new Error('EXCHANGE_NOT_SUPPORTED');
