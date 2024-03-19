@@ -42,14 +42,6 @@ export const getPlanType = (planTypeId: PlanTypeId) => {
   return found;
 };
 
-export const getLabelFromValue = <T extends { label: string; value: number }>(arr: T[], value: number) => {
-  const found = arr.find((p) => p.value === value);
-
-  invariant(found, `Not found: ${value}`);
-
-  return found.label;
-};
-
 export const getRefAtDetails = (plan: Plan): { dayOfWeek: number; date: number; hour: number; minute: number } => {
   const { refAt } = plan.status;
   return {
@@ -64,19 +56,12 @@ export const getRefAtDetails = (plan: Plan): { dayOfWeek: number; date: number; 
  * 指定した日にち, 曜日, 時間, 分で参照時刻を調整する.
  * 分は15分単位で切り上げ調整する.
  */
-export const getModifiedRefAt = (options: {
-  refAt: number;
-  planTypeId: PlanTypeId;
-  date?: number;
-  dayOfWeek?: number;
-  hours: number;
-  minutes: number;
-}) => {
-  const { refAt, planTypeId, date, dayOfWeek, hours, minutes } = options;
+export const getModifiedRefAt = (options: { refAt: number; date?: number; dayOfWeek?: number; hours: number; minutes: number }) => {
+  const { refAt, date, dayOfWeek, hours, minutes } = options;
 
   return [refAt]
-    .map((v) => (planTypeId === 'MONTHLY' ? setDate(v, date ?? getDate(refAt)) : v)) // 日にち
-    .map((v) => (planTypeId === 'WEEKLY' ? setDay(v, dayOfWeek ?? getDay(refAt)) : v)) // 曜日
+    .map((v) => setDate(v, date ?? getDate(refAt))) // 日にち
+    .map((v) => setDay(v, dayOfWeek ?? getDay(refAt))) // 曜日
     .map((v) => setHours(v, hours))
     .map((v) => setMinutes(v, minutes % REF_AT_MINUTE_DELTA === 0 ? minutes : minutes - (minutes % REF_AT_MINUTE_DELTA) + REF_AT_MINUTE_DELTA))[0]
     .getTime();
