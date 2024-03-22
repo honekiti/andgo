@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Box, Text, Button, ButtonText, CheckIcon, Checkbox, CheckboxIcon, CheckboxIndicator, ScrollView, VStack } from '@gluestack-ui/themed';
-import { Stack, Link } from 'expo-router';
+import { Stack, Link, useRouter } from 'expo-router';
+import { useAtom } from 'jotai';
+import { accountAtom } from '../../services/account-service';
 import { TERMS } from '../../components/TERMS';
 import { unclearWhite, darkGrey } from '../../constants/Colors';
 
@@ -8,8 +10,16 @@ import { unclearWhite, darkGrey } from '../../constants/Colors';
  * 利用規約同意画面
  */
 export default function TermsOfServiceScreen() {
+  const [account, setAccount] = useAtom(accountAtom);
+  const router = useRouter();
+
   const [isAgreed, setIsAgreed] = useState(false);
   const handleCheckboxChange = () => setIsAgreed(!isAgreed);
+
+  const handleSubmit = () => {
+    setAccount({ ...account, agreement: true });
+    router.replace('/home');
+  };
 
   return (
     <Box flex={1} bg={darkGrey}>
@@ -73,18 +83,17 @@ export default function TermsOfServiceScreen() {
         ))}
       </ScrollView>
       <Box flexDirection="column" alignItems="center" justifyContent="center" borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7">
-        <Link href="/home" asChild>
-          <Button
-            bgColor={isAgreed ? '#f97316' : 'rgba(249, 115, 22, 0.5)'}
-            w={'$full'}
-            justifyContent="center"
-            alignItems="center"
-            disabled={!isAgreed}
-            opacity={isAgreed ? 1 : 0.5}
-          >
-            <ButtonText>同意する</ButtonText>
-          </Button>
-        </Link>
+        <Button
+          bgColor={isAgreed ? '#f97316' : 'rgba(249, 115, 22, 0.5)'}
+          w={'$full'}
+          justifyContent="center"
+          alignItems="center"
+          disabled={!isAgreed}
+          opacity={isAgreed ? 1 : 0.5}
+          onPress={handleSubmit}
+        >
+          <ButtonText>同意する</ButtonText>
+        </Button>
       </Box>
     </Box>
   );

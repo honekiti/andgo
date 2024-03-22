@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai';
 import React from 'react';
 import { Box, Button, FlatList, HStack, VStack, Text, ButtonText } from '@gluestack-ui/themed';
 import { Stack, Link } from 'expo-router';
-import { ExchangeCredential } from '../../models';
+import type { ExchangeCredential } from '../../models';
 import { white, unclearWhite, darkGrey } from '../../constants/Colors';
 import { exchangeCredentialsAtom, getExchangeFromCredential } from '../../services/exchange-service';
 import ExchangeItem from '../../components/ExchangeItem';

@@ -1,6 +1,12 @@
 // References:
 // - https://api.coin.z.com/docs/#outline
 
+export type GMOResponse<T> = {
+  status: number;
+  data: T;
+  responsetime: string;
+};
+
 export type Ticker = {
   ask: string;
   bid: string;
@@ -27,13 +33,7 @@ export type Asset = {
   amount: string;
   available: string;
   conversionRate: string;
-  symbol: 'BTC';
+  symbol: string;
 };
 
 export type AssetsResponse = Asset[];
-
-export type GMOResponse = {
-  status: number;
-  data: Ticker[];
-  responsetime: string;
-};

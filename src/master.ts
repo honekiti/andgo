@@ -1,5 +1,4 @@
-// biome-ignore lint/style/useImportType: <explanation>
-import { ExchangeMaster, PlanTypeMaster, Account } from './models';
+import type { ExchangeMaster, PlanTypeMaster, Account } from './models';
 
 export const VIEW_PRECISION = 8;
 

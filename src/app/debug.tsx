@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSetAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { Link, Stack } from 'expo-router';
-import { Box, Button, ButtonText, VStack, useToast, Toast, ToastTitle } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, VStack, useToast, Toast, ToastTitle, ScrollView } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@gluestack-ui/themed';
 import { plansAtom } from '../services/plan-service';
@@ -34,7 +34,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN1',
     exchangeId: 'BITFLYER',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'DAILY',
     status: {
       enabled: false,
@@ -46,7 +46,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN2',
     exchangeId: 'COINCHECK',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'WEEKLY',
     status: {
       enabled: false,
@@ -58,7 +58,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN3',
     exchangeId: 'BITBANK',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'MONTHLY',
     status: {
       enabled: false,
@@ -70,7 +70,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN4',
     exchangeId: 'BITFLYER',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'DAILY',
     status: {
       enabled: true,
@@ -82,7 +82,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN5',
     exchangeId: 'COINCHECK',
-    quoteAmount: 1000,
+    quoteAmount: 50000000,
     planTypeId: 'WEEKLY',
     status: {
       enabled: true,
@@ -94,7 +94,7 @@ const DEBUG_PLANS: Plan[] = [
   {
     id: 'DEBUG_PLAN6',
     exchangeId: 'BITBANK',
-    quoteAmount: 1000,
+    quoteAmount: 100000,
     planTypeId: 'MONTHLY',
     status: {
       enabled: true,
@@ -111,7 +111,7 @@ const DEBUG_ORDERS: Order[] = Array.from({ length: 10 }, (_, i) => ({
   planSnapshot: DEBUG_PLANS[i % DEBUG_PLANS.length],
   result: {
     status: 'SUCCESS',
-    btcAmount: 0.123,
+    btcAmount: 0.01,
   },
 }));
 
@@ -131,12 +131,12 @@ const TickerInfos = () => {
   );
 };
 
-export default function HomeScreen() {
+export default function DebugScreen() {
   const insets = useSafeAreaInsets();
   const toast = useToast();
-  const setPlans = useSetAtom(plansAtom);
-  const setExchangeCredentials = useSetAtom(exchangeCredentialsAtom);
-  const setAccount = useSetAtom(accountAtom);
+  const [plans, setPlans] = useAtom(plansAtom);
+  const [exchangeCredentials, setExchangeCredentials] = useAtom(exchangeCredentialsAtom);
+  const [account, setAccount] = useAtom(accountAtom);
 
   const handleReset = async (withFixtures: boolean) => {
     toast.show({
@@ -159,7 +159,7 @@ export default function HomeScreen() {
 
     const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
     await setAccount({
-      agreement: true,
+      agreement: false,
       numOfOrders: successOrders.length,
       totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
     });
@@ -173,8 +173,21 @@ export default function HomeScreen() {
     <Box pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right}>
       <Stack.Screen options={{ title: 'デバッグ', headerShown: false }} />
 
-      <Text>デバッグ</Text>
-      <Text>テストテストテストテスト</Text>
+      <ScrollView h="$40" mb="$2">
+        <TickerInfos />
+
+        <VStack m="$2" p="$2" bgColor="$primary100">
+          <Text>account: {JSON.stringify(account)}</Text>
+        </VStack>
+
+        <VStack m="$2" p="$2" bgColor="$primary100">
+          <Text>plans: {JSON.stringify(plans)}</Text>
+        </VStack>
+
+        <VStack m="$2" p="$2" bgColor="$primary100">
+          <Text>exchangeCredentials: {JSON.stringify(exchangeCredentials)}</Text>
+        </VStack>
+      </ScrollView>
 
       <VStack space="xs">
         <Link href="/exchanges" asChild>
@@ -203,13 +216,7 @@ export default function HomeScreen() {
 
         <Link href="/plans/DEBUG_PLAN1" asChild>
           <Button borderRadius="$full">
-            <ButtonText>積立プラン編集画面(PLAN1)</ButtonText>
-          </Button>
-        </Link>
-
-        <Link href="/plans/DEBUG_PLAN2" asChild>
-          <Button borderRadius="$full">
-            <ButtonText>積立プラン編集画面(PLAN2)</ButtonText>
+            <ButtonText>積立プラン編集画面</ButtonText>
           </Button>
         </Link>
 
@@ -238,9 +245,11 @@ export default function HomeScreen() {
         <Button borderRadius="$full" onPress={() => handleReset(true)}>
           <ButtonText>データ初期化(モックデータ)</ButtonText>
         </Button>
-      </VStack>
 
-      <TickerInfos />
+        <Button borderRadius="$full" onPress={() => setAccount({ ...account, agreement: true })}>
+          <ButtonText>利用規約同意済にする</ButtonText>
+        </Button>
+      </VStack>
     </Box>
   );
 }
