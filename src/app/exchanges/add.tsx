@@ -34,10 +34,10 @@ import {
 import { Stack, Link, router } from 'expo-router';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { exchangeCredentialsAtom, getExchange } from '../../services/exchange-service';
+// biome-ignore lint/style/useImportType: <explanation>
 import { ExchangeCredential, ExchangeId } from '../../models';
 import { EXCHANGES } from '../../master';
 import { getPermissionsStatus } from '../../services/exchange-api-service/universal';
-import { getBalance } from '../../services/exchange-api-service/universal';
 
 /**
  * 取引所連携画面

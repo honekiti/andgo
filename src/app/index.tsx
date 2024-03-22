@@ -111,7 +111,7 @@ const DEBUG_ORDERS: Order[] = Array.from({ length: 10 }, (_, i) => ({
   planSnapshot: DEBUG_PLANS[i % DEBUG_PLANS.length],
   result: {
     status: 'SUCCESS',
-    btcAmount: 0.01,
+    btcAmount: 0.123,
   },
 }));
 
@@ -159,7 +159,7 @@ export default function HomeScreen() {
 
     const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
     await setAccount({
-      agreement: false,
+      agreement: true,
       numOfOrders: successOrders.length,
       totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
     });

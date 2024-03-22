@@ -1,16 +1,29 @@
+import { useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { Stack, Link } from 'expo-router';
-import { Box, Button, ButtonIcon, HStack, Pressable, ScrollView, Text, VStack } from '@gluestack-ui/themed';
+import { Box, Button, ButtonIcon, HStack, Pressable, Text, VStack } from '@gluestack-ui/themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SettingsIcon, ArrowRightIcon, AddIcon, RemoveIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey, orange } from '../constants/Colors';
 import CalenderInfo from '../components/CalenderInfo';
 import AccumulateInfo from '../components/AccumulateInfo';
 import ExchangeBalanceList from '../components/ExchangeBalanceList';
+import { exchangeCredentialsAtom, exchangeTickerFamily } from '../services/exchange-service';
+import { accountAtom } from '../services/account-service';
+import { VIEW_PRECISION } from '../master';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState(0);
+
+  // BTC/JPYの取得
+  const credentials = useAtomValue(exchangeCredentialsAtom);
+  const refExchangeId = credentials.length > 0 ? credentials[0].exchangeId : 'BITFLYER';
+  const bitFlyer = useAtomValue(exchangeTickerFamily(refExchangeId));
+
+  // 投資パフォーマンス計算
+  const account = useAtomValue(accountAtom);
+  const totalBtcAmountJpy = bitFlyer.data ? bitFlyer.data.ask * account.totalBtcAmount : 0;
 
   return (
     <Box h="100%" pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
@@ -22,7 +35,7 @@ export default function HomeScreen() {
       />
 
       <Box h="35%" p="$3" display="flex" flexDirection="column">
-        <Box h="50%" display="flex" flexDirection="column">
+        <Box h="50%" pl="$3" display="flex" flexDirection="column">
           <HStack h="40%" justifyContent="space-between">
             <Box w="auto" justifyContent="center">
               <Text color={white} bold>
@@ -37,26 +50,20 @@ export default function HomeScreen() {
           </HStack>
 
           <Box h="60%">
-            <Box h="50%" alignItems="center" display="flex" flexDirection="row">
-              <Text color={white} fontSize={23}>
-                31,000,000
+            <HStack h="50%" alignItems="flex-end">
+              <Text color={white} fontSize={30} bold>
+                {Number.parseInt(totalBtcAmountJpy.toString())}
               </Text>
-              <Text color={white} fontSize={14} pl="$1">
+              <Text color={white} fontSize={14} pl="$1" pb="$1">
                 円
               </Text>
-            </Box>
-            <Box h="50%" display="flex" flexDirection="row">
-              <Image
-                size="2xs"
-                bgColor="#0000"
-                resizeMode="contain"
-                source={require('../../assets/images/bit-coin-line.png')}
-                alt="bit-coin-line-logo"
-              />
+            </HStack>
+            <HStack h="50%" alignItems="center" pb="$2">
+              <Image size="2xs" resizeMode="contain" source={require('../../assets/images/bit-coin-line.png')} alt="bit-coin-line-logo" />
               <Text color={white} fontSize={13}>
-                0.12300000
+                {account.totalBtcAmount.toFixed(VIEW_PRECISION)}
               </Text>
-            </Box>
+            </HStack>
           </Box>
         </Box>
 
