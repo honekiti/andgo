@@ -7,7 +7,7 @@ export const EXCHANGES: ExchangeMaster[] = [
     // reference: https://bitbank.cc/docs/pairs/
     id: 'UNKNOWN',
     name: '未選択',
-    minBtcAmt: 0.0001,
+    minBtcAmt: 0.0000001,
     minJpyAmt: 1,
     orderPrecision: 4,
   },
@@ -15,7 +15,7 @@ export const EXCHANGES: ExchangeMaster[] = [
     // reference: https://bitbank.cc/docs/pairs/
     id: 'BITBANK',
     name: 'bitbank',
-    minBtcAmt: 0.0001,
+    minBtcAmt: 0.0000001,
     minJpyAmt: 1,
     orderPrecision: 4,
   },
@@ -23,7 +23,7 @@ export const EXCHANGES: ExchangeMaster[] = [
     // reference: https://bitflyer.com/ja-jp/faq/4-27
     id: 'BITFLYER',
     name: 'bitFlyer',
-    minBtcAmt: 0.001,
+    minBtcAmt: 0.0000001,
     minJpyAmt: 1,
     orderPrecision: 3,
   },
@@ -31,7 +31,7 @@ export const EXCHANGES: ExchangeMaster[] = [
     // reference: https://faq.coincheck.com/s/article/40218?language=ja
     id: 'COINCHECK',
     name: 'Coincheck',
-    minBtcAmt: 0.005,
+    minBtcAmt: 0.00005,
     minJpyAmt: 500,
     orderPrecision: 3,
   },
@@ -39,7 +39,7 @@ export const EXCHANGES: ExchangeMaster[] = [
     // https://coin.z.com/jp/corp/product/info/exchange/
     id: 'GMO',
     name: 'GMOコイン',
-    minBtcAmt: 0.0001,
+    minBtcAmt: 0.0000001,
     minJpyAmt: 1,
     orderPrecision: 4,
   },

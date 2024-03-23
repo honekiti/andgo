@@ -20,10 +20,10 @@ export default function ExchangeInfo(props: ExchangeInfoProps) {
           最低購入量
         </Text>
         <Text fontSize={17} color={white} bold>
-          {exchange.minBtcAmt} BTC
+          {exchange.minBtcAmt.toString()} BTC
         </Text>
         <Text fontSize={11} color={white}>
-          1000円相当
+          {exchange.minJpyAmt} 円相当
           {JSON.stringify(data)}
           {isPending && '取得中...'}
           {isError && 'エラーが発生しました'}
