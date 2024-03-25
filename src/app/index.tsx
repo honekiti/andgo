@@ -159,7 +159,7 @@ export default function HomeScreen() {
 
     const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
     await setAccount({
-      agreement: true,
+      agreement: false,
       numOfOrders: successOrders.length,
       totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
     });

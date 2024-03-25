@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai';
 import { HStack, Text } from '@gluestack-ui/themed';
-import { ExchangeMaster } from '../models';
+import type { ExchangeMaster } from '../models';
 import { white, unclearWhite, darkGrey, lightGrey, orange } from '../constants/Colors';
 import { exchangeBalanceFamily } from '../services/exchange-service';
 
