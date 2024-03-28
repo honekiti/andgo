@@ -28,7 +28,6 @@ export default function ExchangeInfo(props: ExchangeInfoProps) {
           {exchange.minBtcAmt.toFixed(BTC_PRECISION)} BTC
         </Text>
         <Text fontSize={11} color={white}>
-          {estimatedJpyAmt.toLocaleString('ja-JP', { maximumFractionDigits: 0 })} 円相当
           {JSON.stringify(data)}
           {isPending && '取得中...'}
           {isError && 'エラーが発生しました'}
