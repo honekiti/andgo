@@ -27,7 +27,7 @@ export default function HomeScreen() {
 
   const checkPrecisionLength = [];
   for (let i = 0; i < credentials.length; i++) {
-    checkPrecisionLength[i] = getOrderPrecision(credentials[i]);
+    checkPrecisionLength[i] = getOrderPrecision(credentials[i].exchangeId);
   }
   const varPrecision = Math.max(...checkPrecisionLength);
 

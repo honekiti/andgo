@@ -136,10 +136,10 @@ export const getExchangeFromCredential = (credential: ExchangeCredential): Excha
   return found;
 };
 
-export const getOrderPrecision = (credential: ExchangeCredential) => {
-  const found = EXCHANGES.find((ex) => ex.id === credential.exchangeId);
+export const getOrderPrecision = (exchangeId: ExchangeId) => {
+  const found = EXCHANGES.find((ex) => ex.id === exchangeId);
 
-  invariant(found, `Exchange not found: ${credential.exchangeId}`);
+  invariant(found, `Exchange not found: ${exchangeId}`);
 
   return found.orderPrecision;
 };
