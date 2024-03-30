@@ -25,7 +25,7 @@ export default function HomeScreen() {
   const account = useAtomValue(accountAtom);
   const totalBtcAmountJpy = ticker.data ? ticker.data.ask * account.totalBtcAmount : 0;
 
-  const checkPrecisionLength = [];
+  const checkPrecisionLength = [8];
   for (let i = 0; i < credentials.length; i++) {
     checkPrecisionLength[i] = getOrderPrecision(credentials[i].exchangeId);
   }
@@ -68,10 +68,10 @@ export default function HomeScreen() {
               <Image size="2xs" resizeMode="contain" source={require('../../assets/images/bit-coin-line.png')} alt="bit-coin-line-logo" />
               <Text>
                 <Text color={white} fontSize={14}>
-                  {credentials.length > 0 ? account.totalBtcAmount.toFixed(varPrecision) : '0.'}
+                  {account.totalBtcAmount.toFixed(varPrecision)}
                 </Text>
                 <Text color={unclearWhite} fontSize={14}>
-                  {credentials.length > 0 ? '0'.repeat(VIEW_PRECISION - varPrecision) : '00000000'}
+                  {'0'.repeat(VIEW_PRECISION - varPrecision)}
                 </Text>
               </Text>
             </HStack>
