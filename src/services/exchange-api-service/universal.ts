@@ -98,7 +98,7 @@ export const getBalance = async (exchangeCredential: ExchangeCredential): Promis
 };
 
 export const execBuyOrder = async (exchangeCredential: ExchangeCredential, btcAmount: number): Promise<SuccessOrderResult | FailedOrderResult> => {
-  if (process.env.EXPO_PUBLIC_DRY_RUN) {
+  if (!process.env.EXPO_PUBLIC_DISABLE_DRY_RUN) {
     console.log('dry run');
 
     return { status: 'SUCCESS', btcAmount };

@@ -1,6 +1,6 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { Plan, ExchangeId, ExchangeCredential, SuccessOrderResult, FailedOrderResult, Order } from '../models';
+import type { Plan, ExchangeId, ExchangeCredential, SuccessOrderResult, FailedOrderResult, Order } from '../models';
 import { VIEW_PRECISION, EXCHANGES } from '../master';
 import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
 import { exchangeCredentialsAtom } from './exchange-service';
