@@ -78,8 +78,9 @@ export type FailedOrderResult = {
 };
 
 // 購入指示
+export type OrderId = `ORD_${number}`;
 export type Order<R = SuccessOrderResult | FailedOrderResult> = {
-  id: string; // '1', '2', '3', ...
+  id: OrderId; // ORD_0, ORD_1, ...
   orderedAt: number; // 注文日時 [unix time]
   planSnapshot: Plan;
   result: R;

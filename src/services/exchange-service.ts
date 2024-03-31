@@ -4,7 +4,7 @@ import { atomWithStorage, createJSONStorage, atomFamily, loadable } from 'jotai/
 import { atomWithQuery } from 'jotai-tanstack-query';
 import * as SecureStore from 'expo-secure-store';
 import { EXCHANGES } from '../master';
-import { ExchangeMaster, ExchangeId, ExchangeCredential, Balance } from '../models';
+import type { ExchangeMaster, ExchangeId, ExchangeCredential, Balance } from '../models';
 import { getTicker, getBalance } from './exchange-api-service/universal';
 
 const BTC_PRECISION = 8;

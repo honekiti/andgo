@@ -1,6 +1,6 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { Plan, ExchangeId, ExchangeCredential, SuccessOrderResult, FailedOrderResult, Order } from '../models';
+import type { Plan, ExchangeId, ExchangeCredential, SuccessOrderResult, FailedOrderResult, OrderId, Order } from '../models';
 import { VIEW_PRECISION, EXCHANGES } from '../master';
 import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
 import { exchangeCredentialsAtom } from './exchange-service';
@@ -79,7 +79,7 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
     console.log(`order result: ${JSON.stringify(orderResult)}`);
 
     const account = await store.get(accountAtom);
-    const orderId = `${account.numOfOrders + 1}`;
+    const orderId = `ORD_${account.numOfOrders}` as OrderId;
     const order: Order = {
       id: orderId,
       orderedAt: new Date().getTime(),
