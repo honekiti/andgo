@@ -111,7 +111,7 @@ const DEBUG_ORDERS: Order[] = Array.from({ length: 10 }, (_, i) => ({
   planSnapshot: DEBUG_PLANS[i % DEBUG_PLANS.length],
   result: {
     status: 'SUCCESS',
-    btcAmount: 0.01,
+    btcAmount: 0.123,
   },
 }));
 

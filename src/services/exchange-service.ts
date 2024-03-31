@@ -4,7 +4,7 @@ import { atomWithStorage, createJSONStorage, atomFamily, loadable } from 'jotai/
 import { atomWithQuery } from 'jotai-tanstack-query';
 import * as SecureStore from 'expo-secure-store';
 import { EXCHANGES } from '../master';
-import { ExchangeMaster, ExchangeId, ExchangeCredential, Balance } from '../models';
+import type { ExchangeMaster, ExchangeId, ExchangeCredential, Balance } from '../models';
 import { getTicker, getBalance } from './exchange-api-service/universal';
 
 export const BTC_PRECISION = 8;
@@ -134,4 +134,12 @@ export const getExchangeFromCredential = (credential: ExchangeCredential): Excha
   invariant(found, `Exchange not found: ${credential.exchangeId}`);
 
   return found;
+};
+
+export const getOrderPrecision = (exchangeId: ExchangeId) => {
+  const found = EXCHANGES.find((ex) => ex.id === exchangeId);
+
+  invariant(found, `Exchange not found: ${exchangeId}`);
+
+  return found.orderPrecision;
 };
