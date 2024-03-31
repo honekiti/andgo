@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai';
 import { Box, VStack, Text } from '@gluestack-ui/themed';
 import { white } from '../constants/Colors';
-import { getExchange, exchangeTickerFamily } from '../services/exchange-service';
+import { getExchange, exchangeTickerFamily, BTC_PRECISION, exchangeCredentialsAtom } from '../services/exchange-service';
 import type { ExchangeId } from '../models';
 
 type ExchangeInfoProps = {
@@ -11,6 +11,11 @@ type ExchangeInfoProps = {
 export default function ExchangeInfo(props: ExchangeInfoProps) {
   const exchange = getExchange(props.exchangeId);
   const { data, isPending, isError } = useAtomValue(exchangeTickerFamily(props.exchangeId));
+  const credentials = useAtomValue(exchangeCredentialsAtom);
+  const refExchangeId = credentials.length > 0 ? credentials[0].exchangeId : 'BITFLYER';
+  const ticker = useAtomValue(exchangeTickerFamily(refExchangeId));
+
+  const estimatedJpyAmt = ticker.data ? ticker.data.ask * exchange.minBtcAmt : 0;
 
   return (
     <Box h="auto" w="$full" bg="#000" rounded="$lg">
@@ -20,11 +25,10 @@ export default function ExchangeInfo(props: ExchangeInfoProps) {
           最低購入量
         </Text>
         <Text fontSize={17} color={white} bold>
-          {exchange.minBtcAmt} BTC
+          {exchange.minBtcAmt.toFixed(BTC_PRECISION)} BTC
         </Text>
         <Text fontSize={11} color={white}>
-          1000円相当
-          {JSON.stringify(data)}
+          {estimatedJpyAmt.toLocaleString('ja-JP', { maximumFractionDigits: 0 })} 円相当
           {isPending && '取得中...'}
           {isError && 'エラーが発生しました'}
         </Text>

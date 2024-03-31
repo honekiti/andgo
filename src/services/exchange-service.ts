@@ -7,7 +7,7 @@ import { EXCHANGES } from '../master';
 import type { ExchangeMaster, ExchangeId, ExchangeCredential, Balance } from '../models';
 import { getTicker, getBalance } from './exchange-api-service/universal';
 
-const BTC_PRECISION = 8;
+export const BTC_PRECISION = 8;
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class CommonSecureStore {
