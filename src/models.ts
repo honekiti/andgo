@@ -104,7 +104,8 @@ export type CalendarEvent<R = SuccessOrderResult | FailedOrderResult | MaybeFail
 
 // CalendarEventリストを年月日で集約したもの
 export type AggregatedCalendarEvent = {
-  yearMonthDate: number; // キーとして用いる
+  id: string;
+  yearMonthDate: number;
   calendarEvents: CalendarEvent[];
   isLastOrder: boolean; // trueのとき、下に現在時刻を表示する
 };

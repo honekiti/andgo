@@ -3,8 +3,9 @@ import { Box, HStack, Text, VStack, Pressable, useToast, Toast, ToastTitle } fro
 import { white, lightGrey, green, red, unclearWhite, darkGrey } from '../constants/Colors';
 import { DAY_OF_WEEK_OPTIONS, RESULT_LABELS } from '../master';
 import { getExchange } from '../services/exchange-service';
-
 import type { AggregatedCalendarEvent, CalendarEvent } from '../models';
+
+export const ITEM_HEIGHT = 100;
 
 export const EventDetail = (props: { event: CalendarEvent }) => {
   const toast = useToast();
@@ -38,13 +39,15 @@ export const EventDetail = (props: { event: CalendarEvent }) => {
         {props.event.quoteAmount.toLocaleString()}
       </Text>
       <Text fontSize={13}>円</Text>
-      <Pressable onPress={handlePress}>
-        <Box h="auto" w="auto" bg={resultBgColor} rounded="$md" px="$1.5" ml="$1">
-          <Text fontSize={12} color={white}>
-            {resultLabel}
-          </Text>
-        </Box>
-      </Pressable>
+      {props.event.result !== null && (
+        <Pressable onPress={handlePress}>
+          <Box h="auto" w="auto" bg={resultBgColor} rounded="$md" px="$1.5" ml="$1">
+            <Text fontSize={12} color={white}>
+              {resultLabel}
+            </Text>
+          </Box>
+        </Pressable>
+      )}
     </HStack>
   );
 };
@@ -62,7 +65,7 @@ export default function CalendarInfoItem(props: CalendarInfoItemProps) {
 
   return (
     <>
-      <HStack justifyContent="space-between" alignItems="center" py="$5" px="$4" borderBottomWidth={0.5} borderColor={lightGrey}>
+      <HStack h={ITEM_HEIGHT} justifyContent="space-between" alignItems="center" py="$5" px="$4" borderBottomWidth={0.5} borderColor={lightGrey}>
         <Box alignItems="center">
           <Text fontSize={10}>
             {year}.{month}

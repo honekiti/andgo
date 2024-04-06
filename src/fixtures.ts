@@ -102,11 +102,3 @@ export const DEBUG_ORDERS: Order[] = Array.from({ length: 10 }, (_, i) => ({
     btcAmount: 0.01,
   },
 }));
-
-export const DEBUG_ORDER_EVENTS: CalendarEvent[] = DEBUG_ORDERS.map((o) => ({
-  id: `${o.id}`,
-  orderedAt: o.orderedAt,
-  exchangeId: o.planSnapshot.exchangeId,
-  quoteAmount: o.planSnapshot.quoteAmount,
-  result: o.result,
-}));
