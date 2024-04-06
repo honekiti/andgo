@@ -85,3 +85,26 @@ export type Order<R = SuccessOrderResult | FailedOrderResult> = {
   planSnapshot: Plan;
   result: R;
 };
+
+// 将来予定にて残高不足が予想される場合
+export type MaybeFailedResult = {
+  status: 'MAYBE_FAILED';
+  errorCode: 'INSUFFICIENT_FUNDS';
+};
+
+export type CalendarEventId = string;
+
+export type CalendarEvent<R = SuccessOrderResult | FailedOrderResult | MaybeFailedResult | null> = {
+  id: CalendarEventId;
+  orderedAt: number; // 注文日時 (過去、未来の両方)
+  exchangeId: ExchangeId;
+  quoteAmount: number; // yen
+  result: R;
+};
+
+// CalendarEventリストを年月日で集約したもの
+export type AggregatedCalendarEvent = {
+  yearMonthDate: number; // キーとして用いる
+  calendarEvents: CalendarEvent[];
+  isLastOrder: boolean; // trueのとき、下に現在時刻を表示する
+};
