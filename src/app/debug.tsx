@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAtom, useAtomValue } from 'jotai';
+import { RESET } from 'jotai/utils';
 import { Link, Stack } from 'expo-router';
 import { SafeAreaView, Button, ButtonText, VStack, useToast, Toast, ToastTitle, ScrollView } from '@gluestack-ui/themed';
 import { Text } from '@gluestack-ui/themed';
@@ -7,7 +8,6 @@ import { plansAtom } from '../services/plan-service';
 import { exchangeCredentialsAtom, exchangeTickerFamily } from '../services/exchange-service';
 import { accountAtom } from '../services/account-service';
 import { orderFamily } from '../services/order-service';
-import { DEFAULT_ACCOUNT_VALUE } from '../master';
 import { store } from '../store';
 import type { ExchangeCredential, Plan, Order, SuccessOrderResult } from '../models';
 import { ordersAtom } from '../services/calendar-service';
@@ -147,16 +147,18 @@ export default function DebugScreen() {
       ),
     });
 
+    await AsyncStorage.clear();
+
     if (!withFixtures) {
-      await AsyncStorage.clear();
-      await setAccount(DEFAULT_ACCOUNT_VALUE);
-      await setExchangeCredentials([]);
-      await setPlans([]);
-      // ORDERは初期化しなくてよい
+      await setAccount(RESET);
+      await setExchangeCredentials(RESET);
+      await setPlans(RESET);
 
       return;
     }
 
+    // 最初にordersを初期化しないとordersAtomで参照エラーが発生する
+    await Promise.all(DEBUG_ORDERS.map((order) => store.set(orderFamily(order.id), order)));
     const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
     await setAccount({
       agreement: false,
@@ -166,7 +168,6 @@ export default function DebugScreen() {
 
     await setExchangeCredentials(DEBUG_CREDENTIALS);
     await setPlans(DEBUG_PLANS);
-    await Promise.all(DEBUG_ORDERS.map((order) => store.set(orderFamily(order.id), order)));
   };
 
   return (
