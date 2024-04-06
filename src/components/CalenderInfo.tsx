@@ -3,9 +3,13 @@ import { Box, Button, ButtonText, HStack, LinkText, ScrollView, Text, VStack, Im
 import { white, unclearWhite, darkGrey, lightGrey, green, red } from '../constants/Colors';
 import { Link } from 'expo-router';
 import { exchangeCredentialsAtom } from '../services/exchange-service';
+import { ordersAtom } from '../services/calendar-service';
 
 export default function CalenderInfo() {
   const credentials = useAtomValue(exchangeCredentialsAtom);
+  const orders = useAtomValue(ordersAtom);
+
+  console.log('AAA', orders);
 
   return (
     <>

@@ -44,3 +44,16 @@ Google Cloud サービスアカウント: `hongov3@hongo-291507.iam.gserviceacco
 
 - EAS submit に必要
 - `npm run submit:android` 時にサービスアカウントの json を聞かれた場合、Keeper に保存されている `Google Service Account (hongov3) Private Key` を指定する（秘密鍵なので取り扱い注意）
+
+## トラブルシューティング
+
+### dev build がないと言われたとき
+
+症状: `npm run dev:ios`を実行したら次のメッセージが表示された
+`CommandError: No development build (jp.co.andgo.hongov3) for this project is installed. Please make and install a development build on the device first.`
+
+対応:
+
+1. `npm run build:dev`
+2. `s`を押して Expo Go モードに切り替える
+3. `i`を押して iOS simulator を起動する
