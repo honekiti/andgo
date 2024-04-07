@@ -52,8 +52,7 @@ export default function CalendarInfo() {
 
     setTimeout(() => {
       if (flatListRef.current && index >= 0) {
-        // (flatListRef.current as FlatListType).scrollToIndex({ animated: false, index });
-        (flatListRef.current as FlatListType).scrollToOffset({ offset: ITEM_HEIGHT * index });
+        (flatListRef.current as FlatListType).scrollToOffset({ offset: ITEM_HEIGHT * index, animated: false });
       }
     }, 100);
   });
