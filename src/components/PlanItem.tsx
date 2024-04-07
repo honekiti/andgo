@@ -1,10 +1,10 @@
 import { Link } from 'expo-router';
 import { Box, Button, CheckCircleIcon, CloseCircleIcon, HStack, Icon, Text, VStack, Image } from '@gluestack-ui/themed';
-import type { Plan } from '../models';
 import { green, lightGrey, red, unclearWhite, white, btnFalse } from '../constants/Colors';
 import { getExchange, useRefBtcAmount } from '../services/exchange-service';
 import { getPlanType, getRefAtDetails } from '../services/plan-service';
 import { DAY_OF_WEEK_OPTIONS } from '../master';
+import type { Plan } from '../models';
 
 export type PlanItemProps = {
   item: Plan;
@@ -19,7 +19,7 @@ export default function PlanItem(props: PlanItemProps) {
 
   return (
     <Box justifyContent="center">
-      <Link href="/schedule-edit" asChild>
+      <Link href={`/plans/${props.item.id}`} asChild>
         <Button h="auto" w="100%" bg={btnColor} rounded="$lg" mb="$2">
           <HStack w="$80" justifyContent="space-between" alignItems="center" px="$2" py="$5">
             <Box>
