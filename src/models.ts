@@ -85,6 +85,7 @@ export type Order<R = SuccessOrderResult | FailedOrderResult> = {
   id: OrderId; // ORD_0, ORD_1, ...
   orderedAt: number; // 注文日時 [unix time]
   planSnapshot: Plan;
+  dryRun: boolean;
   result: R;
 };
 

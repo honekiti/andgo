@@ -45,10 +45,11 @@ export const calcBtcAmount = (ask: number, quoteAmount: number, exchangeId: Exch
 export const buyQuoteAmount = async (
   exchangeCredential: ExchangeCredential,
   quoteAmount: number,
+  dryRun: boolean,
 ): Promise<SuccessOrderResult | FailedOrderResult> => {
   const ticker = await getTicker(exchangeCredential.exchangeId);
   const btcAmount = calcBtcAmount(ticker.ask, quoteAmount, exchangeCredential.exchangeId);
-  const result = await execBuyOrder(exchangeCredential, btcAmount);
+  const result = await execBuyOrder(exchangeCredential, btcAmount, dryRun);
 
   return result;
 };
@@ -58,6 +59,7 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
 
   console.log(`got background fetch call at date: ${new Date(now).toISOString()}`);
 
+  const account = await store.get(accountAtom);
   const plans = await store.get(plansAtom);
   const exchangeCredentials = await store.get(exchangeCredentialsAtom);
 
@@ -74,16 +76,16 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
 
     console.log(`execute order: exchangeId=${exchangeId}, quoteAmount=${quoteAmount}`);
 
-    const orderResult = await buyQuoteAmount(exchangeCredential, quoteAmount);
+    const orderResult = await buyQuoteAmount(exchangeCredential, quoteAmount, account.dryRun);
 
     console.log(`order result: ${JSON.stringify(orderResult)}`);
 
-    const account = await store.get(accountAtom);
     const orderId = `ORD_${account.numOfOrders}` as OrderId;
     const order: Order = {
       id: orderId,
       orderedAt: new Date().getTime(),
       planSnapshot: plan,
+      dryRun: account.dryRun,
       result: orderResult,
     };
     await store.set(orderFamily(orderId), order);

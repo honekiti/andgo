@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAtom } from 'jotai';
 import {
   Box,
   Button,
@@ -21,14 +22,27 @@ import {
   AlertDialogCloseButton,
   AlertDialogFooter,
   AlertDialogBody,
+  Switch,
+  HStack,
+  Pressable,
 } from '@gluestack-ui/themed';
 import { Stack, Link, useRouter } from 'expo-router';
 import { white, unclearWhite, darkGrey, red } from '../constants/Colors';
 import { hardReset } from '../services/advanced-service';
+import { accountAtom } from '../services/account-service';
+import type { Account } from '../models';
 
 export default function ConfigScreen() {
+  const [account, setAccount] = useAtom(accountAtom);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const router = useRouter();
+
+  const handleSwitchDryRun = () => {
+    setAccount(async (v) => {
+      const prev = await v;
+      return { ...prev, dryRun: !prev.dryRun };
+    });
+  };
 
   return (
     <Box flexDirection="column" flex={1} bg={darkGrey}>
@@ -72,14 +86,25 @@ export default function ConfigScreen() {
           />
         </Box>
 
-        <Alert mx="$4" mb="$4" action="error" variant="solid">
-          <AlertIcon as={InfoIcon} mr="$3" />
-          <AlertText>以下は内容が分かっている方のための機能です</AlertText>
-        </Alert>
+        <Box mx="$4" bg="$secondary0">
+          <Alert mx="$4" my="$4" action="error" variant="solid">
+            <AlertIcon as={InfoIcon} mr="$3" />
+            <AlertText>以下は内容が分かっている方のための機能です</AlertText>
+          </Alert>
 
-        <Button mb="$20" ml="$4" mr="$4" height="$12" bg={red} onPress={() => setShowResetDialog(true)}>
-          <ButtonText color={white}>初期化する</ButtonText>
-        </Button>
+          <Pressable onPress={handleSwitchDryRun}>
+            <HStack mx="$4" mt="$4" mb="$6" py="$2" justifyContent="center" alignItems="center">
+              <Switch size="md" value={account.dryRun} onChange={handleSwitchDryRun} />
+              <Text bold={true} ml="$4">
+                疑似購入モード
+              </Text>
+            </HStack>
+          </Pressable>
+
+          <Button mx="$4" mb="$10" height="$12" bg={red} onPress={() => setShowResetDialog(true)}>
+            <ButtonText color={white}>初期化する</ButtonText>
+          </Button>
+        </Box>
 
         <AlertDialog
           isOpen={showResetDialog}

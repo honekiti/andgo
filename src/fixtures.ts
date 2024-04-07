@@ -97,6 +97,7 @@ export const DEBUG_ORDERS: Order[] = Array.from({ length: 10 }, (_, i) => ({
   id: `ORD_${i}`,
   orderedAt: new Date(2024, 4, 1, 0, 0).getTime() + i * 1000 * 60 * 60 * 24,
   planSnapshot: DEBUG_PLANS[i % DEBUG_PLANS.length],
+  dryRun: false,
   result: {
     status: 'SUCCESS',
     btcAmount: 0.01,
