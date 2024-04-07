@@ -74,9 +74,12 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
       continue;
     }
 
+    // アカウントレベルでドライラン、或いはプランレベルでドライラン指示があればドライランとする
+    const dryRun = account.dryRun || plan.dryRun;
+
     console.log(`execute order: exchangeId=${exchangeId}, quoteAmount=${quoteAmount}`);
 
-    const orderResult = await buyQuoteAmount(exchangeCredential, quoteAmount, account.dryRun);
+    const orderResult = await buyQuoteAmount(exchangeCredential, quoteAmount, dryRun);
 
     console.log(`order result: ${JSON.stringify(orderResult)}`);
 
@@ -85,7 +88,7 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
       id: orderId,
       orderedAt: new Date().getTime(),
       planSnapshot: plan,
-      dryRun: account.dryRun,
+      dryRun,
       result: orderResult,
     };
     await store.set(orderFamily(orderId), order);
@@ -107,6 +110,8 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
 });
 
 export async function registerBackgroundFetchAsync() {
+  console.log('background fetch is registered');
+
   return BackgroundFetch.registerTaskAsync(FIND_ORDERS_TASK, {
     minimumInterval: 60 * 15, // 15 minutes
     stopOnTerminate: false, // android only,
@@ -115,5 +120,7 @@ export async function registerBackgroundFetchAsync() {
 }
 
 export async function unregisterBackgroundFetchAsync() {
+  console.log('background fetch is unregistered');
+
   return BackgroundFetch.unregisterTaskAsync(FIND_ORDERS_TASK);
 }

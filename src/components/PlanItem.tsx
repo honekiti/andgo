@@ -52,7 +52,7 @@ export default function PlanItem(props: PlanItemProps) {
                     -
                   </Text>
                   <Text color={unclearWhite} fontSize={13}>
-                    {refAtDetails.hour}:{refAtDetails.minute}
+                    {refAtDetails.hour}:{refAtDetails.minute.toString().padStart(2, '0')}
                   </Text>
                 </HStack>
               ) : (

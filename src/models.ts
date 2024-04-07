@@ -41,6 +41,7 @@ export type Plan = {
   exchangeId: ExchangeId; // target exchange
   quoteAmount: number; // quote amount [yen]
   planTypeId: PlanTypeId; // plan id
+  dryRun: boolean; // ドライランとするか
   status: {
     enabled: boolean; // enabled or not
     refAt: number; // reference time [unix time]
@@ -85,7 +86,7 @@ export type Order<R = SuccessOrderResult | FailedOrderResult> = {
   id: OrderId; // ORD_0, ORD_1, ...
   orderedAt: number; // 注文日時 [unix time]
   planSnapshot: Plan;
-  dryRun: boolean;
+  dryRun: boolean; // ドライランだったか
   result: R;
 };
 

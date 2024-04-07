@@ -24,6 +24,7 @@ export const DEBUG_PLANS: Plan[] = [
     exchangeId: 'BITFLYER',
     quoteAmount: 100000,
     planTypeId: 'DAILY',
+    dryRun: true,
     status: {
       enabled: false,
       refAt: new Date(2024, 4, 1, 13, 0).getTime(),
@@ -36,6 +37,7 @@ export const DEBUG_PLANS: Plan[] = [
     exchangeId: 'COINCHECK',
     quoteAmount: 100000,
     planTypeId: 'WEEKLY',
+    dryRun: true,
     status: {
       enabled: false,
       refAt: new Date(2024, 4, 1, 14, 0).getTime(),
@@ -48,6 +50,7 @@ export const DEBUG_PLANS: Plan[] = [
     exchangeId: 'BITBANK',
     quoteAmount: 100000,
     planTypeId: 'MONTHLY',
+    dryRun: true,
     status: {
       enabled: false,
       refAt: new Date(2024, 4, 1, 15, 0).getTime(),
@@ -60,6 +63,7 @@ export const DEBUG_PLANS: Plan[] = [
     exchangeId: 'BITFLYER',
     quoteAmount: 100000,
     planTypeId: 'DAILY',
+    dryRun: true,
     status: {
       enabled: true,
       refAt: new Date(2024, 4, 1, 16, 0).getTime(),
@@ -72,6 +76,7 @@ export const DEBUG_PLANS: Plan[] = [
     exchangeId: 'COINCHECK',
     quoteAmount: 50000000,
     planTypeId: 'WEEKLY',
+    dryRun: true,
     status: {
       enabled: true,
       refAt: new Date(2024, 4, 1, 17, 0).getTime(),
@@ -84,6 +89,7 @@ export const DEBUG_PLANS: Plan[] = [
     exchangeId: 'BITBANK',
     quoteAmount: 100000,
     planTypeId: 'MONTHLY',
+    dryRun: true,
     status: {
       enabled: true,
       refAt: new Date(2024, 4, 1, 18, 0).getTime(),

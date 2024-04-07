@@ -9,6 +9,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { white, darkGrey } from '../constants/Colors';
 import { store } from '../store';
+import { registerBackgroundFetchAsync } from '../services/scheduler-service';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -36,9 +37,15 @@ export default function RootLayout() {
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
+    const f = async () => {
+      if (loaded) {
+        await SplashScreen.hideAsync();
+
+        await registerBackgroundFetchAsync();
+      }
+    };
+
+    f();
   }, [loaded]);
 
   if (!loaded) {

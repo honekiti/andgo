@@ -121,6 +121,7 @@ describe('plansToEvents', () => {
           exchangeId: 'BITBANK',
           quoteAmount: 100000,
           planTypeId: 'MONTHLY',
+          dryRun: true,
           status: {
             enabled: true,
             refAt: new Date(2024, 4, 1, 15, 0).getTime(),
