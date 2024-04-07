@@ -98,7 +98,12 @@ export const MINUTE_OPTIONS = [...Array(60 / REF_AT_MINUTE_DELTA).keys()]
     value: i,
   }));
 
-export const DEFAULT_ACCOUNT_VALUE: Account = { agreement: false, numOfOrders: 0, totalBtcAmount: 0 };
+export const DEFAULT_ACCOUNT_VALUE: Account = {
+  dryRun: false,
+  agreement: false,
+  numOfOrders: 0,
+  totalBtcAmount: 0,
+};
 
 export const RESULT_LABELS = [
   {

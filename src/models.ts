@@ -58,6 +58,8 @@ export type PlanTypeMaster = {
 };
 
 export type Account = {
+  // trueのとき、実際の購入は行われない
+  dryRun: boolean;
   // 利用規約に同意済みのときtrueがセットされる
   agreement: boolean;
   // 購入指示数
