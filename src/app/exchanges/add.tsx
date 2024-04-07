@@ -37,7 +37,6 @@ import { exchangeCredentialsAtom, getExchange } from '../../services/exchange-se
 import type { ExchangeCredential, ExchangeId } from '../../models';
 import { EXCHANGES } from '../../master';
 import { getPermissionsStatus } from '../../services/exchange-api-service/universal';
-import { getBalance } from '../../services/exchange-api-service/universal';
 
 /**
  * 取引所連携画面

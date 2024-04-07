@@ -1,6 +1,6 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import type { Plan, ExchangeId, ExchangeCredential, SuccessOrderResult, FailedOrderResult, Order } from '../models';
+import type { Plan, ExchangeId, ExchangeCredential, SuccessOrderResult, FailedOrderResult, OrderId, Order } from '../models';
 import { VIEW_PRECISION, EXCHANGES } from '../master';
 import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
 import { exchangeCredentialsAtom } from './exchange-service';
@@ -15,7 +15,7 @@ export const MAX_NEXT_AT_DELTA_MS = 1000 * 60 * 20; // 20 minutes
 export const findWindowedPlans = (now: number, plans: Plan[]) => {
   return plans
     .filter((plan) => plan.status.enabled && now - MAX_NEXT_AT_DELTA_MS < plan.status.nextAt && plan.status.nextAt < now)
-    .toSorted((a, b) => a.status.nextAt - b.status.nextAt); // ascending order
+    .sort((a, b) => a.status.nextAt - b.status.nextAt); // ascending order
 };
 
 export const calcBtcAmount = (ask: number, quoteAmount: number, exchangeId: ExchangeId): number => {
@@ -79,7 +79,7 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
     console.log(`order result: ${JSON.stringify(orderResult)}`);
 
     const account = await store.get(accountAtom);
-    const orderId = `${account.numOfOrders + 1}`;
+    const orderId = `ORD_${account.numOfOrders}` as OrderId;
     const order: Order = {
       id: orderId,
       orderedAt: new Date().getTime(),
