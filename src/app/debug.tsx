@@ -12,6 +12,7 @@ import { store } from '../store';
 import type { SuccessOrderResult } from '../models';
 import { ordersAtom } from '../services/calendar-service';
 import { DEBUG_CREDENTIALS, DEBUG_ORDERS, DEBUG_PLANS } from '../fixtures';
+import { hardReset } from '../services/advanced-service';
 
 const TickerInfos = () => {
   const bitFlyer = useAtomValue(exchangeTickerFamily('BITFLYER'));
@@ -45,13 +46,9 @@ export default function DebugScreen() {
       ),
     });
 
-    await AsyncStorage.clear();
+    await hardReset();
 
     if (!withFixtures) {
-      await setAccount(RESET);
-      await setExchangeCredentials(RESET);
-      await setPlans(RESET);
-
       return;
     }
 
@@ -59,6 +56,7 @@ export default function DebugScreen() {
     await Promise.all(DEBUG_ORDERS.map((order) => store.set(orderFamily(order.id), order)));
     const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
     await setAccount({
+      dryRun: true,
       agreement: false,
       numOfOrders: successOrders.length,
       totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),

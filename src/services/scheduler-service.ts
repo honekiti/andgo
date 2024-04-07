@@ -15,7 +15,7 @@ export const MAX_NEXT_AT_DELTA_MS = 1000 * 60 * 20; // 20 minutes
 export const findWindowedPlans = (now: number, plans: Plan[]) => {
   return plans
     .filter((plan) => plan.status.enabled && now - MAX_NEXT_AT_DELTA_MS < plan.status.nextAt && plan.status.nextAt < now)
-    .toSorted((a, b) => a.status.nextAt - b.status.nextAt); // ascending order
+    .sort((a, b) => a.status.nextAt - b.status.nextAt); // ascending order
 };
 
 export const calcBtcAmount = (ask: number, quoteAmount: number, exchangeId: ExchangeId): number => {
@@ -45,10 +45,11 @@ export const calcBtcAmount = (ask: number, quoteAmount: number, exchangeId: Exch
 export const buyQuoteAmount = async (
   exchangeCredential: ExchangeCredential,
   quoteAmount: number,
+  dryRun: boolean,
 ): Promise<SuccessOrderResult | FailedOrderResult> => {
   const ticker = await getTicker(exchangeCredential.exchangeId);
   const btcAmount = calcBtcAmount(ticker.ask, quoteAmount, exchangeCredential.exchangeId);
-  const result = await execBuyOrder(exchangeCredential, btcAmount);
+  const result = await execBuyOrder(exchangeCredential, btcAmount, dryRun);
 
   return result;
 };
@@ -58,6 +59,7 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
 
   console.log(`got background fetch call at date: ${new Date(now).toISOString()}`);
 
+  const account = await store.get(accountAtom);
   const plans = await store.get(plansAtom);
   const exchangeCredentials = await store.get(exchangeCredentialsAtom);
 
@@ -72,18 +74,21 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
       continue;
     }
 
+    // アカウントレベルでドライラン、或いはプランレベルでドライラン指示があればドライランとする
+    const dryRun = account.dryRun || plan.dryRun;
+
     console.log(`execute order: exchangeId=${exchangeId}, quoteAmount=${quoteAmount}`);
 
-    const orderResult = await buyQuoteAmount(exchangeCredential, quoteAmount);
+    const orderResult = await buyQuoteAmount(exchangeCredential, quoteAmount, dryRun);
 
     console.log(`order result: ${JSON.stringify(orderResult)}`);
 
-    const account = await store.get(accountAtom);
     const orderId = `ORD_${account.numOfOrders}` as OrderId;
     const order: Order = {
       id: orderId,
       orderedAt: new Date().getTime(),
       planSnapshot: plan,
+      dryRun,
       result: orderResult,
     };
     await store.set(orderFamily(orderId), order);
@@ -105,6 +110,8 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
 });
 
 export async function registerBackgroundFetchAsync() {
+  console.log('background fetch is registered');
+
   return BackgroundFetch.registerTaskAsync(FIND_ORDERS_TASK, {
     minimumInterval: 60 * 15, // 15 minutes
     stopOnTerminate: false, // android only,
@@ -113,5 +120,7 @@ export async function registerBackgroundFetchAsync() {
 }
 
 export async function unregisterBackgroundFetchAsync() {
+  console.log('background fetch is unregistered');
+
   return BackgroundFetch.unregisterTaskAsync(FIND_ORDERS_TASK);
 }

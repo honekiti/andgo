@@ -41,6 +41,7 @@ export type Plan = {
   exchangeId: ExchangeId; // target exchange
   quoteAmount: number; // quote amount [yen]
   planTypeId: PlanTypeId; // plan id
+  dryRun: boolean; // ドライランとするか
   status: {
     enabled: boolean; // enabled or not
     refAt: number; // reference time [unix time]
@@ -58,6 +59,8 @@ export type PlanTypeMaster = {
 };
 
 export type Account = {
+  // trueのとき、実際の購入は行われない
+  dryRun: boolean;
   // 利用規約に同意済みのときtrueがセットされる
   agreement: boolean;
   // 購入指示数
@@ -83,6 +86,7 @@ export type Order<R = SuccessOrderResult | FailedOrderResult> = {
   id: OrderId; // ORD_0, ORD_1, ...
   orderedAt: number; // 注文日時 [unix time]
   planSnapshot: Plan;
+  dryRun: boolean; // ドライランだったか
   result: R;
 };
 
