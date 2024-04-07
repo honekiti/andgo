@@ -6,7 +6,6 @@ import { config } from '@gluestack-ui/config';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { white, darkGrey } from '../constants/Colors';
 import { store } from '../store';
 import { registerBackgroundFetchAsync } from '../services/scheduler-service';
@@ -59,15 +58,13 @@ function RootLayoutNav() {
   return (
     <JotaiProvider store={store}>
       <GluestackUIProvider config={config}>
-        <SafeAreaProvider>
-          <Stack
-            // 全スクリーン共通の設定
-            screenOptions={{
-              headerStyle: { backgroundColor: darkGrey },
-              headerTintColor: white,
-            }}
-          />
-        </SafeAreaProvider>
+        <Stack
+          // 全スクリーン共通の設定
+          screenOptions={{
+            headerStyle: { backgroundColor: darkGrey },
+            headerTintColor: white,
+          }}
+        />
       </GluestackUIProvider>
     </JotaiProvider>
   );

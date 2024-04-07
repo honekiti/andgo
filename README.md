@@ -57,10 +57,11 @@ Google Cloud サービスアカウント: `hongov3@hongo-291507.iam.gserviceacco
 
 ### dev build がないと言われたとき
 
-症状: `npm run dev:ios`を実行したら次のメッセージが表示された
+症状: `npm run dev`を実行したら次のメッセージが表示された
 `CommandError: No development build (jp.co.andgo.hongov3) for this project is installed. Please make and install a development build on the device first.`
 
-対応:
+対応 A: dev-client を Expo にログインしてダウンロードする
+対応 B:
 
 1. `npm run build:dev`
 2. `s`を押して Expo Go モードに切り替える

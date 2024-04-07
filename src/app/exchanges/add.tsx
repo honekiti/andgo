@@ -30,6 +30,7 @@ import {
   useToast,
   Toast,
   ToastTitle,
+  SafeAreaView,
 } from '@gluestack-ui/themed';
 import { Stack, Link, router } from 'expo-router';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
@@ -81,7 +82,7 @@ export default function ExchangeRegistrationScreen() {
   };
 
   return (
-    <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
+    <SafeAreaView flex={1} bg={darkGrey} justifyContent="space-between">
       <Stack.Screen
         options={{
           title: '取引所連携',
@@ -208,6 +209,6 @@ export default function ExchangeRegistrationScreen() {
           <ButtonText>連携する</ButtonText>
         </Button>
       </Box>
-    </Box>
+    </SafeAreaView>
   );
 }

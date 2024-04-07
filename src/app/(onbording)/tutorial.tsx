@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 // gloustack uiのScrollViewにはrefが定義されていないため、react-nativeのScrollViewを使用する
 import { Dimensions, ScrollView } from 'react-native';
-import { Box, Button, ButtonText, HStack, VStack, Image, Text } from '@gluestack-ui/themed';
+import { SafeAreaView, Box, Button, ButtonText, HStack, VStack, Image, Text } from '@gluestack-ui/themed';
 import { Stack, Link } from 'expo-router';
 import { darkGrey, unclearWhite } from '../../constants/Colors';
 import CarouselIndicator from '../../components/CarouselIndicator';
@@ -135,7 +135,7 @@ export default function TutorialScreen() {
   };
 
   return (
-    <Box flex={1} bg={darkGrey}>
+    <SafeAreaView flex={1} bg={darkGrey}>
       <Stack.Screen
         options={{
           title: 'チュートリアル',
@@ -208,6 +208,6 @@ export default function TutorialScreen() {
           </Button>
         </Link>
       </Box>
-    </Box>
+    </SafeAreaView>
   );
 }

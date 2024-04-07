@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai';
 import React from 'react';
-import { Box, Button, FlatList, HStack, VStack, Text, ButtonText } from '@gluestack-ui/themed';
+import { SafeAreaView, Box, Button, FlatList, HStack, VStack, Text, ButtonText } from '@gluestack-ui/themed';
 import { Stack, Link } from 'expo-router';
 import type { ExchangeCredential } from '../../models';
 import { white, unclearWhite, darkGrey } from '../../constants/Colors';
@@ -11,7 +11,7 @@ export default function ExchangeListScreen() {
   const credentials = useAtomValue(exchangeCredentialsAtom);
 
   return (
-    <Box flex={1} bg={darkGrey} justifyContent="space-between">
+    <SafeAreaView flex={1} bg={darkGrey} justifyContent="space-between">
       <Stack.Screen
         options={{
           title: '取引所',
@@ -36,6 +36,6 @@ export default function ExchangeListScreen() {
           </Button>
         </Link>
       </HStack>
-    </Box>
+    </SafeAreaView>
   );
 }

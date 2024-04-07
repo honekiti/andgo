@@ -11,6 +11,7 @@ import {
   ScrollView,
   VStack,
   Pressable,
+  SafeAreaView,
 } from '@gluestack-ui/themed';
 import { Stack, useRouter } from 'expo-router';
 import { useAtom } from 'jotai';
@@ -34,7 +35,7 @@ export default function TermsOfServiceScreen() {
   };
 
   return (
-    <Box flex={1} width="$full" bg={darkGrey}>
+    <SafeAreaView flex={1} width="$full" bg={darkGrey}>
       <Stack.Screen
         options={{
           title: '利用規約のご確認',
@@ -119,6 +120,6 @@ export default function TermsOfServiceScreen() {
           </Button>
         </Box>
       )}
-    </Box>
+    </SafeAreaView>
   );
 }

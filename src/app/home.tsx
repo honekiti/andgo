@@ -1,8 +1,7 @@
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { Stack, Link } from 'expo-router';
-import { Box, Button, ButtonIcon, HStack, Pressable, Text, VStack } from '@gluestack-ui/themed';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, Box, Button, ButtonIcon, HStack, Pressable, Text, VStack } from '@gluestack-ui/themed';
 import { SettingsIcon, ArrowRightIcon, AddIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey, orange } from '../constants/Colors';
 import CalendarInfo from '../components/CalendarInfo';
@@ -13,7 +12,6 @@ import { accountAtom } from '../services/account-service';
 import { VIEW_PRECISION } from '../master';
 
 export default function HomeScreen() {
-  const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState(0);
 
   // BTC/JPYの取得
@@ -32,7 +30,7 @@ export default function HomeScreen() {
   const varPrecision = Math.max(...checkPrecisionLength);
 
   return (
-    <Box h="100%" pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} bg="#000">
+    <SafeAreaView flex={1} bgColor="$black">
       <Stack.Screen
         options={{
           title: 'ホーム',
@@ -193,6 +191,6 @@ export default function HomeScreen() {
           {activeTab === 1 && <AccumulateInfo />}
         </Box>
       </Box>
-    </Box>
+    </SafeAreaView>
   );
 }
