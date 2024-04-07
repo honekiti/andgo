@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 import { useAtomValue } from 'jotai';
-import { atomWithStorage, createJSONStorage, atomFamily, loadable } from 'jotai/utils';
+import { atomWithStorage, createJSONStorage, atomFamily, unwrap } from 'jotai/utils';
 import { atomWithQuery } from 'jotai-tanstack-query';
 import * as SecureStore from 'expo-secure-store';
 import { EXCHANGES } from '../master';
@@ -27,7 +27,6 @@ const storage = createJSONStorage<ExchangeCredential[]>(() => CommonSecureStore)
 
 // 取引所の認証情報を扱うAtom
 export const exchangeCredentialsAtom = atomWithStorage(EXCHANGES_KEY, [], storage, { getOnInit: true });
-export const loadableExchangeCredentialsAtom = loadable(exchangeCredentialsAtom);
 
 // 各取引所のティッカー情報を取得するためのAtomFamily
 export const exchangeTickerFamily = atomFamily((exchangeId: ExchangeId) => {
@@ -42,10 +41,10 @@ export const exchangeTickerFamily = atomFamily((exchangeId: ExchangeId) => {
 
 export const exchangeBalanceFamily = atomFamily((exchangeId: ExchangeId) => {
   return atomWithQuery((get) => {
-    const loadableCredentials = get(loadableExchangeCredentialsAtom);
+    const credentials = get(unwrap(exchangeCredentialsAtom, (prev) => prev ?? []));
 
-    if (loadableCredentials.state === 'hasData') {
-      const credential = loadableCredentials.data.find((c) => c.exchangeId === exchangeId);
+    if (credentials.length > 0) {
+      const credential = credentials.find((c) => c.exchangeId === exchangeId);
 
       if (credential) {
         return {
@@ -58,7 +57,7 @@ export const exchangeBalanceFamily = atomFamily((exchangeId: ExchangeId) => {
       }
 
       return {
-        queryKey: ['balances', '', ''],
+        queryKey: ['balances', '', '', ''],
         queryFn: async () => {
           return await Promise.resolve({} as Balance);
         },
@@ -66,7 +65,7 @@ export const exchangeBalanceFamily = atomFamily((exchangeId: ExchangeId) => {
     }
 
     return {
-      queryKey: ['balances', '', ''],
+      queryKey: ['balances', '', '', ''],
       queryFn: async () => {
         return await Promise.resolve({} as Balance);
       },

@@ -1,8 +1,6 @@
-import { useAtomValue } from 'jotai';
 import { Link } from 'expo-router';
 import { Box, Button, CheckCircleIcon, CloseCircleIcon, HStack, Icon, Text, VStack, Image } from '@gluestack-ui/themed';
-// biome-ignore lint/style/useImportType: <explanation>
-import { Plan } from '../models';
+import type { Plan } from '../models';
 import { green, lightGrey, red, unclearWhite, white, btnFalse } from '../constants/Colors';
 import { getExchange, useRefBtcAmount } from '../services/exchange-service';
 import { getPlanType, getRefAtDetails } from '../services/plan-service';

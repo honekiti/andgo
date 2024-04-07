@@ -40,6 +40,9 @@ yarn-error.*
 expo-env.d.ts
 # @end expo-cli
 
+/coverage
+junit.xml
+
 .env
 
 hongo-291507-adaab030c96c.json

@@ -99,3 +99,18 @@ export const MINUTE_OPTIONS = [...Array(60 / REF_AT_MINUTE_DELTA).keys()]
   }));
 
 export const DEFAULT_ACCOUNT_VALUE: Account = { agreement: false, numOfOrders: 0, totalBtcAmount: 0 };
+
+export const RESULT_LABELS = [
+  {
+    value: 'SUCCESS',
+    label: '実行済',
+  },
+  {
+    value: 'FAILED',
+    label: 'エラー',
+  },
+  {
+    value: 'MAYBE_FAILED',
+    label: '残高不足',
+  },
+];

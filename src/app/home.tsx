@@ -5,7 +5,7 @@ import { Box, Button, ButtonIcon, HStack, Pressable, Text, VStack } from '@glues
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SettingsIcon, ArrowRightIcon, AddIcon, CalendarDaysIcon, PaperclipIcon, Image } from '@gluestack-ui/themed';
 import { white, unclearWhite, darkGrey, lightGrey, orange } from '../constants/Colors';
-import CalenderInfo from '../components/CalenderInfo';
+import CalendarInfo from '../components/CalendarInfo';
 import AccumulateInfo from '../components/AccumulateInfo';
 import ExchangeBalanceList from '../components/ExchangeBalanceList';
 import { exchangeCredentialsAtom, exchangeTickerFamily, getOrderPrecision } from '../services/exchange-service';
@@ -189,7 +189,7 @@ export default function HomeScreen() {
           </Pressable>
         </HStack>
         <Box h="85.5%">
-          {activeTab === 0 && <CalenderInfo />}
+          {activeTab === 0 && <CalendarInfo />}
           {activeTab === 1 && <AccumulateInfo />}
         </Box>
       </Box>
