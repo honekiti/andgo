@@ -15,14 +15,13 @@
     },
     "preview": {
       "node": "20.11.1",
-      "distribution": "internal",
+      "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
       }
     },
     "production": {
       "node": "20.11.1",
-      "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
       }
@@ -30,14 +29,17 @@
   },
   "submit": {
     "preview": {
-      "android": {
-        "serviceAccountKeyPath": "./hongo-291507-adaab030c96c.json",
-        "track": "internal"
+      "ios": {
+        "appleId": "hara@andgo.co.jp",
+        "ascAppId": "6480348860",
+        "appleTeamId": "JTK33D2V7R"
       }
     },
     "production": {
-      "android": {
-        "serviceAccountKeyPath": "./hongo-291507-adaab030c96c.json"
+      "ios": {
+        "appleId": "hara@andgo.co.jp",
+        "ascAppId": "6480348860",
+        "appleTeamId": "JTK33D2V7R"
       }
     }
   }
