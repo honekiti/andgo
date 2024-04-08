@@ -13,13 +13,6 @@
         "simulator": true
       }
     },
-    "preview": {
-      "node": "20.11.1",
-      "autoIncrement": true,
-      "android": {
-        "buildType": "app-bundle"
-      }
-    },
     "production": {
       "node": "20.11.1",
       "android": {
@@ -28,13 +21,6 @@
     }
   },
   "submit": {
-    "preview": {
-      "ios": {
-        "appleId": "hara@andgo.co.jp",
-        "ascAppId": "6480348860",
-        "appleTeamId": "JTK33D2V7R"
-      }
-    },
     "production": {
       "ios": {
         "appleId": "hara@andgo.co.jp",
