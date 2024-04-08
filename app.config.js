@@ -13,6 +13,7 @@ module.exports = {
   },
   assetBundlePatterns: ['**/*'],
   ios: {
+    buildNumber: "3",
     supportsTablet: false,
     config: {
       usesNonExemptEncryption: false,
@@ -20,6 +21,7 @@ module.exports = {
     bundleIdentifier: 'jp.co.andgo.hongov3',
   },
   android: {
+    versionCode: 3,
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#ffffff',
