@@ -32,7 +32,7 @@ export const NoExchanges = () => {
             <ButtonText color={white}>取引所と連携する</ButtonText>
           </Button>
         </Link>
-        <Link href="https://andgo.notion.site/">
+        <Link href="https://tsumitatetoko.com/how-to-register">
           <LinkText color={white} underline>
             連携する方法を見る
           </LinkText>

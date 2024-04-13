@@ -33,7 +33,7 @@
     "@tanstack/query-core": "5.29.0",
     "@types/text-encoding": "0.0.39",
     "date-fns": "3.6.0",
-    "expo": "50.0.14",
+    "expo": "~50.0.15",
     "expo-background-fetch": "11.8.1",
     "expo-crypto": "12.8.1",
     "expo-dev-client": "3.3.11",
