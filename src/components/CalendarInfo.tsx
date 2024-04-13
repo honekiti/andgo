@@ -16,7 +16,7 @@ export const NoExchanges = () => {
         <Image size="xs" my="$3" resizeMode="contain" source={require('../../assets/images/link.png')} alt="bit-coin-line-logo" />
         <Text mt="$2">暗号資産(仮想通貨)取引所と</Text>
         <Text mb="$7">連携しましょう</Text>
-        <Link href="/exchange-registration" asChild>
+        <Link href="/exchanges/add" asChild>
           <Button
             h="$12"
             w="90%"
