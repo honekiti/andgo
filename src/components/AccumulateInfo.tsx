@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { Box, Button, ButtonText, HStack, ScrollView, Text, Image } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, HStack, ScrollView, Text, Image, LinkText } from '@gluestack-ui/themed';
 import { white, unclearWhite } from '../constants/Colors';
 import { Link } from 'expo-router';
 import PlanList from './PlanList';
@@ -41,6 +41,11 @@ export default function AccumulateInfo() {
               >
                 <ButtonText color={white}>取引所と連携する</ButtonText>
               </Button>
+            </Link>
+            <Link href="https://tsumitatetoko.com/how-to-register">
+              <LinkText color={white} underline>
+                連携する方法を見る
+              </LinkText>
             </Link>
           </Box>
         </ScrollView>
