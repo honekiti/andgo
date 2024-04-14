@@ -50,6 +50,8 @@ export default function ExchangeRegistrationScreen() {
   const [apiKey, setApiKey] = useState('');
   const [apiSecret, setApiSecret] = useState('');
 
+  const apiFlg: boolean = apiKey.length * apiSecret.length > 0 ? false : true;
+
   const handlePressAddCredential = async () => {
     const newCredential: ExchangeCredential = {
       exchangeId: selectedExchangeId,
@@ -201,7 +203,7 @@ export default function ExchangeRegistrationScreen() {
           size="lg"
           variant="solid"
           action="primary"
-          isDisabled={false}
+          isDisabled={apiFlg}
           isFocusVisible={false}
           rounded="$lg"
           bgColor="#f97316"
