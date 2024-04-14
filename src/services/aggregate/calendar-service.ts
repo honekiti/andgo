@@ -1,9 +1,9 @@
 import { atom } from 'jotai';
 import { addMonths, getYear, getMonth, getDate } from 'date-fns';
-import { accountAtom } from './account-service';
-import { orderFamily } from './order-service';
-import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
-import type { Plan, Order, OrderId, CalendarEvent, AggregatedCalendarEvent } from '../models';
+import { accountAtom } from '../account-service';
+import { orderFamily } from '../order-service';
+import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from '../plan-service';
+import type { Plan, Order, OrderId, CalendarEvent, AggregatedCalendarEvent } from '../../models';
 
 const MAX_ORDERS = 100;
 const PLAN_EVENTS_MAX_NUM = 20;
@@ -12,7 +12,7 @@ const PLAN_EVENTS_RANGE_MONTHS = 3;
 /**
  * オーダー記録をMAX_ORDERS数分、オーダー時刻の昇順で返す。
  */
-export const ordersAtom = atom(async (get) => {
+export const ordersAtom = atom<Promise<Order[]>>(async (get) => {
   const account = await get(accountAtom);
   const numOfResponses = Math.min(account.numOfOrders, MAX_ORDERS);
   const startIndex = account.numOfOrders - numOfResponses;

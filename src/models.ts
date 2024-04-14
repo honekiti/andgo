@@ -67,6 +67,8 @@ export type Account = {
   numOfOrders: number;
   // 累計購入BTC量
   totalBtcAmount: number;
+  // 累積支払金額 [JPY]
+  totalSpentAmount: number;
 };
 
 export type SuccessOrderResult = {
