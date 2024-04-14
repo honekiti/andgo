@@ -103,6 +103,7 @@ export const DEFAULT_ACCOUNT_VALUE: Account = {
   agreement: false,
   numOfOrders: 0,
   totalBtcAmount: 0,
+  totalSpentAmount: 0,
 };
 
 export const RESULT_LABELS = [

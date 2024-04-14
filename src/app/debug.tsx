@@ -10,7 +10,7 @@ import { accountAtom } from '../services/account-service';
 import { orderFamily } from '../services/order-service';
 import { store } from '../store';
 import type { SuccessOrderResult } from '../models';
-import { ordersAtom } from '../services/calendar-service';
+import { ordersAtom } from '../services/aggregate/calendar-service';
 import { DEBUG_CREDENTIALS, DEBUG_ORDERS, DEBUG_PLANS } from '../fixtures';
 import { hardReset } from '../services/advanced-service';
 
@@ -60,6 +60,7 @@ export default function DebugScreen() {
       agreement: false,
       numOfOrders: successOrders.length,
       totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
+      totalSpentAmount: successOrders.reduce((acc, order) => acc + order.planSnapshot.quoteAmount, 0),
     });
 
     await setExchangeCredentials(DEBUG_CREDENTIALS);

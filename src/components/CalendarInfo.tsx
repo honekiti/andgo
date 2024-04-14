@@ -5,7 +5,7 @@ import { Box, Button, ButtonText, HStack, LinkText, Text, VStack, Image, FlatLis
 import { white, unclearWhite } from '../constants/Colors';
 import { Link, useFocusEffect } from 'expo-router';
 import { exchangeCredentialsAtom } from '../services/exchange-service';
-import { calendarEventsAtom } from '../services/calendar-service';
+import { calendarEventsAtom } from '../services/aggregate/calendar-service';
 import CalendarInfoItem, { ITEM_HEIGHT } from './CalendarInfoItem';
 import type { AggregatedCalendarEvent } from '../models';
 

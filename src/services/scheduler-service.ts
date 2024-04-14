@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import type { Plan, ExchangeId, ExchangeCredential, SuccessOrderResult, FailedOrderResult, OrderId, Order } from '../models';
@@ -8,6 +9,7 @@ import { store } from '../store';
 import { getTicker, execBuyOrder } from './exchange-api-service/universal';
 import { orderFamily } from './order-service';
 import { accountAtom } from './account-service';
+import { refreshTotalAmount } from './aggregate/analysis-service';
 
 export const FIND_ORDERS_TASK = 'FIND_ORDERS_TASK';
 export const MAX_NEXT_AT_DELTA_MS = 1000 * 60 * 20; // 20 minutes
@@ -64,6 +66,7 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
   const exchangeCredentials = await store.get(exchangeCredentialsAtom);
 
   const windowedPlans = findWindowedPlans(now, plans);
+  const updatedPlans = plans;
 
   for (const plan of windowedPlans) {
     const { exchangeId, quoteAmount } = plan;
@@ -94,16 +97,30 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
     await store.set(orderFamily(orderId), order);
     await store.set(accountAtom, { ...account, numOfOrders: account.numOfOrders + 1 });
 
+    const targetPlanIndex = updatedPlans.findIndex((p) => p.id === plan.id);
+    invariant(targetPlanIndex !== -1, 'PLAN_NOT_FOUND');
+
     if (orderResult.status === 'SUCCESS') {
       const nextIndex = getNextIndexFromNow(plan.planTypeId, plan.status.refAt, now);
       const nextAt = getNextAtByIndex(plan.planTypeId, plan.status.refAt, nextIndex);
 
-      plan.status.nextIndex = nextIndex;
-      plan.status.nextAt = nextAt;
+      // windowedPlansの値を更新
+      updatedPlans[targetPlanIndex].status.nextIndex = nextIndex;
+      updatedPlans[targetPlanIndex].status.nextAt = nextAt;
     } else {
-      plan.status.enabled = false;
+      // windowedPlansの値を更新
+      updatedPlans[targetPlanIndex].status.enabled = false;
     }
   }
+
+  await store.set(plansAtom, updatedPlans);
+
+  // 投資パフォーマンスを再集計
+  console.log('refresh total amount...');
+
+  await refreshTotalAmount();
+
+  console.log('refresh total amount done');
 
   // Be sure to return the successful result type!
   return BackgroundFetch.BackgroundFetchResult.NewData;
