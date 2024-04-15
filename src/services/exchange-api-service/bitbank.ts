@@ -1,8 +1,9 @@
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
-import { ExchangeCredential } from '../../models';
-import { BitbankResponse, Ticker, OrderRequest, OrderResponse, Asset, AssetsResponse } from './bitbank.types';
+import type { ExchangeCredential } from '../../models';
+import type { BitbankResponse, Ticker, OrderRequest, OrderResponse, Asset, AssetsResponse } from './bitbank.types';
 
 const PUBLIC_ENDPOINT = 'https://public.bitbank.cc';
 const PRIVATE_ENDPOINT = 'https://api.bitbank.cc';
