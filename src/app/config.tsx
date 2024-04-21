@@ -60,14 +60,14 @@ export default function ConfigScreen() {
         </Button>
       </Link>
 
-      <Link href="/(onbording)/terms-of-service" asChild>
+      <Link href="/(onboarding)/terms-of-service" asChild>
         <Button height="$16" bg={darkGrey} justifyContent="space-between" borderBottomWidth={0.3} borderColor={unclearWhite}>
           <ButtonText textAlign="left">利用規約</ButtonText>
           <Icon as={ChevronRightIcon} size="lg" color={white} />
         </Button>
       </Link>
 
-      <Link href="https://tsumitatetoko.com/news" asChild>
+      <Link href="/(onboarding)/change-logs" asChild>
         <Button height="$16" bg={darkGrey} justifyContent="space-between" borderBottomWidth={0.3} borderColor={unclearWhite}>
           <ButtonText textAlign="left">最新リリース情報</ButtonText>
           <Icon as={ChevronRightIcon} size="lg" color={white} />
