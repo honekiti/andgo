@@ -10,6 +10,8 @@ export const EXCHANGES: ExchangeMaster[] = [
     minBtcAmt: 0.0001,
     minJpyAmt: 1,
     orderPrecision: 4,
+    tutorialUrl: 'UNKNOWN',
+    websiteUrl: 'UNKNOWN',
   },
   {
     // reference: https://bitbank.cc/docs/pairs/
@@ -18,6 +20,8 @@ export const EXCHANGES: ExchangeMaster[] = [
     minBtcAmt: 0.0001,
     minJpyAmt: 1,
     orderPrecision: 4,
+    tutorialUrl: 'https://tsumitatetoko.com/api-register-bitbank',
+    websiteUrl: 'https://bitbank.cc/',
   },
   {
     // reference: https://bitflyer.com/ja-jp/faq/4-27
@@ -26,6 +30,8 @@ export const EXCHANGES: ExchangeMaster[] = [
     minBtcAmt: 0.001,
     minJpyAmt: 1,
     orderPrecision: 3,
+    tutorialUrl: 'https://tsumitatetoko.com/api-register-bitFlyer',
+    websiteUrl: 'https://bitflyer.com/ja-jp',
   },
   {
     // reference: https://faq.coincheck.com/s/article/40218?language=ja
@@ -34,6 +40,8 @@ export const EXCHANGES: ExchangeMaster[] = [
     minBtcAmt: 0.005,
     minJpyAmt: 500,
     orderPrecision: 3,
+    tutorialUrl: 'https://tsumitatetoko.com/api-register-coincheck',
+    websiteUrl: 'https://coincheck.com/ja/',
   },
   {
     // https://coin.z.com/jp/corp/product/info/exchange/
@@ -42,6 +50,8 @@ export const EXCHANGES: ExchangeMaster[] = [
     minBtcAmt: 0.0001,
     minJpyAmt: 1,
     orderPrecision: 4,
+    tutorialUrl: 'https://tsumitatetoko.com/api-register-gmo',
+    websiteUrl: 'https://coin.z.com/jp/',
   },
 ];
 

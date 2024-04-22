@@ -132,7 +132,7 @@ export default function ExchangeRegistrationScreen() {
                 {getExchange(selectedExchangeId).name}へログインし、「APIキーの発行」メニューで「参照」「取引」の権限を選択して、APIを発行してください
               </Text>
               <VStack space="md" pt="$2">
-                <Link href="https://bitbank.cc/">
+                <Link href={getExchange(selectedExchangeId).tutorialUrl}>
                   <Box
                     h="$12"
                     w="100%"
@@ -152,7 +152,7 @@ export default function ExchangeRegistrationScreen() {
                     <Icon as={ChevronRightIcon} size="md" color={white} />
                   </Box>
                 </Link>
-                <Link href="https://tsumitatetoko.com/api-register-bitbank">
+                <Link href={getExchange(selectedExchangeId).websiteUrl}>
                   <Box
                     h="$12"
                     w="100%"

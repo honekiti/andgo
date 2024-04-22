@@ -78,6 +78,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
         nextIndex,
         nextAt,
       },
+      dryRun: false,
     };
 
     const plans = await store.get(plansAtom);

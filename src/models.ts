@@ -8,6 +8,8 @@ export type ExchangeMaster = {
   minBtcAmt: number; // 最少購入量
   minJpyAmt: number; // 最少購入量
   orderPrecision: number; // 注文する小数点以下の桁数
+  tutorialUrl: string;
+  websiteUrl: string;
 };
 
 // 取引所のクレデンシャル情報
