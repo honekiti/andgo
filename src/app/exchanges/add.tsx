@@ -31,8 +31,9 @@ import {
   Toast,
   ToastTitle,
   SafeAreaView,
+  Link,
 } from '@gluestack-ui/themed';
-import { Stack, Link, router } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { white, unclearWhite, darkGrey, lightGrey } from '../../constants/Colors';
 import { exchangeCredentialsAtom, getExchange } from '../../services/exchange-service';
 import type { ExchangeCredential, ExchangeId } from '../../models';
