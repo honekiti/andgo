@@ -92,6 +92,10 @@ export const useRefBtcAmount = (
     // 最少購入量エラー
     | 'MIN_BTC_AMT_ERROR';
 } => {
+  if (exchangeId === 'UNKNOWN') {
+    return { status: 'FETCH_ERROR' };
+  }
+
   const master = getExchange(exchangeId);
   // BTC/JPYレートを取得（非同期）
   const exchangeTicker = useAtomValue(exchangeTickerFamily(exchangeId));

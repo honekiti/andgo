@@ -20,7 +20,7 @@ import {
   Modal,
 } from '@gluestack-ui/themed';
 import { useAtomValue } from 'jotai';
-import { ExchangeMaster } from '../models';
+import type { ExchangeMaster } from '../models';
 import { white, red, unclearWhite } from '../constants/Colors';
 import { store } from '../store';
 import { exchangeCredentialsAtom, exchangeBalanceFamily } from '../services/exchange-service';
