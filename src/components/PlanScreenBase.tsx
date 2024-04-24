@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useRef } from 'react';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { useAtomValue } from 'jotai';
 import {
   Box,
   VStack,
@@ -28,16 +29,25 @@ import {
   Toast,
   ToastTitle,
   Switch,
+  Modal,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  Heading,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from '@gluestack-ui/themed';
-import { white, unclearWhite, darkGrey, lightGrey } from '../constants/Colors';
+import { white, unclearWhite, darkGrey, lightGrey, red } from '../constants/Colors';
 import { useFocusEffect, router } from 'expo-router';
 import { plansAtom, getModifiedRefAt, getNextIndexFromNow, getNextAtByIndex, getRefAtDetails, getPlanType } from '../services/plan-service';
-import { exchangeCredentialsAtom, getExchange, getExchangeFromCredential } from '../services/exchange-service';
+import { exchangeCredentialsAtom, getExchange, getExchangeFromCredential, exchangeTickerFamily } from '../services/exchange-service';
 import { genId } from '../utils/crypto';
 import type { Plan, ExchangeCredential, ExchangeId, PlanTypeId, PlanId } from '../models';
 import { PLAN_TYPES, DAY_OF_WEEK_OPTIONS, DATE_OPTIONS, HOUR_OPTIONS, MINUTE_OPTIONS } from '../master';
 import ExchangeInfo from '../components/ExchangeInfo';
 import { store } from '../store';
+import { calcBtcAmount } from '../services/scheduler-service';
 
 export const strToNum = (v: string): number => {
   const i = Number(v.replaceAll(',', ''));
@@ -49,12 +59,24 @@ export const strToNum = (v: string): number => {
   return i;
 };
 
+export const checkMinConditions = (ask: number, quoteAmount: number, exchangeId: ExchangeId) => {
+  try {
+    calcBtcAmount(ask, quoteAmount, exchangeId);
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 type PlanScreenBaseProps = {
   targetPlanId?: PlanId;
 };
 
 export default function PlanScreenBase(props: PlanScreenBaseProps) {
   const toast = useToast();
+  const ref = useRef(null);
+  const [showWarningModal, setShowWarningModal] = useState(false);
   const [credentials, setCredentials] = useState<ExchangeCredential[]>([]);
   const exchangeItems = credentials.map((credential) => ({
     credential,
@@ -65,13 +87,24 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
   const [exchangeId, setExchangeId] = useState<ExchangeId>('UNKNOWN');
   const [planTypeId, setPlanTypeId] = useState<PlanTypeId>('MONTHLY');
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
-  const [quoteAmount, setQuoteAmount] = useState<number>(0);
+  const [quoteAmount, setQuoteAmount] = useState<number>(10000);
   // planId === 'WEEKLY' の場合のみ有効
   const [dayOfWeek, setDayOfWeek] = useState<number>(new Date().getDay());
   // planId === 'MONTHLY' の場合のみ有効
   const [date, setDate] = useState<number>(new Date().getDate());
   const [hour, setHour] = useState<number>(new Date().getHours());
   const [minute, setMinute] = useState<number>(new Date().getMinutes());
+
+  const ticker = useAtomValue(exchangeTickerFamily(exchangeId));
+  const maybeOk = ticker.data && checkMinConditions(ticker.data.ask, quoteAmount, exchangeId);
+
+  const handlePreCheck = async () => {
+    if (maybeOk) {
+      await handleSubmit();
+    } else {
+      setShowWarningModal(true);
+    }
+  };
 
   const handleSubmit = async () => {
     const refAt = getModifiedRefAt({ refAt: new Date().getTime(), date, dayOfWeek, hours: hour, minutes: minute });
@@ -111,6 +144,8 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
 
     await store.set(plansAtom, updatedPlans);
 
+    console.log('updated', newPlan);
+
     // 閉じる
     router.back();
   };
@@ -134,8 +169,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
           setCredentials(credentials);
         }
 
-        // 取引所の初期選択値を連携済取引所の値とする
-        setExchangeId(credentials[0].exchangeId);
+        console.log('targetPlanId:', props.targetPlanId);
 
         // プラン編集の場合は、プラン情報を読み込む
         if (props.targetPlanId) {
@@ -169,6 +203,9 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
               setMinute(refAtDetails.minute);
             }
           }
+        } else {
+          // 取引所の初期選択値を連携済取引所の値とする
+          setExchangeId(credentials[0].exchangeId);
         }
       };
 
@@ -177,9 +214,53 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
   );
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={100}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={200}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Box h="$full" w="$full" bg={darkGrey} justifyContent="space-between">
+          <Modal
+            isOpen={showWarningModal}
+            onClose={() => {
+              setShowWarningModal(false);
+            }}
+            finalFocusRef={ref}
+          >
+            <ModalBackdrop />
+            <ModalContent>
+              <ModalHeader>
+                <Heading size="lg">確認</Heading>
+              </ModalHeader>
+              <ModalBody>
+                <VStack space="sm">
+                  <Text>指定した購入額が小さすぎる恐れがあります。</Text>
+                  <Text>実際に購入するタイミングでBTC換算額が最低購入量を下回った場合は、購入されません。</Text>
+                  <Text>このまま作成してもよろしいですか？</Text>
+                </VStack>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  action="secondary"
+                  mr="$3"
+                  onPress={() => {
+                    setShowWarningModal(false);
+                  }}
+                >
+                  <ButtonText>キャンセル</ButtonText>
+                </Button>
+                <Button
+                  size="sm"
+                  borderWidth="$0"
+                  onPress={() => {
+                    setShowWarningModal(false);
+                    handleSubmit();
+                  }}
+                >
+                  <ButtonText>OK</ButtonText>
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
           <ScrollView>
             <VStack space="3xl" p="$4">
               <FormControl size="md" isRequired={true}>
@@ -187,7 +268,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                   <FormControlLabelText color={white}>取引所</FormControlLabelText>
                 </FormControlLabel>
                 {/* SelectがsetExchangeIdを反映してくれないバグをLazyにレンダリングすることで回避する */}
-                {(!props.targetPlanId || exchangeId !== 'UNKNOWN') && (
+                {exchangeId !== 'UNKNOWN' && (
                   <Select
                     selectedValue={exchangeId}
                     initialLabel={getExchange(exchangeId).name}
@@ -355,9 +436,10 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                 <FormControlLabel>
                   <FormControlLabelText color={white}>1回あたりの購入額</FormControlLabelText>
                 </FormControlLabel>
-                <HStack justifyContent="space-between">
-                  <Input w="93%" rounded="$lg" borderWidth={0} bg={lightGrey}>
+                <HStack>
+                  <Input flex={1} mr="$2" rounded="$lg" borderWidth={0} bg={lightGrey}>
                     <InputField
+                      ref={ref}
                       inputMode="numeric"
                       keyboardType="number-pad"
                       autoComplete="off"
@@ -368,12 +450,13 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                       onChangeText={(v) => setQuoteAmount(strToNum(v))}
                     />
                   </Input>
-                  <VStack reversed={true}>
+                  <VStack w="$4" justifyContent="flex-end">
                     <Text w="auto" fontSize={18} color={white}>
                       円
                     </Text>
                   </VStack>
                 </HStack>
+
                 <Text fontSize={13} color={unclearWhite} py="$2">
                   ※実際に購入するタイミングでBTC換算額が最低購入量を下回った場合は、購入されません
                 </Text>
@@ -400,7 +483,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
           </ScrollView>
           <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
             <Button
-              onPress={handleSubmit}
+              onPress={handlePreCheck}
               w="100%"
               size="lg"
               variant="solid"
@@ -409,8 +492,8 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
               isFocusVisible={false}
               rounded="$lg"
             >
-              {props.targetPlanId && <ButtonText>作成する</ButtonText>}
-              {!props.targetPlanId && <ButtonText>更新する</ButtonText>}
+              {props.targetPlanId && <ButtonText>更新する</ButtonText>}
+              {!props.targetPlanId && <ButtonText>作成する</ButtonText>}
             </Button>
           </Box>
         </Box>
