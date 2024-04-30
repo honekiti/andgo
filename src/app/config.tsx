@@ -31,6 +31,7 @@ import { Stack, Link, useRouter } from 'expo-router';
 import { white, unclearWhite, darkGrey, red } from '../constants/Colors';
 import { hardReset } from '../services/advanced-service';
 import { accountAtom } from '../services/account-service';
+import * as Application from 'expo-application';
 
 export default function ConfigScreen() {
   const [account, setAccount] = useAtom(accountAtom);
@@ -83,6 +84,9 @@ export default function ConfigScreen() {
           source={require('../../assets/images/logo.png')}
           alt="logo"
         />
+        <Text>
+          v{Application.nativeApplicationVersion} ({Application.nativeBuildVersion})
+        </Text>
       </Box>
 
       <Box mx="$4" bg="$secondary0">

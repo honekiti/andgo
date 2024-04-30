@@ -5,7 +5,7 @@ import { Link } from 'expo-router';
 import PlanList from './PlanList';
 import { exchangeCredentialsAtom, getExchangeFromCredential } from '../services/exchange-service';
 import ExchangeBalanceItem from './ExchangeBalanceItem';
-import { ExchangeCredential } from '../models';
+import type { ExchangeCredential } from '../models';
 
 export default function ExchangeBalanceList() {
   const credentials = useAtomValue(exchangeCredentialsAtom);
