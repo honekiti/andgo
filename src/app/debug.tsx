@@ -13,6 +13,7 @@ import type { SuccessOrderResult } from '../models';
 import { ordersAtom } from '../services/aggregate/calendar-service';
 import { DEBUG_CREDENTIALS, DEBUG_ORDERS, DEBUG_PLANS } from '../fixtures';
 import { hardReset } from '../services/advanced-service';
+import { scheduleNotification } from '../services/notification-service';
 
 const TickerInfos = () => {
   const bitFlyer = useAtomValue(exchangeTickerFamily('BITFLYER'));
@@ -151,6 +152,20 @@ export default function DebugScreen() {
 
           <Button borderRadius="$full" onPress={() => setAccount({ ...account, agreement: true })}>
             <ButtonText>利用規約同意済にする</ButtonText>
+          </Button>
+
+          <Button
+            borderRadius="$full"
+            onPress={() =>
+              scheduleNotification({
+                title: 'アプリの終了を検知しました',
+                body: 'アプリを開くことでスケジューラが再開します',
+                type: 'WAKEUP_CALL',
+                date: Math.floor(Date.now() / 1000) + 2,
+              })
+            }
+          >
+            <ButtonText>ローカル通知テスト</ButtonText>
           </Button>
         </VStack>
       </ScrollView>

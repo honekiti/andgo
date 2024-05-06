@@ -117,3 +117,5 @@ export type AggregatedCalendarEvent = {
   calendarEvents: CalendarEvent[];
   isLastOrder: boolean; // trueのとき、下に現在時刻を表示する
 };
+
+export type NOTIFICATION_TYPE = 'WAKEUP_CALL';

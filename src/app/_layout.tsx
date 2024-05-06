@@ -9,6 +9,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import { white, darkGrey } from '../constants/Colors';
 import { store } from '../store';
 import { registerBackgroundFetchAsync } from '../services/scheduler-service';
+import { addNotificationListener } from '../services/notification-service';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -44,7 +45,14 @@ export default function RootLayout() {
       }
     };
 
+    // Async
     f();
+
+    const subscription = addNotificationListener((notification) => {
+      console.log(notification);
+    });
+
+    return () => subscription.remove();
   }, [loaded]);
 
   if (!loaded) {
