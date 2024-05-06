@@ -9,8 +9,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export const addNotificationListener = (callback: (notification: Notifications.Notification) => void) => {
-  const subscription = Notifications.addNotificationReceivedListener(callback);
+export const addNotificationListener = (callback: (notification: Notifications.NotificationResponse) => void) => {
+  const subscription = Notifications.addNotificationResponseReceivedListener(callback);
   return subscription;
 };
 
