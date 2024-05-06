@@ -158,14 +158,14 @@ export default function DebugScreen() {
             borderRadius="$full"
             onPress={() =>
               scheduleNotification({
-                title: 'アプリの終了を検知しました',
-                body: 'アプリを開くことでスケジューラが再開します',
+                title: '通知テスト',
+                body: 'テストテスト',
                 type: 'WAKEUP_CALL',
-                date: Math.floor(Date.now() / 1000) + 2,
+                date: Math.floor(Date.now() / 1000) + 10,
               })
             }
           >
-            <ButtonText>ローカル通知テスト</ButtonText>
+            <ButtonText>ローカル通知テスト(10秒後)</ButtonText>
           </Button>
         </VStack>
       </ScrollView>

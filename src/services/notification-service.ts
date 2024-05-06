@@ -11,7 +11,10 @@ Notifications.setNotificationHandler({
 
 export const addNotificationListener = (callback: (notification: Notifications.NotificationResponse) => void) => {
   const subscription = Notifications.addNotificationResponseReceivedListener(callback);
-  return subscription;
+
+  return () => {
+    subscription.remove();
+  };
 };
 
 export const grantPermissions = async () => {
@@ -36,16 +39,21 @@ export const scheduleNotification = async (props: {
 }) => {
   const hasPermission = await grantPermissions();
 
-  if (hasPermission) {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: props.title,
-        body: props.body,
-        data: {
-          type: props.type,
-        },
-      },
-      trigger: { date: new Date(props.date * 1000) } as Notifications.DateTriggerInput,
-    });
+  if (!hasPermission) {
+    return;
   }
+
+  // 既に登録されている予約通知をキャンセルする
+  await Notifications.cancelAllScheduledNotificationsAsync();
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: props.title,
+      body: props.body,
+      data: {
+        type: props.type,
+      },
+    },
+    trigger: { date: new Date(props.date * 1000) } as Notifications.DateTriggerInput,
+  });
 };

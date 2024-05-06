@@ -8,7 +8,7 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { white, darkGrey } from '../constants/Colors';
 import { store } from '../store';
-import { registerBackgroundFetchAsync } from '../services/scheduler-service';
+import { registerBackgroundFetchAsync, useForegroundIntervalProcess } from '../services/scheduler-service';
 import { addNotificationListener } from '../services/notification-service';
 
 export {
@@ -31,6 +31,8 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+  useForegroundIntervalProcess();
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
@@ -48,11 +50,11 @@ export default function RootLayout() {
     // Async
     f();
 
-    const subscription = addNotificationListener((notification) => {
-      console.log(notification);
+    const finalizer = addNotificationListener((notification) => {
+      console.log('notification is received', JSON.stringify(notification));
     });
 
-    return () => subscription.remove();
+    return () => finalizer();
   }, [loaded]);
 
   if (!loaded) {
