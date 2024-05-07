@@ -13,7 +13,7 @@ module.exports = {
   },
   assetBundlePatterns: ['**/*'],
   ios: {
-    buildNumber: '4',
+    buildNumber: '5',
     supportsTablet: false,
     config: {
       usesNonExemptEncryption: false,
@@ -21,7 +21,7 @@ module.exports = {
     bundleIdentifier: 'jp.co.andgo.hongov3',
   },
   android: {
-    versionCode: 4,
+    versionCode: 5,
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#ffffff',
@@ -43,6 +43,10 @@ module.exports = {
     },
     eas: {
       projectId: '8e2e8369-e74f-4dd3-83a1-65f3939d4cf7',
+    },
+    datadog: {
+      clientToken: 'pubd722168176307e176ad3018cbecbebf1',
+      rumApplicationId: '9d502846-d208-4039-baca-3aa6448da715',
     },
   },
   owner: 'andgo',
