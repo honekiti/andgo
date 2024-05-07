@@ -63,7 +63,7 @@ export default function HomeScreen() {
               </Text>
             </HStack>
             <HStack h="50%" alignItems="center" pb="$2">
-              <Image size="2xs" resizeMode="contain" source={require('../../assets/images/bit-coin-line.png')} alt="bit-coin-line-logo" />
+              <Image size="2xs" resizeMode="contain" source={require('../../assets/images/bitcoin.png')} alt="bitcoin logo" />
               <Text>
                 <Text color={white} fontSize={14}>
                   {account.totalBtcAmount.toFixed(varPrecision)}

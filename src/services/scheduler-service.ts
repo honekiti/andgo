@@ -100,7 +100,8 @@ export const findAndExecuteOrders = async () => {
     const plans = await store.get(plansAtom);
     const exchangeCredentials = await store.get(exchangeCredentialsAtom);
 
-    const windowedPlans = findWindowedPlans(now, plans);
+    // unfreezeすることでenabledを書き換えられるようにする
+    const windowedPlans = JSON.parse(JSON.stringify(findWindowedPlans(now, plans)));
     const updatedPlans = plans;
 
     for (const plan of windowedPlans) {

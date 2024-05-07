@@ -581,24 +581,25 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                   </Button>
                 )}
               </VStack>
-              <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
-                <Button
-                  onPress={handlePreCheck}
-                  w="100%"
-                  size="lg"
-                  variant="solid"
-                  action="primary"
-                  isDisabled={false}
-                  isFocusVisible={false}
-                  rounded="$lg"
-                >
-                  {props.targetPlanId && <ButtonText>更新する</ButtonText>}
-                  {!props.targetPlanId && <ButtonText>作成する</ButtonText>}
-                </Button>
-              </Box>
             </Box>
           </TouchableWithoutFeedback>
         </ScrollView>
+
+        <Box borderTopWidth={0.5} borderColor={unclearWhite} px="$4" pt="$3" pb="$7" alignItems="center">
+          <Button
+            onPress={handlePreCheck}
+            w="100%"
+            size="lg"
+            variant="solid"
+            action="primary"
+            isDisabled={false}
+            isFocusVisible={false}
+            rounded="$lg"
+          >
+            {props.targetPlanId && <ButtonText>更新する</ButtonText>}
+            {!props.targetPlanId && <ButtonText>作成する</ButtonText>}
+          </Button>
+        </Box>
       </Box>
     </KeyboardAvoidingView>
   );

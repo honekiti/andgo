@@ -28,11 +28,6 @@ module.exports = {
     },
     package: 'jp.co.andgo.hongov3',
   },
-  web: {
-    bundler: 'metro',
-    output: 'static',
-    favicon: './assets/images/favicon.png',
-  },
   plugins: ['expo-router'],
   experiments: {
     typedRoutes: true,

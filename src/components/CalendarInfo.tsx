@@ -13,7 +13,7 @@ export const NoExchanges = () => {
   return (
     <Box justifyContent="space-between">
       <Box h="auto" alignItems="center" my="$7">
-        <Image size="xs" my="$3" resizeMode="contain" source={require('../../assets/images/link.png')} alt="bit-coin-line-logo" />
+        <Image size="xs" my="$3" resizeMode="contain" source={require('../../assets/images/link.png')} alt="link" />
         <Text mt="$2">暗号資産(仮想通貨)取引所と</Text>
         <Text mb="$7">連携しましょう</Text>
         <Link href="/exchanges/add" asChild>

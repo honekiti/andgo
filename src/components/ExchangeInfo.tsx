@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { Box, VStack, Text } from '@gluestack-ui/themed';
+import { Box, VStack, Text, Image } from '@gluestack-ui/themed';
 import { white } from '../constants/Colors';
 import { getExchange, exchangeTickerFamily } from '../services/exchange-service';
 import type { ExchangeId } from '../models';
@@ -16,7 +16,8 @@ export default function ExchangeInfo(props: ExchangeInfoProps) {
   return (
     <Box h="auto" w="$full" bg="#000" rounded="$lg">
       <VStack space="md" alignItems="center" py="$4">
-        <Box h="$8" w="$8" rounded="$full" bg="#00f" />
+        <Image size="xs" resizeMode="contain" source={require('../../assets/images/bitcoin.png')} alt="bitcoin logo" />
+
         <Text fontSize={12} color={white} bold>
           最低購入量
         </Text>

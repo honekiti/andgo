@@ -29,20 +29,26 @@ export const EventDetail = (props: { event: CalendarEvent }) => {
   };
 
   return (
-    <HStack space="xs">
-      <Text fontSize={13}>{exchange.name}</Text>
-      <Text fontSize={13}>-</Text>
-      <Text fontSize={13} pr="$1">
+    <HStack space="xs" alignItems="center">
+      <Text fontSize={13} color={white}>
+        {exchange.name}
+      </Text>
+      <Text fontSize={13} color={white}>
+        -
+      </Text>
+      <Text fontSize={13} pr="$1" color={white}>
         {hoursMinutes}
       </Text>
-      <Text fontSize={18} bold>
+      <Text fontSize={18} bold color={white} mb="$1">
         {props.event.quoteAmount.toLocaleString()}
       </Text>
-      <Text fontSize={13}>円</Text>
+      <Text fontSize={13} color={white}>
+        円
+      </Text>
       {props.event.result !== null && (
         <Pressable onPress={handlePress}>
-          <Box h="auto" w="auto" bg={resultBgColor} rounded="$md" px="$1.5" ml="$1">
-            <Text fontSize={12} color={white}>
+          <Box h="auto" w="auto" bg={resultBgColor} rounded="$sm" px="$1.5" py="$0.5" ml="$1">
+            <Text fontSize={12} color={white} bold>
               {resultLabel}
             </Text>
           </Box>
@@ -67,10 +73,10 @@ export default function CalendarInfoItem(props: CalendarInfoItemProps) {
     <>
       <HStack h={ITEM_HEIGHT} justifyContent="space-between" alignItems="center" py="$5" px="$4" borderBottomWidth={0.5} borderColor={lightGrey}>
         <Box alignItems="center">
-          <Text fontSize={10}>
+          <Text mb="$1" fontSize={10} color={white}>
             {year}.{month}
           </Text>
-          <Box h="$12" w="$12" rounded="$lg" alignItems="center" bg={lightGrey}>
+          <Box h="$12" w="$12" rounded="$lg" alignItems="center" justifyContent="center" bg={lightGrey}>
             <Text color={white} fontSize={11}>
               {dayLabel}
             </Text>
@@ -92,8 +98,12 @@ export default function CalendarInfoItem(props: CalendarInfoItemProps) {
           <Box h="$0.5" w="100%" bg={unclearWhite} position="absolute" />
           <Box h="auto" w="auto" borderWidth={1} borderColor={unclearWhite} rounded="$full" px="$3" bg={darkGrey}>
             <HStack space="xs">
-              <Text fontSize={13}>現在</Text>
-              <Text fontSize={13}>{format(new Date(), 'HH:mm')}</Text>
+              <Text fontSize={13} color={white}>
+                現在
+              </Text>
+              <Text fontSize={13} color={white}>
+                {format(new Date(), 'HH:mm')}
+              </Text>
             </HStack>
           </Box>
         </Box>

@@ -1,8 +1,8 @@
 import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
-import { ExchangeCredential } from '../../models';
-import { Ticker, GetBalanceResponse, OrderRequest, OrderResponse } from './coincheck.types';
+import type { ExchangeCredential } from '../../models';
+import type { Ticker, GetBalanceResponse, OrderRequest, OrderResponse } from './coincheck.types';
 
 const PUBLIC_ENDPOINT = 'https://coincheck.com';
 const PRIVATE_ENDPOINT = 'https://coincheck.com';

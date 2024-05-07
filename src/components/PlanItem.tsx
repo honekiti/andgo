@@ -72,14 +72,7 @@ export default function PlanItem(props: PlanItemProps) {
                 <Text color={white} fontSize={11}>
                   現在レートで
                 </Text>
-                <Image
-                  h="$4"
-                  w="$4"
-                  bg="#0000"
-                  resizeMode="contain"
-                  source={require('../../assets/images/bit-coin-line.png')}
-                  alt="bit-coin-line-logo"
-                />
+                <Image h="$4" w="$4" bg="#0000" resizeMode="contain" source={require('../../assets/images/bitcoin.png')} alt="bitcoin logo" />
                 <Text>
                   <Text color={white} fontSize={11}>
                     {refBtcAmount.refBtcAmountStr !== undefined ? refBtcAmount.refBtcAmountStr : '---'}
