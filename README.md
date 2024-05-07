@@ -14,6 +14,10 @@ EXPO_PUBLIC_DEBUG_SCREEN=1
 
 ```bash
 npm install
+
+# dev-clientをExpoからダウンロードしてSimulatorにインストールする
+# https://expo.dev/accounts/andgo/projects/hongo-v3/development-builds
+
 # iOSでの実行の場合
 npm run dev:ios
 # Androidでの実行の場合
@@ -38,6 +42,18 @@ npm run dev
 
 にてビルドサーバーを立ち上げ、QR コードを読みとることで、実機での動作確認ができる。
 
+## 本番用ビルド
+
+次のコマンドにより、本番用ビルドと submit を行う。
+予め、app.config.js のバージョン、ビルド番号を更新しておかないと submit で失敗する。
+
+```bash
+# iOS用ビルド
+npm run build:prod:ios
+# Android用ビルド
+npm run build:prod:android
+```
+
 ## 備考
 
 ### EAS submit
@@ -60,9 +76,4 @@ Google Cloud サービスアカウント: `hongov3@hongo-291507.iam.gserviceacco
 症状: `npm run dev`を実行したら次のメッセージが表示された
 `CommandError: No development build (jp.co.andgo.hongov3) for this project is installed. Please make and install a development build on the device first.`
 
-対応 A: dev-client を Expo にログインしてダウンロードする
-対応 B:
-
-1. `npm run build:dev`
-2. `s`を押して Expo Go モードに切り替える
-3. `i`を押して iOS simulator を起動する
+対応: dev-client を Expo にログインしてダウンロードする

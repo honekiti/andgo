@@ -2,6 +2,9 @@ import { useCallback } from 'react';
 import { useAtomValue } from 'jotai';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { accountAtom } from '../services/account-service';
+import { logFactory } from '../utils/logger';
+
+const logger = logFactory('index');
 
 const DEBUG_SCREEN = !!process.env.EXPO_PUBLIC_DEBUG_SCREEN;
 export default function IndexScreen() {
@@ -11,8 +14,7 @@ export default function IndexScreen() {
   // 同意にリアクティブに反応しホーム画面に遷移する
   useFocusEffect(
     useCallback(() => {
-      console.log('DEBUG_SCREEN:', DEBUG_SCREEN);
-      console.log('account:', account);
+      logger.info({ msg: 'info', DEBUG_SCREEN, account });
 
       if (DEBUG_SCREEN) {
         // デバッグ画面に遷移する

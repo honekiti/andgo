@@ -1,8 +1,11 @@
 import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
-import { ExchangeCredential } from '../../models';
-import { Ticker, OrderRequest, OrderResponse, AssetsResponse, GMOResponse } from './gmo.types';
+import { logFactory } from '../../utils/logger';
+import type { ExchangeCredential } from '../../models';
+import type { Ticker, OrderRequest, OrderResponse, AssetsResponse, GMOResponse } from './gmo.types';
+
+const logger = logFactory('gmo');
 
 const PUBLIC_ENDPOINT = 'https://api.coin.z.com/public';
 const PRIVATE_ENDPOINT = 'https://api.coin.z.com/private';
@@ -71,7 +74,7 @@ export class gmo extends BaseApi {
 
     const obj = (await response.json()) as GMOResponse<Ticker[]>;
 
-    console.log(`gmo: ${JSON.stringify(obj)}`);
+    logger.info({ msg: 'gmo', response: obj });
 
     if (obj.status !== 0) {
       throw new Error('Failed to fetch ticker info from GMO Coin');

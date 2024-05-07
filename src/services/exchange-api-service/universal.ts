@@ -3,6 +3,9 @@ import { Bitbank } from './bitbank';
 import { BitFlyer, REQUIRED_PERMISSIONS } from './bitflyer';
 import { Coincheck } from './coincheck';
 import { gmo } from './gmo';
+import { logFactory } from '../../utils/logger';
+
+const logger = logFactory('universal');
 
 export const getPermissionsStatus = async (exchangeCredential: ExchangeCredential): Promise<boolean> => {
   switch (exchangeCredential.exchangeId) {
@@ -103,7 +106,7 @@ export const execBuyOrder = async (
   dryRun: boolean,
 ): Promise<SuccessOrderResult | FailedOrderResult> => {
   if (dryRun) {
-    console.log('dry run');
+    logger.info({ msg: 'dry run' });
 
     return { status: 'SUCCESS', btcAmount };
   }

@@ -1,3 +1,7 @@
+import { logFactory } from '../../utils/logger';
+
+const logger = logFactory('base-api');
+
 export class BaseApi {
   constructor(protected endPoint: string) {}
 
@@ -30,19 +34,19 @@ export class BaseApi {
 
     const url = `${this.endPoint}${path}`;
 
-    console.debug('FETCH:', url, options);
+    logger.debug({ msg: 'FETCH', url, options });
 
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      console.log('RESPONSE STATUS:', response.status);
+      logger.info({ msg: 'RESPONSE STATUS', status: response.status });
 
       throw new Error(`FETCH ERROR: ${response.status}`);
     }
 
     const json = await response.json();
 
-    console.debug('RESPONSE:', json);
+    logger.debug({ msg: 'RESPONSE', response: json });
 
     return json;
   }

@@ -3,9 +3,9 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start --lan",
-    "start:ios": "expo start --go --ios",
-    "start:android": "expo start --go --android",
+    "start": "expo start --dev-client --lan",
+    "start:ios": "expo start --dev-client --ios",
+    "start:android": "expo start --dev-client --android",
     "dev": "run-s clean:watchman start",
     "dev:ios": "run-s clean:watchman start:ios",
     "dev:android": "run-s clean:watchman start:android",

@@ -1,8 +1,11 @@
 import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
-import { ExchangeCredential } from '../../models';
-import { Ticker, SendChildOrderRequest, SendChildOrderResponse, GetBalanceResponse } from './bitflyer.types';
+import { logFactory } from '../../utils/logger';
+import type { ExchangeCredential } from '../../models';
+import type { Ticker, SendChildOrderRequest, SendChildOrderResponse, GetBalanceResponse } from './bitflyer.types';
+
+const logger = logFactory('bitflyer');
 
 const PUBLIC_ENDPOINT = 'https://api.bitflyer.com';
 const PRIVATE_ENDPOINT = 'https://api.bitflyer.com';
@@ -50,8 +53,7 @@ export class BitFlyer extends BaseApi {
       params += `?${querystring.stringify(query as Record<string, string>)}`;
     }
     const headers = this.makeHeader('GET', path.concat(params));
-    console.log('Request URL:', this.endPoint + path + params);
-    console.log('Request Headers:', headers);
+    logger.info({ msg: 'Request', url: this.endPoint + path + params, headers });
     return super.get(path, query, headers) as T;
   }
 
@@ -78,7 +80,7 @@ export class BitFlyer extends BaseApi {
 
     const ticker = (await response.json()) as Ticker;
 
-    console.log(`bitflyer: ${JSON.stringify(ticker)}`);
+    logger.info({ msg: 'bitflyer', ticker });
 
     return ticker;
   }

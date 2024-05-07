@@ -2,8 +2,11 @@
 import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
+import { logFactory } from '../../utils/logger';
 import type { ExchangeCredential } from '../../models';
 import type { BitbankResponse, Ticker, OrderRequest, OrderResponse, Asset, AssetsResponse } from './bitbank.types';
+
+const logger = logFactory('bitbank');
 
 const PUBLIC_ENDPOINT = 'https://public.bitbank.cc';
 const PRIVATE_ENDPOINT = 'https://api.bitbank.cc';
@@ -25,7 +28,7 @@ export class Bitbank extends BaseApi {
   public async getAssets(): Promise<Asset[]> {
     const response = (await this.get(GET_ASSETS_PATH, {})) as BitbankResponse<AssetsResponse>;
 
-    console.log(`bitbank assets: ${JSON.stringify(response)}`);
+    logger.info({ msg: 'bitbank assets', response });
 
     if (response.success !== 1) {
       throw new Error('Failed to fetch assets info from bitbank');
@@ -69,7 +72,7 @@ export class Bitbank extends BaseApi {
     const response = await fetch(`${PUBLIC_ENDPOINT}${GET_TICKER_PATH}`);
     const obj = await response.json();
 
-    console.log(`bitbank: ${JSON.stringify(obj)}`);
+    logger.info({ msg: 'bitbank', response: obj });
 
     if (response.status >= 400) {
       throw new Error('Failed to fetch ticker info from bitbank');
