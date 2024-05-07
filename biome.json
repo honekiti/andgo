@@ -22,7 +22,7 @@
       "complexity": {},
       "correctness": {},
       "style": {
-        "useNodejsImportProtocol": false
+        "useNodejsImportProtocol": "off"
       },
       "suspicious": {}
     }

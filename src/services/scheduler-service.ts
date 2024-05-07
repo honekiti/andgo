@@ -6,7 +6,7 @@ import * as TaskManager from 'expo-task-manager';
 import type { Plan, ExchangeId, ExchangeCredential, SuccessOrderResult, FailedOrderResult, OrderId, Order } from '../models';
 import { VIEW_PRECISION, EXCHANGES } from '../master';
 import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
-import { exchangeCredentialsAtom } from './exchange-service';
+import { exchangeCredentialsAtom, getExchange } from './exchange-service';
 import { store } from '../store';
 import { getTicker, execBuyOrder } from './exchange-api-service/universal';
 import { orderFamily } from './order-service';
@@ -131,6 +131,15 @@ export const findAndExecuteOrders = async () => {
         // windowedPlansの値を更新
         updatedPlans[targetPlanIndex].status.nextIndex = nextIndex;
         updatedPlans[targetPlanIndex].status.nextAt = nextAt;
+
+      // 通知を送る
+      await scheduleNotification({
+        title: '注文しました',
+        body: `時刻: ${new Date(now).toISOString()}\n取引所: ${getExchange(exchangeId).name}\n購入金額: ${quoteAmount}JPY`,
+        type: 'WAKEUP_CALL',
+        date: Date.now(),
+      });
+
       } else {
         // windowedPlansの値を更新
         updatedPlans[targetPlanIndex].status.enabled = false;

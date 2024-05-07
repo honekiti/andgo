@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import * as querystring from 'querystring';
 import { BaseApi } from './base-api';
 import { hmacSha256 } from '../../utils/crypto';
