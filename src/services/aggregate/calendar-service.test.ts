@@ -1,10 +1,10 @@
-import { aggregateEvents, ordersToEvents, plansToEvents } from './calendar-service';
-import { DEBUG_ORDERS, DEBUG_PLANS } from '../../fixtures';
+import { aggregateEvents, transformToBuyOrderEvents, plansToBuyOrderEvents } from './calendar-service';
+import { DEBUG_ORDERS, DEBUG_PLANS, BUY_ORDERS, BUY_PLANS } from '../../fixtures';
 import { uniq } from '../../utils/array';
 
-describe('ordersToEvents', () => {
+describe('transformToBuyOrderEvents', () => {
   test('success case', () => {
-    const events = ordersToEvents(DEBUG_ORDERS);
+    const events = transformToBuyOrderEvents(DEBUG_ORDERS);
 
     expect(events).toEqual([
       {
@@ -51,7 +51,7 @@ describe('ordersToEvents', () => {
         exchangeId: 'COINCHECK',
         id: 'ORD_4',
         orderedAt: 1714834800000,
-        quoteAmount: 50000000,
+        quoteAmount: 100000,
         result: {
           btcAmount: 0.01,
           status: 'SUCCESS',
@@ -114,14 +114,17 @@ describe('ordersToEvents', () => {
 describe('plansToEvents', () => {
   test('success case', () => {
     const now = new Date(2024, 4, 10, 0, 0).getTime();
-    const events = plansToEvents(
+    const events = plansToBuyOrderEvents(
       [
         {
           id: 'DEBUG_PLAN3',
+          orderType: 'BUY',
           exchangeId: 'BITBANK',
-          quoteAmount: 100000,
           planTypeId: 'MONTHLY',
           dryRun: true,
+          buy: {
+            quoteAmount: 100000,
+          },
           status: {
             enabled: true,
             refAt: new Date(2024, 4, 1, 15, 0).getTime(),
@@ -154,7 +157,7 @@ describe('plansToEvents', () => {
 
 describe('aggregateEvents', () => {
   test('DEBUG_ORDERS', () => {
-    const events = ordersToEvents(DEBUG_ORDERS);
+    const events = transformToBuyOrderEvents(DEBUG_ORDERS);
     const result = aggregateEvents(events, 'Order');
     const keys = result.map((ele) => ele.yearMonthDate);
     const uniqued = uniq(keys);
@@ -164,7 +167,7 @@ describe('aggregateEvents', () => {
 
   test('DEBUG_PLANS', () => {
     const now = new Date(2024, 4, 10, 0, 0).getTime();
-    const events = plansToEvents(DEBUG_PLANS, now);
+    const events = plansToBuyOrderEvents(DEBUG_PLANS, now);
     const result = aggregateEvents(events, 'Future');
     const keys = result.map((ele) => ele.id);
     const uniqued = uniq(keys);
@@ -172,10 +175,10 @@ describe('aggregateEvents', () => {
     expect(keys.length).toBe(uniqued.length);
   });
 
-  test('DEBUG_ORDERS + DEBUG_PLANS', () => {
+  test('BUY_DEBUG_ORDERS + BUY_DEBUG_PLANS', () => {
     const now = new Date(2024, 4, 10, 0, 0).getTime();
-    const result1 = aggregateEvents(ordersToEvents(DEBUG_ORDERS), 'Order');
-    const result2 = aggregateEvents(plansToEvents(DEBUG_PLANS, now), 'Future');
+    const result1 = aggregateEvents(transformToBuyOrderEvents(BUY_ORDERS), 'Order');
+    const result2 = aggregateEvents(plansToBuyOrderEvents(BUY_PLANS, now), 'Future');
     const result = [...result1, ...result2];
     const keys = result.map((ele) => ele.id);
     const uniqued = uniq(keys);

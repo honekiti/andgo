@@ -1,6 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAtom, useAtomValue } from 'jotai';
-import { RESET } from 'jotai/utils';
 import { Link, Stack } from 'expo-router';
 import { SafeAreaView, Button, ButtonText, VStack, useToast, Toast, ToastTitle, ScrollView } from '@gluestack-ui/themed';
 import { Text } from '@gluestack-ui/themed';
@@ -55,13 +53,13 @@ export default function DebugScreen() {
 
     // 最初にordersを初期化しないとordersAtomで参照エラーが発生する
     await Promise.all(DEBUG_ORDERS.map((order) => store.set(orderFamily(order.id), order)));
-    const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
+    const successBuyOrders = DEBUG_ORDERS.filter((order) => order.planSnapshot.orderType === 'BUY' && order.result.status === 'SUCCESS');
     await setAccount({
       dryRun: true,
       agreement: false,
-      numOfOrders: successOrders.length,
-      totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
-      totalSpentAmount: successOrders.reduce((acc, order) => acc + order.planSnapshot.quoteAmount, 0),
+      numOfOrders: DEBUG_ORDERS.length,
+      totalBtcAmount: successBuyOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
+      totalSpentAmount: successBuyOrders.reduce((acc, order) => acc + (order.planSnapshot.buy?.quoteAmount ?? 0), 0),
     });
 
     await setExchangeCredentials(DEBUG_CREDENTIALS);
@@ -76,19 +74,19 @@ export default function DebugScreen() {
         <TickerInfos />
 
         <VStack m="$2" p="$2" bgColor="$primary100">
-          <Text>account: {JSON.stringify(account)}</Text>
+          <Text>account: {JSON.stringify(account, null, 2)}</Text>
         </VStack>
 
         <VStack m="$2" p="$2" bgColor="$primary100">
-          <Text>plans: {JSON.stringify(plans)}</Text>
+          <Text>plans: {JSON.stringify(plans, null, 2)}</Text>
         </VStack>
 
         <VStack m="$2" p="$2" bgColor="$primary100">
-          <Text>exchangeCredentials: {JSON.stringify(exchangeCredentials)}</Text>
+          <Text>exchangeCredentials: {JSON.stringify(exchangeCredentials, null, 2)}</Text>
         </VStack>
 
         <VStack m="$2" p="$2" bgColor="$primary100">
-          <Text>orders: {JSON.stringify(orders)}</Text>
+          <Text>orders: {JSON.stringify(orders, null, 2)}</Text>
         </VStack>
       </ScrollView>
 
@@ -160,12 +158,12 @@ export default function DebugScreen() {
               scheduleNotification({
                 title: '通知テスト',
                 body: 'テスト1\nテスト2',
-                type: 'WAKEUP_CALL',
-                date: Math.floor(Date.now() / 1000) + 10,
+                type: 'INFO',
+                dateInUtc: Date.now(),
               })
             }
           >
-            <ButtonText>ローカル通知テスト(10秒後)</ButtonText>
+            <ButtonText>ローカル通知テスト</ButtonText>
           </Button>
         </VStack>
       </ScrollView>

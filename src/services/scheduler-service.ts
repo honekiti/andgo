@@ -8,11 +8,11 @@ import { VIEW_PRECISION, EXCHANGES } from '../master';
 import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
 import { exchangeCredentialsAtom, getExchange } from './exchange-service';
 import { store } from '../store';
-import { getTicker, execBuyOrder } from './exchange-api-service/universal';
+import { getTicker, execBuyOrder, getBalance } from './exchange-api-service/universal';
 import { orderFamily } from './order-service';
 import { accountAtom } from './account-service';
 import { refreshTotalAmount } from './aggregate/analysis-service';
-import { scheduleNotification } from './notification-service';
+import { scheduleNotification, cancelScheduledNotification } from './notification-service';
 import { logFactory } from '../utils/logger';
 
 const logger = logFactory('scheduler-service');
@@ -21,12 +21,12 @@ export const FIND_ORDERS_TASK = 'FIND_ORDERS_TASK';
 export const MAX_NEXT_AT_DELTA_MS = 1000 * 60 * 20; // 20 minutes
 export const FOREGROUND_INTERVAL_MS = 1000 * 60; // 1 minute
 export const BACKGROUND_INTERVAL_SEC = 60 * 15; // 15 minutes
-export const RECOVERY_NOTIFICATION_DELTA_MS = 1000 * 60 * 60; // 1 hour
+export const RECOVERY_NOTIFICATION_DELTA_SEC = 60 * 60; // 1 hour
 
 // 15分以下には出来ない
 invariant(BACKGROUND_INTERVAL_SEC >= 60 * 15);
 // BACKGROUND_INTERVAL_SECより大きい必要がある
-invariant(RECOVERY_NOTIFICATION_DELTA_MS >= BACKGROUND_INTERVAL_SEC * 1000);
+invariant(RECOVERY_NOTIFICATION_DELTA_SEC >= BACKGROUND_INTERVAL_SEC);
 
 export const findWindowedPlans = (now: number, plans: Plan[]) => {
   return plans
@@ -70,6 +70,17 @@ export const buyQuoteAmount = async (
   return result;
 };
 
+export const getExchangeBalance = async (exchangeCredential: ExchangeCredential): Promise<SuccessOrderResult | FailedOrderResult> => {
+  try {
+    const balance = await getBalance(exchangeCredential);
+
+    return { status: 'SUCCESS', balance };
+  } catch (e) {
+    logger.error({ msg: 'failed to get balance', errMsg: (e as Error).message });
+    return { status: 'FAILED', errorCode: 'BALANCE_NOT_FOUND' };
+  }
+};
+
 let runningCount = 0;
 
 export const findAndExecuteOrders = async () => {
@@ -93,67 +104,103 @@ export const findAndExecuteOrders = async () => {
     const updatedPlans = plans;
 
     for (const plan of windowedPlans) {
-      const { exchangeId, quoteAmount } = plan;
-      const exchangeCredential = exchangeCredentials.find((c) => c.exchangeId === exchangeId);
-      if (!exchangeCredential) {
-        logger.info({ msg: 'exchange credential not found', exchangeId });
-        plan.status.enabled = false;
-        continue;
-      }
+      let targetPlanIndex = -1;
 
-      // アカウントレベルでドライラン、或いはプランレベルでドライラン指示があればドライランとする
-      const dryRun = account.dryRun || plan.dryRun;
+      try {
+        logger.info({ msg: 'processing plan', plan });
 
-      logger.info({ msg: 'execute order', exchangeId, quoteAmount });
+        const { exchangeId, orderType, buy, info } = plan;
+        const exchangeCredential = exchangeCredentials.find((c) => c.exchangeId === exchangeId);
+        if (!exchangeCredential) {
+          logger.error({ msg: 'exchange credential not found', exchangeId });
+          plan.status.enabled = false;
+          continue;
+        }
 
-      const orderResult = await buyQuoteAmount(exchangeCredential, quoteAmount, dryRun);
+        if ((orderType === 'BUY' && !buy) || (orderType === 'INFO' && !info)) {
+          logger.error({ msg: 'plan information is broken', plan });
+          plan.status.enabled = false;
+          continue;
+        }
 
-      logger.info({ msg: 'order result', orderResult });
+        // アカウントレベルでドライラン、或いはプランレベルでドライラン指示があればドライランとする
+        const dryRun = account.dryRun || plan.dryRun;
 
-      const orderId = `ORD_${account.numOfOrders}` as OrderId;
-      const order: Order = {
-        id: orderId,
-        orderedAt: new Date().getTime(),
-        planSnapshot: plan,
-        dryRun,
-        result: orderResult,
-      };
-      await store.set(orderFamily(orderId), order);
-      await store.set(accountAtom, { ...account, numOfOrders: account.numOfOrders + 1 });
+        const orderResult =
+          orderType === 'BUY' && !!buy
+            ? await buyQuoteAmount(exchangeCredential, buy.quoteAmount, dryRun)
+            : await getExchangeBalance(exchangeCredential);
 
-      const targetPlanIndex = updatedPlans.findIndex((p) => p.id === plan.id);
-      invariant(targetPlanIndex !== -1, 'PLAN_NOT_FOUND');
+        logger.info({ msg: 'order result', orderResult, dryRun });
 
-      if (orderResult.status === 'SUCCESS') {
-        const nextIndex = getNextIndexFromNow(plan.planTypeId, plan.status.refAt, now);
-        const nextAt = getNextAtByIndex(plan.planTypeId, plan.status.refAt, nextIndex);
+        const orderId = `ORD_${account.numOfOrders}` as OrderId;
+        const order: Order = {
+          id: orderId,
+          orderedAt: new Date().getTime(),
+          planSnapshot: plan,
+          dryRun,
+          result: orderResult,
+        };
+        await store.set(orderFamily(orderId), order);
+        await store.set(accountAtom, { ...account, numOfOrders: account.numOfOrders + 1 });
+
+        targetPlanIndex = updatedPlans.findIndex((p) => p.id === plan.id);
+        invariant(targetPlanIndex !== -1, 'PLAN_NOT_FOUND');
+
+        if (orderResult.status === 'SUCCESS') {
+          const nextIndex = getNextIndexFromNow(plan.planTypeId, plan.status.refAt, now);
+          const nextAt = getNextAtByIndex(plan.planTypeId, plan.status.refAt, nextIndex);
+
+          // サーキットブレーカー
+          invariant(nextAt > plan.status.nextAt);
+
+          // windowedPlansの値を更新
+          updatedPlans[targetPlanIndex].status.nextIndex = nextIndex;
+          updatedPlans[targetPlanIndex].status.nextAt = nextAt;
+
+          // 通知を送る
+          if (orderType === 'BUY' && !!buy) {
+            await scheduleNotification({
+              title: '注文しました',
+              body: `時刻: ${new Date(now).toISOString()}\n取引所: ${getExchange(exchangeId).name}\n購入金額: ${buy.quoteAmount}JPY`,
+              type: 'INFO',
+              dateInUtc: Date.now(),
+            });
+          } else if (orderType === 'INFO' && !!info && (orderResult?.balance?.JPY ?? 0) < info.thresholdAmount) {
+            await scheduleNotification({
+              title: '残高情報',
+              body: `時刻: ${new Date(now).toISOString()}\n取引所: ${getExchange(exchangeId).name}\n残高: ${orderResult.balance?.JPY ?? '-'}JPY`,
+              type: 'INFO',
+              dateInUtc: Date.now(),
+            });
+          }
+        } else {
+          // windowedPlansの値を更新
+          updatedPlans[targetPlanIndex].status.enabled = false;
+        }
+      } catch (e) {
+        logger.error({ msg: 'something wrong', errMsg: (e as Error).message, plan, targetPlanIndex });
 
         // windowedPlansの値を更新
-        updatedPlans[targetPlanIndex].status.nextIndex = nextIndex;
-        updatedPlans[targetPlanIndex].status.nextAt = nextAt;
-
-      // 通知を送る
-      await scheduleNotification({
-        title: '注文しました',
-        body: `時刻: ${new Date(now).toISOString()}\n取引所: ${getExchange(exchangeId).name}\n購入金額: ${quoteAmount}JPY`,
-        type: 'WAKEUP_CALL',
-        date: Date.now(),
-      });
-
-      } else {
-        // windowedPlansの値を更新
-        updatedPlans[targetPlanIndex].status.enabled = false;
+        if (targetPlanIndex >= 0) {
+          updatedPlans[targetPlanIndex].status.enabled = false;
+        }
       }
     }
 
     await store.set(plansAtom, updatedPlans);
 
-    // 投資パフォーマンスを再集計
-    logger.info({ msg: 'refresh total amount...' });
+    // 購入指示が１つでもある場合
+    if (updatedPlans.find((p) => p.orderType === 'BUY')) {
+      // 投資パフォーマンスを再集計
+      logger.info({ msg: 'refresh total amount...' });
 
-    await refreshTotalAmount();
+      await refreshTotalAmount();
 
-    logger.info({ msg: 'refresh total amount done' });
+      logger.info({ msg: 'refresh total amount done' });
+    }
+  } catch (e) {
+    logger.error({ msg: 'something wrong', errMsg: (e as Error).message });
   } finally {
     runningCount--;
   }
@@ -197,12 +244,20 @@ export async function unregisterBackgroundFetchAsync() {
 export const setScheduledRecoveryNotification = async () => {
   logger.info({ msg: 're-schedule recovery notification' });
 
-  await scheduleNotification({
+  const account = await store.get(accountAtom);
+
+  if (account.recoveryNotificationId) {
+    await cancelScheduledNotification(account.recoveryNotificationId);
+  }
+
+  const recoveryNotificationId = await scheduleNotification({
     title: 'アプリの終了を検知しました',
     body: 'アプリを開くことでスケジューラが再開します',
     type: 'WAKEUP_CALL',
-    date: Date.now() + RECOVERY_NOTIFICATION_DELTA_MS,
+    dateInUtc: Date.now() + RECOVERY_NOTIFICATION_DELTA_SEC * 1000,
   });
+
+  await store.set(accountAtom, { ...account, recoveryNotificationId });
 };
 
 // アプリがフォアグラウンドの時だけ定期的な処理を行う

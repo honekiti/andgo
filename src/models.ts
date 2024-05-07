@@ -37,18 +37,33 @@ export type PlanTypeId = 'DAILY' | 'WEEKLY' | 'MONTHLY';
 // スケジュールの繰り返し単位
 export type IntervalUnit = 'MINUTES' | 'HOURS' | 'DAYS' | 'MONTHS';
 
+// 注文の種類
+export type OrderType =
+  | 'BUY' // 購入指示
+  | 'INFO'; // 残高確認指示
+
 // スケジュール
 export type Plan = {
+  // === immutable properties ===
   id: PlanId;
+  orderType: OrderType;
   exchangeId: ExchangeId; // target exchange
-  quoteAmount: number; // quote amount [yen]
   planTypeId: PlanTypeId; // plan id
   dryRun: boolean; // ドライランとするか
+  buy?: {
+    // orderType == BUYのとき有効
+    quoteAmount: number; // 注文する金額 [yen]
+  };
+  info?: {
+    // orderType == BUYのとき有効
+    thresholdAmount: number; // 残高通知を送る閾値 [yen]
+  };
+  // === mutable properties ===
   status: {
     enabled: boolean; // enabled or not
-    refAt: number; // reference time [unix time]
+    refAt: number; // reference time [unix time, UTC]
     nextIndex: number; // next index
-    nextAt: number; // next time [unix time]
+    nextAt: number; // next time [unix time, UTC]
   };
 };
 
@@ -71,12 +86,16 @@ export type Account = {
   totalBtcAmount: number;
   // 累積支払金額 [JPY]
   totalSpentAmount: number;
+  // リカバリー通知ID
+  recoveryNotificationId?: string;
 };
 
 export type SuccessOrderResult = {
   status: 'SUCCESS';
   // 購入指示BTC量
-  btcAmount: number;
+  btcAmount?: number;
+  // 取引所残高
+  balance?: Balance;
 };
 
 export type FailedOrderResult = {
@@ -118,4 +137,4 @@ export type AggregatedCalendarEvent = {
   isLastOrder: boolean; // trueのとき、下に現在時刻を表示する
 };
 
-export type NOTIFICATION_TYPE = 'WAKEUP_CALL';
+export type NOTIFICATION_TYPE = 'WAKEUP_CALL' | 'INFO';
