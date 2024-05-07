@@ -32,7 +32,12 @@ config.resourceTracingSamplingRate = 100;
 // Optional: Let the Datadog SDK print internal logs above or equal to the provided level. Default is undefined, which means no logs.
 config.verbosity = SdkVerbosity.WARN;
 
-await DdSdkReactNative.initialize(config);
+let initialized = false;
+
+export const initDatadog = async () => {
+  await DdSdkReactNative.initialize(config);
+  initialized = true;
+};
 
 export const useTrackingExpoRouter = () => {
   const pathname = usePathname();
@@ -40,6 +45,8 @@ export const useTrackingExpoRouter = () => {
   const viewKey = segments.join('/');
 
   useEffect(() => {
-    DdRum.startView(viewKey, pathname);
+    if (initialized) {
+      DdRum.startView(viewKey, pathname);
+    }
   }, [viewKey, pathname]);
 };
