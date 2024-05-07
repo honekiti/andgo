@@ -117,10 +117,13 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
 
     const newPlan: Plan = {
       id: props.targetPlanId ?? genId(),
+      orderType: 'BUY',
       exchangeId,
-      quoteAmount,
       planTypeId,
       dryRun: false,
+      buy: {
+        quoteAmount,
+      },
       status: {
         enabled: true,
         refAt,

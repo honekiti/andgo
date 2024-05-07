@@ -15,7 +15,7 @@ export default function PlanItem(props: PlanItemProps) {
   const planType = getPlanType(props.item.planTypeId);
   const refAtDetails = getRefAtDetails(props.item);
   const btnColor = props.item.status.enabled ? lightGrey : btnFalse;
-  const refBtcAmount = useRefBtcAmount(props.item.exchangeId, props.item.quoteAmount);
+  const refBtcAmount = useRefBtcAmount(props.item.exchangeId, props.item.buy?.quoteAmount ?? 0);
 
   return (
     <Box justifyContent="center">
@@ -62,7 +62,7 @@ export default function PlanItem(props: PlanItemProps) {
             <VStack space="xs" alignItems="flex-end">
               <HStack>
                 <Text color={white} fontSize={19}>
-                  {JSON.stringify(props.item.quoteAmount)}
+                  {props.item.buy?.quoteAmount?.toLocaleString()}
                 </Text>
                 <Text color={white} fontSize={13} pl="$1">
                   円

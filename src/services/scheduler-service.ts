@@ -250,14 +250,14 @@ export const setScheduledRecoveryNotification = async () => {
     await cancelScheduledNotification(account.recoveryNotificationId);
   }
 
-  account.recoveryNotificationId = await scheduleNotification({
+  const recoveryNotificationId = await scheduleNotification({
     title: 'アプリの終了を検知しました',
     body: 'アプリを開くことでスケジューラが再開します',
     type: 'WAKEUP_CALL',
     date: Date.now() + RECOVERY_NOTIFICATION_DELTA_MS,
   });
 
-  await store.set(accountAtom, account);
+  await store.set(accountAtom, { ...account, recoveryNotificationId });
 };
 
 // アプリがフォアグラウンドの時だけ定期的な処理を行う
