@@ -86,6 +86,8 @@ export type Account = {
   totalBtcAmount: number;
   // 累積支払金額 [JPY]
   totalSpentAmount: number;
+  // リカバリー通知ID
+  recoveryNotificationId?: string;
 };
 
 export type SuccessOrderResult = {
@@ -135,4 +137,4 @@ export type AggregatedCalendarEvent = {
   isLastOrder: boolean; // trueのとき、下に現在時刻を表示する
 };
 
-export type NOTIFICATION_TYPE = 'WAKEUP_CALL';
+export type NOTIFICATION_TYPE = 'WAKEUP_CALL' | 'INFO';

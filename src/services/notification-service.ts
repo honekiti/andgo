@@ -1,5 +1,8 @@
 import * as Notifications from 'expo-notifications';
 import type { NOTIFICATION_TYPE } from '../models';
+import { logFactory } from '../utils/logger';
+
+const logger = logFactory('notification-service');
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -31,21 +34,27 @@ export const grantPermissions = async () => {
   return r.granted;
 };
 
+export const cancelScheduledNotification = async (notificationId: string) => {
+  try {
+    await Notifications.cancelScheduledNotificationAsync(notificationId);
+  } catch (e) {
+    logger.error({ msg: 'notification cancel failed', errMsg: (e as Error).message });
+  }
+};
+
 export const scheduleNotification = async (props: {
   title?: string;
   body?: string;
   type: NOTIFICATION_TYPE;
   date: number; // unix timestamp [seconds]
-}) => {
+}): Promise<string | undefined> => {
   const hasPermission = await grantPermissions();
 
   if (!hasPermission) {
     return;
   }
 
-    await Notifications.cancelAllScheduledNotificationsAsync();
-
-  await Notifications.scheduleNotificationAsync({
+  const notificationId = await Notifications.scheduleNotificationAsync({
     content: {
       title: props.title,
       body: props.body,
@@ -55,4 +64,6 @@ export const scheduleNotification = async (props: {
     },
     trigger: { date: new Date(props.date * 1000) } as Notifications.DateTriggerInput,
   });
+
+  return notificationId;
 };

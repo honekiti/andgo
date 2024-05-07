@@ -114,6 +114,7 @@ export const DEFAULT_ACCOUNT_VALUE: Account = {
   numOfOrders: 0,
   totalBtcAmount: 0,
   totalSpentAmount: 0,
+  recoveryNotificationId: undefined,
 };
 
 export const RESULT_LABELS = [

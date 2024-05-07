@@ -12,7 +12,7 @@ import { getTicker, execBuyOrder, getBalance } from './exchange-api-service/univ
 import { orderFamily } from './order-service';
 import { accountAtom } from './account-service';
 import { refreshTotalAmount } from './aggregate/analysis-service';
-import { scheduleNotification } from './notification-service';
+import { scheduleNotification, cancelScheduledNotification } from './notification-service';
 import { logFactory } from '../utils/logger';
 
 const logger = logFactory('scheduler-service');
@@ -163,14 +163,14 @@ export const findAndExecuteOrders = async () => {
             await scheduleNotification({
               title: '注文しました',
               body: `時刻: ${new Date(now).toISOString()}\n取引所: ${getExchange(exchangeId).name}\n購入金額: ${buy.quoteAmount}JPY`,
-              type: 'WAKEUP_CALL',
+              type: 'INFO',
               date: Date.now(),
             });
           } else if (orderType === 'INFO' && !!info && (orderResult?.balance?.JPY ?? 0) < info.thresholdAmount) {
             await scheduleNotification({
               title: '残高情報',
               body: `時刻: ${new Date(now).toISOString()}\n取引所: ${getExchange(exchangeId).name}\n残高: ${orderResult.balance?.JPY ?? '-'}JPY`,
-              type: 'WAKEUP_CALL',
+              type: 'INFO',
               date: Date.now(),
             });
           }
@@ -244,12 +244,20 @@ export async function unregisterBackgroundFetchAsync() {
 export const setScheduledRecoveryNotification = async () => {
   logger.info({ msg: 're-schedule recovery notification' });
 
-  await scheduleNotification({
+  const account = await store.get(accountAtom);
+
+  if (account.recoveryNotificationId) {
+    await cancelScheduledNotification(account.recoveryNotificationId);
+  }
+
+  account.recoveryNotificationId = await scheduleNotification({
     title: 'アプリの終了を検知しました',
     body: 'アプリを開くことでスケジューラが再開します',
     type: 'WAKEUP_CALL',
     date: Date.now() + RECOVERY_NOTIFICATION_DELTA_MS,
   });
+
+  await store.set(accountAtom, account);
 };
 
 // アプリがフォアグラウンドの時だけ定期的な処理を行う

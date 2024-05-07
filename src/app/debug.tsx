@@ -55,13 +55,13 @@ export default function DebugScreen() {
 
     // 最初にordersを初期化しないとordersAtomで参照エラーが発生する
     await Promise.all(DEBUG_ORDERS.map((order) => store.set(orderFamily(order.id), order)));
-    const successOrders = DEBUG_ORDERS.filter((order) => order.result.status === 'SUCCESS');
+    const successBuyOrders = DEBUG_ORDERS.filter((order) => order.planSnapshot.orderType === 'BUY' && order.result.status === 'SUCCESS');
     await setAccount({
       dryRun: true,
       agreement: false,
-      numOfOrders: successOrders.length,
-      totalBtcAmount: successOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
-      totalSpentAmount: successOrders.reduce((acc, order) => acc + order.planSnapshot.quoteAmount, 0),
+      numOfOrders: DEBUG_ORDERS.length,
+      totalBtcAmount: successBuyOrders.reduce((acc, order) => acc + ((order.result as SuccessOrderResult).btcAmount ?? 0), 0),
+      totalSpentAmount: successBuyOrders.reduce((acc, order) => acc + (order.planSnapshot.buy?.quoteAmount ?? 0), 0),
     });
 
     await setExchangeCredentials(DEBUG_CREDENTIALS);
@@ -160,12 +160,12 @@ export default function DebugScreen() {
               scheduleNotification({
                 title: '通知テスト',
                 body: 'テスト1\nテスト2',
-                type: 'WAKEUP_CALL',
-                date: Math.floor(Date.now() / 1000) + 10,
+                type: 'INFO',
+                date: Date.now(),
               })
             }
           >
-            <ButtonText>ローカル通知テスト(10秒後)</ButtonText>
+            <ButtonText>ローカル通知テスト</ButtonText>
           </Button>
         </VStack>
       </ScrollView>
