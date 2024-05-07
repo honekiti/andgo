@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant';
 import { useCallback, useState, useRef } from 'react';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useAtomValue } from 'jotai';
@@ -86,6 +87,9 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
     exchange: getExchangeFromCredential(credential),
   }));
 
+  // state
+  const [loaded, setLoaded] = useState(false);
+
   // form data
   const [exchangeId, setExchangeId] = useState<ExchangeId>('UNKNOWN');
   const [planTypeId, setPlanTypeId] = useState<PlanTypeId>('MONTHLY');
@@ -161,6 +165,8 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
       const loadData = async () => {
         // 取引所連係情報を読み込む
         const credentials = await store.get(exchangeCredentialsAtom);
+        invariant(credentials !== undefined);
+
         if (credentials.length === 0) {
           // 取引所連携がない場合は、モーダルを閉じる
           toast.show({
@@ -171,9 +177,13 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
             ),
           });
           router.back();
-        } else {
-          setCredentials(credentials);
+          // 直ちにloadDataを終了する
+          return;
         }
+
+        invariant(credentials.length > 0);
+
+        setCredentials(credentials);
 
         logger.info({ msg: 'info', targetPlanId: props.targetPlanId });
 
@@ -193,21 +203,23 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
               ),
             });
             router.back();
-          } else {
-            const refAtDetails = getRefAtDetails(targetPlan);
+            // 直ちにloadDataを終了する
+            return;
+          }
 
-            setExchangeId(targetPlan.exchangeId);
-            setPlanTypeId(targetPlan.planTypeId);
-            setIsEnabled(targetPlan.status.enabled);
+          const refAtDetails = getRefAtDetails(targetPlan);
 
-            if (targetPlan.planTypeId === 'WEEKLY') {
-              setDayOfWeek(refAtDetails.dayOfWeek);
-            }
-            if (targetPlan.planTypeId === 'MONTHLY') {
-              setDate(refAtDetails.date);
-              setHour(refAtDetails.hour);
-              setMinute(refAtDetails.minute);
-            }
+          setExchangeId(targetPlan.exchangeId);
+          setPlanTypeId(targetPlan.planTypeId);
+          setIsEnabled(targetPlan.status.enabled);
+
+          if (targetPlan.planTypeId === 'WEEKLY') {
+            setDayOfWeek(refAtDetails.dayOfWeek);
+          }
+          if (targetPlan.planTypeId === 'MONTHLY') {
+            setDate(refAtDetails.date);
+            setHour(refAtDetails.hour);
+            setMinute(refAtDetails.minute);
           }
         } else {
           // 取引所の初期選択値を連携済取引所の値とする
@@ -215,9 +227,16 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
         }
       };
 
-      loadData();
+      loadData().then(() => {
+        setLoaded(true);
+      });
     }, [props.targetPlanId, toast.show]),
   );
+
+  // データが読み込まれてからフォームのレンダリングをすることで、Selectの初期値が反映されないバグを回避する
+  if (!loaded) {
+    return <Box />;
+  }
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={200}>
@@ -273,33 +292,27 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
                 <FormControlLabel>
                   <FormControlLabelText color={white}>取引所</FormControlLabelText>
                 </FormControlLabel>
-                {/* SelectがsetExchangeIdを反映してくれないバグをLazyにレンダリングすることで回避する */}
-                {exchangeId !== 'UNKNOWN' && (
-                  <Select
-                    selectedValue={exchangeId}
-                    initialLabel={getExchange(exchangeId).name}
-                    onValueChange={(v) => setExchangeId(v as ExchangeId)}
-                  >
-                    <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
-                      <SelectInput color={white} placeholder="選択してください" />
-                      <SelectIcon mr="$3" as={ChevronDownIcon} />
-                    </SelectTrigger>
-                    <SelectPortal>
-                      <SelectBackdrop />
-                      <SelectContent bg="#fffe">
-                        <SelectDragIndicatorWrapper>
-                          <SelectDragIndicator />
-                        </SelectDragIndicatorWrapper>
-                        {exchangeItems.map(({ exchange }) => (
-                          <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
-                        ))}
-                      </SelectContent>
-                    </SelectPortal>
-                  </Select>
-                )}
+
+                <Select selectedValue={exchangeId} initialLabel={getExchange(exchangeId).name} onValueChange={(v) => setExchangeId(v as ExchangeId)}>
+                  <SelectTrigger variant="outline" size="md" rounded="$lg" borderWidth={0} bg={lightGrey}>
+                    <SelectInput color={white} placeholder="選択してください" />
+                    <SelectIcon mr="$3" as={ChevronDownIcon} />
+                  </SelectTrigger>
+                  <SelectPortal>
+                    <SelectBackdrop />
+                    <SelectContent bg="#fffe">
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {exchangeItems.map(({ exchange }) => (
+                        <SelectItem key={exchange.id} label={exchange.name} value={exchange.id} />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
+                </Select>
               </FormControl>
 
-              {exchangeId !== 'UNKNOWN' && <ExchangeInfo exchangeId={exchangeId} />}
+              <ExchangeInfo exchangeId={exchangeId} />
 
               <FormControl size="md" isRequired={true}>
                 <FormControlLabel>
