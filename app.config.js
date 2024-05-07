@@ -33,7 +33,7 @@ module.exports = {
     output: 'static',
     favicon: './assets/images/favicon.png',
   },
-  plugins: ['expo-router'],
+  plugins: ['expo-router', 'expo-datadog'],
   experiments: {
     typedRoutes: true,
   },
@@ -43,6 +43,10 @@ module.exports = {
     },
     eas: {
       projectId: '8e2e8369-e74f-4dd3-83a1-65f3939d4cf7',
+    },
+    datadog: {
+      clientToken: 'pubd722168176307e176ad3018cbecbebf1',
+      rumApplicationId: '9d502846-d208-4039-baca-3aa6448da715',
     },
   },
   owner: 'andgo',

@@ -10,6 +10,7 @@ import { white, darkGrey } from '../constants/Colors';
 import { store } from '../store';
 import { registerBackgroundFetchAsync, useForegroundIntervalProcess } from '../services/scheduler-service';
 import { addNotificationListener } from '../services/notification-service';
+import { useTrackingExpoRouter } from '../services/expo-service';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -31,6 +32,7 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+  useTrackingExpoRouter();
   useForegroundIntervalProcess();
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
