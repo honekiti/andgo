@@ -70,7 +70,6 @@
   "devDependencies": {
     "@babel/core": "7.24.4",
     "@biomejs/biome": "1.7.3",
-    "@datadog/datadog-ci": "2.34.0",
     "@types/react": "18.2.74",
     "@vitejs/plugin-react": "4.2.1",
     "@vitest/coverage-v8": "1.6.0",
