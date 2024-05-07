@@ -21,12 +21,12 @@ export const FIND_ORDERS_TASK = 'FIND_ORDERS_TASK';
 export const MAX_NEXT_AT_DELTA_MS = 1000 * 60 * 20; // 20 minutes
 export const FOREGROUND_INTERVAL_MS = 1000 * 60; // 1 minute
 export const BACKGROUND_INTERVAL_SEC = 60 * 15; // 15 minutes
-export const RECOVERY_NOTIFICATION_DELTA_MS = 1000 * 60 * 60; // 1 hour
+export const RECOVERY_NOTIFICATION_DELTA_SEC = 60 * 60; // 1 hour
 
 // 15分以下には出来ない
 invariant(BACKGROUND_INTERVAL_SEC >= 60 * 15);
 // BACKGROUND_INTERVAL_SECより大きい必要がある
-invariant(RECOVERY_NOTIFICATION_DELTA_MS >= BACKGROUND_INTERVAL_SEC * 1000);
+invariant(RECOVERY_NOTIFICATION_DELTA_SEC >= BACKGROUND_INTERVAL_SEC);
 
 export const findWindowedPlans = (now: number, plans: Plan[]) => {
   return plans
@@ -164,14 +164,14 @@ export const findAndExecuteOrders = async () => {
               title: '注文しました',
               body: `時刻: ${new Date(now).toISOString()}\n取引所: ${getExchange(exchangeId).name}\n購入金額: ${buy.quoteAmount}JPY`,
               type: 'INFO',
-              date: Date.now(),
+              dateInUtc: Date.now(),
             });
           } else if (orderType === 'INFO' && !!info && (orderResult?.balance?.JPY ?? 0) < info.thresholdAmount) {
             await scheduleNotification({
               title: '残高情報',
               body: `時刻: ${new Date(now).toISOString()}\n取引所: ${getExchange(exchangeId).name}\n残高: ${orderResult.balance?.JPY ?? '-'}JPY`,
               type: 'INFO',
-              date: Date.now(),
+              dateInUtc: Date.now(),
             });
           }
         } else {
@@ -254,7 +254,7 @@ export const setScheduledRecoveryNotification = async () => {
     title: 'アプリの終了を検知しました',
     body: 'アプリを開くことでスケジューラが再開します',
     type: 'WAKEUP_CALL',
-    date: Date.now() + RECOVERY_NOTIFICATION_DELTA_MS,
+    dateInUtc: Date.now() + RECOVERY_NOTIFICATION_DELTA_SEC * 1000,
   });
 
   await store.set(accountAtom, { ...account, recoveryNotificationId });

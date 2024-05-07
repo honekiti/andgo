@@ -46,7 +46,7 @@ export const scheduleNotification = async (props: {
   title?: string;
   body?: string;
   type: NOTIFICATION_TYPE;
-  date: number; // unix timestamp [seconds]
+  dateInUtc: number; // unix timestamp [milli seconds]
 }): Promise<string | undefined> => {
   const hasPermission = await grantPermissions();
 
@@ -62,7 +62,8 @@ export const scheduleNotification = async (props: {
         type: props.type,
       },
     },
-    trigger: { date: new Date(props.date * 1000) } as Notifications.DateTriggerInput,
+    // 1000ms程度遅らせないとエラーになる
+    trigger: { date: new Date(props.dateInUtc + 1000) } as Notifications.DateTriggerInput,
   });
 
   return notificationId;

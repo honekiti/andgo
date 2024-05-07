@@ -159,7 +159,7 @@ export default function DebugScreen() {
                 title: '通知テスト',
                 body: 'テスト1\nテスト2',
                 type: 'INFO',
-                date: Date.now(),
+                dateInUtc: Date.now(),
               })
             }
           >
