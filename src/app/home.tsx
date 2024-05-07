@@ -62,7 +62,7 @@ export default function HomeScreen() {
                 円
               </Text>
             </HStack>
-            <HStack h="50%" alignItems="center" pb="$2">
+            <HStack h="50%" alignItems="center" py="$2">
               <Image size="2xs" resizeMode="contain" source={require('../../assets/images/bitcoin.png')} alt="bitcoin logo" />
               <Text>
                 <Text color={white} fontSize={14}>
