@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import invariant from 'tiny-invariant';
 import { addMonths, getYear, getMonth, getDate } from 'date-fns';
 import { accountAtom } from '../account-service';
 import { orderFamily } from '../order-service';
@@ -38,27 +39,33 @@ export const ordersAtom = atom<Promise<Order[]>>(async (get) => {
   return filtered;
 });
 
-export const plansToEvents = (plans: Plan[], now: number) => {
+export const plansToBuyOrderEvents = (plans: Plan[], now: number) => {
   const events: CalendarEvent[] = [];
   const limit = addMonths(now, PLAN_EVENTS_RANGE_MONTHS).getTime();
-  const enabledPlans = plans.filter((p) => p.status.enabled);
+  const enabledPlans = plans.filter((p) => p.orderType === 'BUY' && p.status.enabled);
 
   // 三ヶ月先までのカレンダーイベントを取得する
   for (const plan of enabledPlans) {
-    for (let nextIndex = getNextIndexFromNow(plan.planTypeId, plan.status.refAt, now); nextIndex++; ) {
-      const nextAt = getNextAtByIndex(plan.planTypeId, plan.status.refAt, nextIndex);
+    try {
+      invariant(plan.buy);
 
-      if (nextAt < limit) {
-        events.push({
-          id: `${plan.id}:${nextIndex}`,
-          orderedAt: nextAt,
-          exchangeId: plan.exchangeId,
-          quoteAmount: plan.quoteAmount,
-          result: null, // TODO: 口座残高が不足する場合は、INSUFFICIENT_FUNDSにする
-        });
-      } else {
-        break;
+      for (let nextIndex = getNextIndexFromNow(plan.planTypeId, plan.status.refAt, now); nextIndex++; ) {
+        const nextAt = getNextAtByIndex(plan.planTypeId, plan.status.refAt, nextIndex);
+
+        if (nextAt < limit) {
+          events.push({
+            id: `${plan.id}:${nextIndex}`,
+            orderedAt: nextAt,
+            exchangeId: plan.exchangeId,
+            quoteAmount: plan.buy.quoteAmount,
+            result: null, // TODO: 口座残高が不足する場合は、INSUFFICIENT_FUNDSにする
+          });
+        } else {
+          break;
+        }
       }
+    } catch (e) {
+      logger.error({ msg: 'Failed to get plan events', errMsg: (e as Error).message });
     }
   }
 
@@ -66,12 +73,12 @@ export const plansToEvents = (plans: Plan[], now: number) => {
 };
 
 /**
- * 予定するオーダーイベントについて、オーダー時刻の昇順で返す。
+ * 予定する購入指示オーダーイベントについて、オーダー時刻の昇順で返す。
  */
 export const futureEventsAtom = atom(async (get) => {
   const plans = await get(plansAtom);
   const now = new Date().getTime();
-  const events = plansToEvents(plans, now);
+  const events = plansToBuyOrderEvents(plans, now);
 
   return events;
 });
@@ -106,22 +113,24 @@ export const aggregateEvents = (calendarEvents: CalendarEvent[], prefix: string)
   return results;
 };
 
-export const ordersToEvents = (orders: Order[]): CalendarEvent[] => {
-  return orders.map((o) => ({
-    id: `${o.id}`,
-    orderedAt: o.orderedAt,
-    exchangeId: o.planSnapshot.exchangeId,
-    quoteAmount: o.planSnapshot.quoteAmount,
-    result: o.result,
-  }));
+export const transformToBuyOrderEvents = (orders: Order[]): CalendarEvent[] => {
+  return orders
+    .filter((o) => o.planSnapshot.orderType === 'BUY' && !!o.planSnapshot.buy)
+    .map((o) => ({
+      id: `${o.id}`,
+      orderedAt: o.orderedAt,
+      exchangeId: o.planSnapshot.exchangeId,
+      quoteAmount: o.planSnapshot.buy?.quoteAmount,
+      result: o.result,
+    })) as CalendarEvent[];
 };
 
 export const calendarEventsAtom = atom(async (get) => {
   const orders = await get(ordersAtom);
-  const orderEvents = ordersToEvents(orders);
+  const buyOrderEvents = transformToBuyOrderEvents(orders);
   const futureEvents = await get(futureEventsAtom);
 
-  const aggregatedOrderEvents = aggregateEvents(orderEvents, 'Order');
+  const aggregatedOrderEvents = aggregateEvents(buyOrderEvents, 'Order');
   const aggregatedFutureEvents = aggregateEvents(futureEvents, 'Future');
 
   if (aggregatedOrderEvents.length > 0) {
