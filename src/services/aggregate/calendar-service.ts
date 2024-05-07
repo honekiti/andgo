@@ -3,7 +3,10 @@ import { addMonths, getYear, getMonth, getDate } from 'date-fns';
 import { accountAtom } from '../account-service';
 import { orderFamily } from '../order-service';
 import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from '../plan-service';
+import { logFactory } from '../../utils/logger';
 import type { Plan, Order, OrderId, CalendarEvent, AggregatedCalendarEvent } from '../../models';
+
+const logger = logFactory('calendar-service');
 
 const MAX_ORDERS = 100;
 const PLAN_EVENTS_MAX_NUM = 20;
@@ -22,7 +25,7 @@ export const ordersAtom = atom<Promise<Order[]>>(async (get) => {
       const res = await get(orderFamily(id));
 
       if (res === null) {
-        console.warn(`Order not found: ${id}`);
+        logger.warn({ msg: 'Order not found', id });
       }
 
       return res;

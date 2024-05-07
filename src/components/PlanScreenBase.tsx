@@ -48,6 +48,9 @@ import { PLAN_TYPES, DAY_OF_WEEK_OPTIONS, DATE_OPTIONS, HOUR_OPTIONS, MINUTE_OPT
 import ExchangeInfo from '../components/ExchangeInfo';
 import { store } from '../store';
 import { calcBtcAmount } from '../services/scheduler-service';
+import { logFactory } from '../utils/logger';
+
+const logger = logFactory('PlanScreenBase');
 
 export const strToNum = (v: string): number => {
   const i = Number(v.replaceAll(',', ''));
@@ -144,7 +147,7 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
 
     await store.set(plansAtom, updatedPlans);
 
-    console.log('updated', newPlan);
+    logger.info({ msg: 'updated', newPlan });
 
     // 閉じる
     router.back();
@@ -169,14 +172,14 @@ export default function PlanScreenBase(props: PlanScreenBaseProps) {
           setCredentials(credentials);
         }
 
-        console.log('targetPlanId:', props.targetPlanId);
+        logger.info({ msg: 'info', targetPlanId: props.targetPlanId });
 
         // プラン編集の場合は、プラン情報を読み込む
         if (props.targetPlanId) {
           const plans = await store.get(plansAtom);
           const targetPlan = plans.find((p) => p.id === props.targetPlanId);
 
-          console.log('targetPlan', targetPlan);
+          logger.info({ msg: 'info', targetPlan });
 
           if (!targetPlan) {
             toast.show({

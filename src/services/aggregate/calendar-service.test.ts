@@ -1,6 +1,6 @@
 import { aggregateEvents, ordersToEvents, plansToEvents } from './calendar-service';
-import { DEBUG_ORDERS, DEBUG_PLANS } from '../fixtures';
-import { uniq } from '../utils/array';
+import { DEBUG_ORDERS, DEBUG_PLANS } from '../../fixtures';
+import { uniq } from '../../utils/array';
 
 describe('ordersToEvents', () => {
   test('success case', () => {

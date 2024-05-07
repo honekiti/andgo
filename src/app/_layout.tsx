@@ -12,6 +12,9 @@ import { registerBackgroundFetchAsync, useForegroundIntervalProcess } from '../s
 import { addNotificationListener } from '../services/notification-service';
 import { useTrackingExpoRouter } from '../services/expo-service';
 import { initDatadog } from '../services/expo-service';
+import { logFactory } from '../utils/logger';
+
+const logger = logFactory('_layout');
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -55,7 +58,7 @@ export default function RootLayout() {
     f();
 
     const finalizer = addNotificationListener((notification) => {
-      console.log('notification is received', JSON.stringify(notification));
+      logger.info({ msg: 'notification is received', notification });
     });
 
     return () => finalizer();

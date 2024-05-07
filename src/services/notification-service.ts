@@ -43,8 +43,7 @@ export const scheduleNotification = async (props: {
     return;
   }
 
-  // 既に登録されている予約通知をキャンセルする
-  await Notifications.cancelAllScheduledNotificationsAsync();
+    await Notifications.cancelAllScheduledNotificationsAsync();
 
   await Notifications.scheduleNotificationAsync({
     content: {

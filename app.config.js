@@ -9,7 +9,7 @@ module.exports = {
   splash: {
     image: './assets/images/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#2A2A2B',
   },
   assetBundlePatterns: ['**/*'],
   ios: {
@@ -24,7 +24,7 @@ module.exports = {
     versionCode: 5,
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#2A2A2B',
     },
     package: 'jp.co.andgo.hongov3',
   },

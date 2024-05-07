@@ -6,13 +6,16 @@ import * as TaskManager from 'expo-task-manager';
 import type { Plan, ExchangeId, ExchangeCredential, SuccessOrderResult, FailedOrderResult, OrderId, Order } from '../models';
 import { VIEW_PRECISION, EXCHANGES } from '../master';
 import { plansAtom, getNextIndexFromNow, getNextAtByIndex } from './plan-service';
-import { exchangeCredentialsAtom } from './exchange-service';
+import { exchangeCredentialsAtom, getExchange } from './exchange-service';
 import { store } from '../store';
 import { getTicker, execBuyOrder } from './exchange-api-service/universal';
 import { orderFamily } from './order-service';
 import { accountAtom } from './account-service';
 import { refreshTotalAmount } from './aggregate/analysis-service';
 import { scheduleNotification } from './notification-service';
+import { logFactory } from '../utils/logger';
+
+const logger = logFactory('scheduler-service');
 
 export const FIND_ORDERS_TASK = 'FIND_ORDERS_TASK';
 export const MAX_NEXT_AT_DELTA_MS = 1000 * 60 * 20; // 20 minutes
@@ -70,12 +73,12 @@ export const buyQuoteAmount = async (
 let runningCount = 0;
 
 export const findAndExecuteOrders = async () => {
-  console.log('finding and executing orders...');
+  logger.info({ msg: 'finding and executing orders...' });
 
   runningCount++;
 
   if (runningCount > 1) {
-    console.log('already running the findAndExecuteOrders');
+    logger.info({ msg: 'already running the findAndExecuteOrders' });
 
     return;
   }
@@ -93,7 +96,7 @@ export const findAndExecuteOrders = async () => {
       const { exchangeId, quoteAmount } = plan;
       const exchangeCredential = exchangeCredentials.find((c) => c.exchangeId === exchangeId);
       if (!exchangeCredential) {
-        console.log(`exchange credential not found: exchangeId=${exchangeId}`);
+        logger.info({ msg: 'exchange credential not found', exchangeId });
         plan.status.enabled = false;
         continue;
       }
@@ -101,11 +104,11 @@ export const findAndExecuteOrders = async () => {
       // アカウントレベルでドライラン、或いはプランレベルでドライラン指示があればドライランとする
       const dryRun = account.dryRun || plan.dryRun;
 
-      console.log(`execute order: exchangeId=${exchangeId}, quoteAmount=${quoteAmount}`);
+      logger.info({ msg: 'execute order', exchangeId, quoteAmount });
 
       const orderResult = await buyQuoteAmount(exchangeCredential, quoteAmount, dryRun);
 
-      console.log(`order result: ${JSON.stringify(orderResult)}`);
+      logger.info({ msg: 'order result', orderResult });
 
       const orderId = `ORD_${account.numOfOrders}` as OrderId;
       const order: Order = {
@@ -128,6 +131,15 @@ export const findAndExecuteOrders = async () => {
         // windowedPlansの値を更新
         updatedPlans[targetPlanIndex].status.nextIndex = nextIndex;
         updatedPlans[targetPlanIndex].status.nextAt = nextAt;
+
+      // 通知を送る
+      await scheduleNotification({
+        title: '注文しました',
+        body: `時刻: ${new Date(now).toISOString()}\n取引所: ${getExchange(exchangeId).name}\n購入金額: ${quoteAmount}JPY`,
+        type: 'WAKEUP_CALL',
+        date: Date.now(),
+      });
+
       } else {
         // windowedPlansの値を更新
         updatedPlans[targetPlanIndex].status.enabled = false;
@@ -137,11 +149,11 @@ export const findAndExecuteOrders = async () => {
     await store.set(plansAtom, updatedPlans);
 
     // 投資パフォーマンスを再集計
-    console.log('refresh total amount...');
+    logger.info({ msg: 'refresh total amount...' });
 
     await refreshTotalAmount();
 
-    console.log('refresh total amount done');
+    logger.info({ msg: 'refresh total amount done' });
   } finally {
     runningCount--;
   }
@@ -158,7 +170,7 @@ export const intervalProcess = async () => {
 TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
   const now = Date.now();
 
-  console.log(`got background fetch call at date: ${new Date(now).toISOString()}`);
+  logger.info({ msg: 'got background fetch call', date: new Date(now).toISOString() });
 
   await intervalProcess();
 
@@ -167,7 +179,7 @@ TaskManager.defineTask(FIND_ORDERS_TASK, async () => {
 });
 
 export async function registerBackgroundFetchAsync() {
-  console.log('background fetch is registered');
+  logger.info({ msg: 'background fetch is registered' });
 
   return BackgroundFetch.registerTaskAsync(FIND_ORDERS_TASK, {
     minimumInterval: BACKGROUND_INTERVAL_SEC,
@@ -177,13 +189,13 @@ export async function registerBackgroundFetchAsync() {
 }
 
 export async function unregisterBackgroundFetchAsync() {
-  console.log('background fetch is unregistered');
+  logger.info({ msg: 'background fetch is unregistered' });
 
   return BackgroundFetch.unregisterTaskAsync(FIND_ORDERS_TASK);
 }
 
 export const setScheduledRecoveryNotification = async () => {
-  console.log('re-schedule recovery notification');
+  logger.info({ msg: 're-schedule recovery notification' });
 
   await scheduleNotification({
     title: 'アプリの終了を検知しました',
@@ -199,11 +211,11 @@ export const useForegroundIntervalProcess = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    console.log('foreground interval monitor is registered');
+    logger.info({ msg: 'foreground interval monitor is registered' });
 
     const subscription = AppState.addEventListener('change', (nextAppState) => {
       if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-        console.log('app is activated');
+        logger.info({ msg: 'app is activated' });
 
         // フォアグラウンドになったタイミングでリカバリー通知再登録だけ実行する
         setScheduledRecoveryNotification().then(() => {
@@ -211,9 +223,9 @@ export const useForegroundIntervalProcess = () => {
           intervalRef.current = setInterval(intervalProcess, FOREGROUND_INTERVAL_MS);
         });
       } else {
-        console.log('app is deactivated');
+        logger.info({ msg: 'app is deactivated' });
         if (intervalRef.current) {
-          console.log('foreground interval monitor is unregistered');
+          logger.info({ msg: 'foreground interval monitor is unregistered' });
           clearInterval(intervalRef.current);
           intervalRef.current = null;
         }

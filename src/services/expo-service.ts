@@ -4,6 +4,7 @@ import { DdRum } from 'expo-datadog';
 import { DdSdkReactNative, DdSdkReactNativeConfiguration, SdkVerbosity } from 'expo-datadog';
 import Constants from 'expo-constants';
 import invariant from 'tiny-invariant';
+export { DdLogs } from '@datadog/mobile-react-native';
 
 const DD_CLIENT_TOKEN = Constants.expoConfig?.extra?.datadog?.clientToken;
 const DD_RUM_APPLICATION_ID = Constants.expoConfig?.extra?.datadog?.rumApplicationId;
@@ -32,7 +33,7 @@ config.resourceTracingSamplingRate = 100;
 // Optional: Let the Datadog SDK print internal logs above or equal to the provided level. Default is undefined, which means no logs.
 config.verbosity = SdkVerbosity.WARN;
 
-let initialized = false;
+export let initialized = false;
 
 export const initDatadog = async () => {
   await DdSdkReactNative.initialize(config);
@@ -50,3 +51,4 @@ export const useTrackingExpoRouter = () => {
     }
   }, [viewKey, pathname]);
 };
+

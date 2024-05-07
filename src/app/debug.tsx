@@ -159,7 +159,7 @@ export default function DebugScreen() {
             onPress={() =>
               scheduleNotification({
                 title: '通知テスト',
-                body: 'テストテスト',
+                body: 'テスト1\nテスト2',
                 type: 'WAKEUP_CALL',
                 date: Math.floor(Date.now() / 1000) + 10,
               })
