@@ -1,6 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAtom, useAtomValue } from 'jotai';
-import { RESET } from 'jotai/utils';
 import { Link, Stack } from 'expo-router';
 import { SafeAreaView, Button, ButtonText, VStack, useToast, Toast, ToastTitle, ScrollView } from '@gluestack-ui/themed';
 import { Text } from '@gluestack-ui/themed';
@@ -76,19 +74,19 @@ export default function DebugScreen() {
         <TickerInfos />
 
         <VStack m="$2" p="$2" bgColor="$primary100">
-          <Text>account: {JSON.stringify(account)}</Text>
+          <Text>account: {JSON.stringify(account, null, 2)}</Text>
         </VStack>
 
         <VStack m="$2" p="$2" bgColor="$primary100">
-          <Text>plans: {JSON.stringify(plans)}</Text>
+          <Text>plans: {JSON.stringify(plans, null, 2)}</Text>
         </VStack>
 
         <VStack m="$2" p="$2" bgColor="$primary100">
-          <Text>exchangeCredentials: {JSON.stringify(exchangeCredentials)}</Text>
+          <Text>exchangeCredentials: {JSON.stringify(exchangeCredentials, null, 2)}</Text>
         </VStack>
 
         <VStack m="$2" p="$2" bgColor="$primary100">
-          <Text>orders: {JSON.stringify(orders)}</Text>
+          <Text>orders: {JSON.stringify(orders, null, 2)}</Text>
         </VStack>
       </ScrollView>
 
